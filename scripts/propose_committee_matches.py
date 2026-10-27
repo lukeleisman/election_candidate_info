@@ -1,0 +1,279 @@
+"""List every ISBE committee that could belong to each CBOE candidate — evidence only.
+
+This script never picks a committee. You read the proposals and copy the
+committee IDs you confirm into data/crosswalk/candidate_committee.csv.
+
+Inputs:
+  data/candidates/candidates_cboe.csv
+  data/raw/isbe/{Candidates,CanElections,CmteCandidateLinks,Committees}.txt  (scripts/fetch_isbe.py)
+
+Two kinds of evidence (column evidence_source):
+  "cmte_candidate_link": ISBE has a candidate record for a Chicago office of the
+      same kind (ISBE_OFFICES_BY_CBOE_CODE), whose last name matches the CBOE name
+      (LAST_NAME_RULE), and ISBE's CmteCandidateLinks ties a committee to that
+      record. This is the official ISBE link (the electionssimplified audit warns
+      against guessing committees by name — docs/plans/plan-illinois-local-finance.md
+      in shu1513/electionssimplified).
+  "committee_name_contains": a committee whose name contains both the first and
+      the last word of the CBOE name (normalized), with no ISBE link to a matching
+      candidate record. Weaker; listed because new candidates may not have
+      a link recorded yet.
+Candidates with neither get one row with evidence_source = "none".
+
+Each row carries evidence columns (district match, first-name match, 2027
+election record, committee status / creation date) so the choice can be made
+row by row. Row order: candidate, then evidence_source, then committee ID.
+
+Outputs:
+  data/crosswalk/candidate_committee_proposals.csv   regenerated every run
+  data/crosswalk/candidate_committee.csv             created once (header only) if missing;
+                                                     never overwritten — you fill it in
+
+Usage:
+  python scripts/propose_committee_matches.py
+"""
+
+import csv
+import re
+from collections import defaultdict
+from pathlib import Path
+
+import pandas as pd
+
+from names import name_suffixes, normalization_steps_on, normalize_name
+
+# ---------------------------------------------------------------------------
+# Configuration
+# ---------------------------------------------------------------------------
+
+REPO_ROOT = Path(__file__).resolve().parent.parent
+CBOE_CANDIDATES_PATH = REPO_ROOT / "data" / "candidates" / "candidates_cboe.csv"
+ISBE_DIR = REPO_ROOT / "data" / "raw" / "isbe"
+PROPOSALS_OUTPUT_PATH = REPO_ROOT / "data" / "crosswalk" / "candidate_committee_proposals.csv"
+CROSSWALK_PATH = REPO_ROOT / "data" / "crosswalk" / "candidate_committee.csv"
+
+# ISBE text files are tab-delimited, Windows-encoded. Undecodable bytes are
+# replaced (shown as �) rather than stopping the run.
+ISBE_FILE_ENCODING = "cp1252"
+
+# ISBE `Office` values counted as the same office as each CBOE office code.
+# Values seen in Candidates.txt on 2026-10-27 (counts statewide): Alderperson 2499,
+# Alderman 14, Mayor 1710, Police District Council 85, Clerk / Treasurer (many towns).
+ISBE_OFFICES_BY_CBOE_CODE = {
+    "ALD": {"Alderperson", "Alderman"},
+    "MAYOR": {"Mayor"},
+    "CLERK": {"Clerk"},
+    "TREAS": {"Treasurer"},
+    "PDC": {"Police District Council"},
+}
+
+# ISBE `District` must look like Chicago, optionally followed by a ward/district
+# number: "Chicago", "Chicago 2", "Chicago-7", "Chicago 18 ". This excludes
+# "Chicago Heights", "Chicago Ridge", "North Chicago", "South Chicago Heights".
+CHICAGO_DISTRICT_PATTERN = re.compile(r"^\s*Chicago\s*(?:[-\s]\s*(\d+))?\s*$", re.IGNORECASE)
+
+# Some records give the district as a bare number ("27"), with no city — 138
+# Alderperson / Police District Council records statewide on 2026-10-27, 65 of
+# them with a Chicago address, many of them 2027 challengers (e.g. Walter R
+# Burnett, ISBE 53650; Bill Thanoukos, 53984). Such a record counts as Chicago
+# when its address City (lowercased, trimmed) is in this set. ASSUMPTION: a
+# candidate for another town's ward does not have a Chicago mailing address.
+BARE_NUMBER_DISTRICT_PATTERN = re.compile(r"^\s*(\d+)\s*$")
+BARE_NUMBER_DISTRICT_ADDRESS_CITIES = {"chicago"}
+
+# Last-name rule: the ISBE LastName, normalized (scripts/names.py), must appear
+# as a run of whole words inside the normalized CBOE ballot name. Handles
+# multi-word surnames ("LA SPATA", "RODRIGUEZ SANCHEZ"). Suffixes ("Jr") are
+# dropped by the normalization.
+LAST_NAME_RULE = "isbe_last_name_words_inside_cboe_name"
+
+# For "committee_name_contains": only committees whose Status is in this set.
+# The dictionary says "Active or Final", but the file codes them "A" / "F"
+# (2026-10-27: A 4,524, F 29,685). Linked committees are listed whatever their status.
+NAME_SEARCH_COMMITTEE_STATUSES = {"A"}
+
+# Election year of this race in CanElections (shown as evidence, not a filter).
+# ISBE codes Chicago's February municipal election as CP (Consolidated Primary)
+# and the April runoff as CE: e.g. Brian Hopkins (ISBE 28160) has
+# "2023 CP; 2019 CP; 2015 CP; 2015 CE" (2015 = the year he was in a runoff).
+# Checked 2026-10-27 on that one record; all 2027 codes are shown, not filtered.
+ELECTION_YEAR = "2027"
+
+OUTPUT_COLUMNS = [
+    "candidate_id", "office_code", "district_number", "ballot_name_raw",
+    "evidence_source",
+    "isbe_candidate_id", "isbe_last_name", "isbe_first_name", "isbe_office", "isbe_district_raw",
+    "isbe_district_number", "isbe_district_basis", "district_matches", "first_word_matches",
+    "suffix_matches",
+    "isbe_election_records", f"has_{ELECTION_YEAR}_election_record",
+    "committee_id", "committee_name", "committee_type", "committee_status",
+    "committee_status_date", "committee_creation_date",
+    "candidates_linked_to_committee",
+    "normalization_steps_on",
+]
+
+CROSSWALK_COLUMNS = [
+    "candidate_id", "ballot_name_raw", "committee_id", "committee_name",
+    "committee_role",   # you fill: candidate committee / ward organization / other
+    "confirmed_by", "confirmed_on", "notes",
+]
+
+
+def read_isbe(file_name):
+    return pd.read_csv(
+        ISBE_DIR / file_name, sep="\t", dtype=str, quoting=csv.QUOTE_NONE,
+        encoding=ISBE_FILE_ENCODING, encoding_errors="replace", keep_default_na=False,
+    )
+
+
+def words_inside(needle_words, haystack_words):
+    """True if needle_words appears as a contiguous run within haystack_words."""
+    length = len(needle_words)
+    if length == 0:
+        return False
+    return any(haystack_words[i:i + length] == needle_words for i in range(len(haystack_words) - length + 1))
+
+
+def main():
+    candidates = pd.read_csv(CBOE_CANDIDATES_PATH, dtype=str, keep_default_na=False)
+    isbe_candidates = read_isbe("Candidates.txt")
+    isbe_elections = read_isbe("CanElections.txt")
+    isbe_links = read_isbe("CmteCandidateLinks.txt")
+    committees = read_isbe("Committees.txt")
+    print(f"ISBE rows: Candidates {len(isbe_candidates):,}, CanElections {len(isbe_elections):,}, "
+          f"CmteCandidateLinks {len(isbe_links):,}, Committees {len(committees):,}")
+
+    # Check the ID assumption: CanElections.CandidateID and CmteCandidateLinks.CandidateID
+    # are Candidates.ID (the data dictionary's wording is unclear). Print how many resolve.
+    candidate_ids = set(isbe_candidates["ID"])
+    for label, frame in (("CanElections", isbe_elections), ("CmteCandidateLinks", isbe_links)):
+        resolved = frame["CandidateID"].isin(candidate_ids).mean()
+        print(f"  {label}.CandidateID found in Candidates.ID: {resolved:.1%}")
+
+    # ISBE candidate records for Chicago offices only: district text says Chicago,
+    # or district is a bare number and the address city is Chicago.
+    named_district = isbe_candidates["District"].str.match(CHICAGO_DISTRICT_PATTERN)
+    bare_district = (
+        isbe_candidates["District"].str.match(BARE_NUMBER_DISTRICT_PATTERN)
+        & isbe_candidates["City"].str.strip().str.lower().isin(BARE_NUMBER_DISTRICT_ADDRESS_CITIES)
+    )
+    isbe_candidates["is_chicago"] = named_district | bare_district
+    isbe_candidates["district_basis"] = ""
+    isbe_candidates.loc[named_district, "district_basis"] = "district_text_chicago"
+    isbe_candidates.loc[bare_district, "district_basis"] = "bare_number_and_chicago_address"
+    isbe_candidates["district_number"] = (
+        isbe_candidates["District"].str.extract(CHICAGO_DISTRICT_PATTERN)[0]
+        .fillna(isbe_candidates["District"].str.extract(BARE_NUMBER_DISTRICT_PATTERN)[0])
+        .fillna("")
+    )
+    print(f"  Chicago records by district basis: {isbe_candidates['district_basis'].value_counts().to_dict()}")
+    chicago = isbe_candidates[isbe_candidates["is_chicago"]].copy()
+    chicago["last_name_words"] = chicago["LastName"].map(lambda text: normalize_name(text).split())
+    chicago["first_word"] = chicago["FirstName"].map(lambda text: (normalize_name(text).split() or [""])[0])
+    print(f"ISBE candidate records with a Chicago district: {len(chicago):,}")
+
+    elections_by_candidate = defaultdict(list)
+    for row in isbe_elections.itertuples():
+        elections_by_candidate[row.CandidateID].append(f"{row.ElectionYear} {row.ElectionType}")
+    links_by_candidate = defaultdict(list)
+    candidates_by_committee = defaultdict(list)
+    for row in isbe_links.itertuples():
+        links_by_candidate[row.CandidateID].append(row.CommitteeID)
+        candidates_by_committee[row.CommitteeID].append(row.CandidateID)
+    committee_by_id = committees.set_index("ID").to_dict("index")
+    committees["name_words"] = committees["Name"].map(lambda text: normalize_name(text).split())
+    searchable_committees = committees[committees["Status"].isin(NAME_SEARCH_COMMITTEE_STATUSES)]
+
+    def committee_columns(committee_id):
+        committee = committee_by_id.get(committee_id, {})
+        return {
+            "committee_id": committee_id,
+            "committee_name": committee.get("Name", "(not in Committees.txt)"),
+            "committee_type": committee.get("TypeOfCommittee", ""),
+            "committee_status": committee.get("Status", ""),
+            "committee_status_date": committee.get("StatusDate", ""),
+            "committee_creation_date": committee.get("CreationDate", ""),
+            "candidates_linked_to_committee": "; ".join(sorted(set(candidates_by_committee.get(committee_id, [])))),
+        }
+
+    output_rows = []
+    steps_on = normalization_steps_on()
+    for candidate in candidates.itertuples():
+        cboe_words = normalize_name(candidate.ballot_name_raw).split()
+        base = {
+            "candidate_id": candidate.candidate_id,
+            "office_code": candidate.office_code,
+            "district_number": candidate.district_number,
+            "ballot_name_raw": candidate.ballot_name_raw,
+            "normalization_steps_on": steps_on,
+        }
+        candidate_rows = []
+        linked_committee_ids = set()
+
+        # 1. ISBE candidate records + their official committee links.
+        office_values = ISBE_OFFICES_BY_CBOE_CODE[candidate.office_code]
+        same_office = chicago[chicago["Office"].isin(office_values)]
+        for isbe_row in same_office.itertuples():
+            if not words_inside(isbe_row.last_name_words, cboe_words):
+                continue
+            elections = sorted(elections_by_candidate.get(isbe_row.ID, []), reverse=True)
+            isbe_columns = {
+                "isbe_candidate_id": isbe_row.ID,
+                "isbe_last_name": isbe_row.LastName,
+                "isbe_first_name": isbe_row.FirstName,
+                "isbe_office": isbe_row.Office,
+                "isbe_district_raw": isbe_row.District,
+                "isbe_district_number": isbe_row.district_number,
+                "isbe_district_basis": isbe_row.district_basis,
+                "district_matches": isbe_row.district_number == candidate.district_number,
+                "first_word_matches": bool(cboe_words) and isbe_row.first_word == cboe_words[0],
+                # Jr / Sr / II / III / IV written in each name (dropped by normalization).
+                "suffix_matches": name_suffixes(isbe_row.LastName + " " + isbe_row.FirstName)
+                                  == name_suffixes(candidate.ballot_name_raw),
+                "isbe_election_records": "; ".join(elections),
+                f"has_{ELECTION_YEAR}_election_record": any(e.startswith(ELECTION_YEAR) for e in elections),
+            }
+            committee_ids = links_by_candidate.get(isbe_row.ID, [])
+            if not committee_ids:
+                candidate_rows.append({**base, "evidence_source": "isbe_candidate_no_committee_link", **isbe_columns})
+            for committee_id in sorted(set(committee_ids)):
+                linked_committee_ids.add(committee_id)
+                candidate_rows.append({**base, "evidence_source": "cmte_candidate_link",
+                                       **isbe_columns, **committee_columns(committee_id)})
+
+        # 2. Committees named with both the first and last word of the ballot name.
+        if len(cboe_words) >= 2:
+            first_word, last_word = cboe_words[0], cboe_words[-1]
+            for committee in searchable_committees.itertuples():
+                if committee.ID in linked_committee_ids:
+                    continue
+                if first_word in committee.name_words and last_word in committee.name_words:
+                    candidate_rows.append({**base, "evidence_source": "committee_name_contains",
+                                           **committee_columns(committee.ID)})
+
+        if not candidate_rows:
+            candidate_rows.append({**base, "evidence_source": "none"})
+        output_rows.extend(candidate_rows)
+
+    PROPOSALS_OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
+    with open(PROPOSALS_OUTPUT_PATH, "w", newline="") as output_file:
+        writer = csv.DictWriter(output_file, fieldnames=OUTPUT_COLUMNS)
+        writer.writeheader()
+        writer.writerows(output_rows)
+
+    if not CROSSWALK_PATH.exists():
+        with open(CROSSWALK_PATH, "w", newline="") as output_file:
+            csv.writer(output_file).writerow(CROSSWALK_COLUMNS)
+        print(f"created empty {CROSSWALK_PATH.relative_to(REPO_ROOT)} for you to fill in")
+
+    proposals = pd.DataFrame(output_rows)
+    per_candidate = proposals.groupby("candidate_id")["evidence_source"].agg(set)
+    print(f"\n{len(proposals):,} proposal rows for {len(candidates)} candidates")
+    print("candidates with at least one row of each kind:")
+    for source in ("cmte_candidate_link", "isbe_candidate_no_committee_link", "committee_name_contains", "none"):
+        print(f"  {source}: {sum(source in sources for sources in per_candidate)}")
+    print(f"wrote {PROPOSALS_OUTPUT_PATH.relative_to(REPO_ROOT)}")
+
+
+if __name__ == "__main__":
+    main()

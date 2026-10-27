@@ -1,0 +1,9 @@
+office_code,district_number,last_name_word,candidate_id,ballot_name_raw,filing_date,filing_time,filing_number,group_size,group_mailing_addresses_identical
+ALD,24,SCOTT,ALD-24-001,MONIQUE L. SCOTT,10/19/26,09:00:00,22,2,False
+ALD,24,SCOTT,ALD-24-003,MONIQUE SCOTT,10/26/26,14:29:00,0,2,False
+ALD,39,NUGENT,ALD-39-001,"SAMANTHA ""SAM"" NUGENT",10/19/26,09:00:00,30,2,False
+ALD,39,NUGENT,ALD-39-002,SAMANTHA NUGENT,10/26/26,14:34:00,0,2,False
+PDC,2,PEREZ,PDC-02-003,ALEXANDER PEREZ,10/23/26,12:40:00,0,2,no_address_in_pdf
+PDC,2,PEREZ,PDC-02-005,ALEXANDER PEREZ,10/26/26,13:10:00,0,2,no_address_in_pdf
+PDC,7,WILLIAMS,PDC-07-002,JOSEPH G. WILLIAMS,10/19/26,09:00:00,3,2,no_address_in_pdf
+PDC,7,WILLIAMS,PDC-07-005,PATRICIA WILLIAMS,10/20/26,16:40:00,0,2,no_address_in_pdf

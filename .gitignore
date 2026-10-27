@@ -1,0 +1,6 @@
+# Raw downloads (large, and some contain personal addresses) — rebuilt by the fetch scripts
+/data/raw/
+.ipynb_checkpoints/
+__pycache__/
+*.pyc
+.DS_Store

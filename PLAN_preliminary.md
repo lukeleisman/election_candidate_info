@@ -1,3 +1,6 @@
+> **Superseded by `PLAN.md` (2026-10-27).** Kept for its research notes and open questions,
+> which PLAN.md carries forward.
+
 # Chicago election candidate info — Phase 1 plan
 
 ## Context

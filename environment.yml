@@ -1,0 +1,23 @@
+# Conda environment for the Chicago election candidate info project.
+# Mirrors ../chicago_council/environment.yml without the geospatial stack.
+# Create:   conda env create -f environment.yml
+# Update:   conda env update -f environment.yml --prune
+# Use:      conda activate election-candidate-info
+name: election-candidate-info
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - pandas
+  - numpy
+  - requests
+  - pdfplumber      # parse the Chicago Board of Elections candidate filing report PDF
+  - openpyxl        # read the Electoral Board decisions library (.xlsx)
+  - beautifulsoup4  # endorsement page parsers + link discovery on the CBOE candidates page
+  - matplotlib
+  - jupyter
+  - nbconvert
+  - ipykernel
+  - nbstripout
+  # Optional: local open LLM endorsement extraction (scripts/extract_endorsements_llm.py, off by default).
+  # Needs the Ollama app installed separately (https://ollama.com); then: pip install ollama
