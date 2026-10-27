@@ -5,9 +5,9 @@ PYTHON ?= conda run --no-capture-output -n election-candidate-info python
 # Newest CBOE filing report on disk (file names carry a timestamp, so sort = newest last).
 FILING_REPORT = $(shell ls data/raw/cboe/documents/*/"Candidate Filing Report_"*.pdf 2>/dev/null | sort | tail -1)
 
-.PHONY: all candidates fetch-cboe parse-candidates compare-lists ballot-status fetch-isbe committee-proposals committee-review review-rule apply-review
+.PHONY: all candidates fetch-cboe parse-candidates compare-lists ballot-status fetch-isbe committee-proposals isbe-review isbe-rule candidate-committee
 
-all: candidates fetch-isbe committee-proposals committee-review review-rule apply-review
+all: candidates fetch-isbe committee-proposals isbe-review isbe-rule candidate-committee
 
 ## Official candidate list (PLAN.md step 2)
 candidates: fetch-cboe parse-candidates compare-lists ballot-status
@@ -28,19 +28,19 @@ ballot-status:
 fetch-isbe:
 	$(PYTHON) scripts/fetch_isbe.py
 
-# Writes evidence only; you confirm committees in data/crosswalk/candidate_committee.csv.
+# Evidence only: ISBE records + linked committees + name matches (Police District Council left out).
 committee-proposals:
 	$(PYTHON) scripts/propose_committee_matches.py
 
-# Review sheet you mark (accept = yes/no); reruns keep your marks.
-committee-review:
-	$(PYTHON) scripts/build_committee_review.py
+# The one confirmation (PLAN.md §3a): CBOE candidate -> ISBE record. Reruns keep your marks.
+isbe-review:
+	$(PYTHON) scripts/build_isbe_record_review.py
 
-# Mark clear cases by rule (reviewed_by = rule_v1); judgment calls stay blank.
+# Mark clear cases by rule (reviewed_by = rule_v2); judgment calls stay blank.
 # See docs/process_committee_review.md.
-review-rule:
-	$(PYTHON) scripts/apply_review_rule.py
+isbe-rule:
+	$(PYTHON) scripts/apply_isbe_record_rule.py
 
-# Rebuild the crosswalk from rows marked yes in the review sheet.
-apply-review:
-	$(PYTHON) scripts/apply_committee_review.py
+# Committees of accepted records (as on Illinois Sunshine) + name matches + manual rows.
+candidate-committee:
+	$(PYTHON) scripts/build_candidate_committee.py

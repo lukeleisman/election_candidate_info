@@ -26,10 +26,10 @@ hand-curated (`data/input/`, and later the committee crosswalk and endorsement e
 conda env create -f environment.yml
 make candidates            # fetch CBOE documents, parse the newest filing report, compare lists, ballot status
 make fetch-isbe            # ISBE bulk files (~1.5 GB; skipped when unchanged on the server)
-make committee-proposals   # evidence for the candidate -> committee crosswalk
-make committee-review      # review sheet with an accept column (keeps your marks on rerun)
-make review-rule           # marks clear cases by rule; judgment calls left blank
-make apply-review          # crosswalk <- rows marked accept = yes
+make committee-proposals   # ISBE records + linked committees + name matches (evidence)
+make isbe-review           # review sheet: ballot candidate -> ISBE record (keeps your marks on rerun)
+make isbe-rule             # marks clear cases by rule; judgment calls left blank
+make candidate-committee   # crosswalk: every committee of a confirmed record (as on Illinois Sunshine) + name matches
 ```
 
 Raw downloads go to `data/raw/` (gitignored), each with a `manifest.json` recording URL,
@@ -42,8 +42,10 @@ retrieval time, size and sha256.
 | `data/candidates/candidates_cboe.csv` | Official candidate list (no addresses) |
 | `data/candidates/candidate_list_comparison.csv` | CBOE list vs. the unofficial lists in `data/input/` |
 | `data/candidates/cboe_same_race_same_last_word.csv` | Same-race candidates sharing a last name, for review |
+| `data/candidates/duplicate_filings.csv` | **Hand-entered:** one person filed twice; merged into the earlier filing in the committee step |
 | `data/candidates/ballot_status.csv` | Electoral Board objection cases per candidate |
 | `data/crosswalk/candidate_committee_proposals.csv` | Every ISBE committee that could belong to each candidate, with evidence (regenerated) |
-| `data/crosswalk/candidate_committee_review.csv` | **You edit this:** proposals sorted into review groups, with `accept` / `committee_role` columns |
-| `data/crosswalk/candidate_committee.csv` | Confirmed candidate → committee IDs, rebuilt from the review sheet |
+| `data/crosswalk/candidate_isbe_review.csv` | **You edit this:** ballot candidate × ISBE candidate record, `accept` column (process: `docs/process_committee_review.md`) |
+| `data/crosswalk/committee_additions_manual.csv` | **Hand-entered:** committees to add or exclude, with source URL |
+| `data/crosswalk/candidate_committee.csv` | Candidate → committee rows (`link_basis`, `counts_toward`), rebuilt every run |
 | `data/input/` | Unofficial lists pasted or transcribed by hand (kept verbatim) |

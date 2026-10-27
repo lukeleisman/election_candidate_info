@@ -1,0 +1,4 @@
+candidate_id,same_person_as,evidence,entered_by,entered_on
+ALD-24-003,ALD-24-001,"Same race and name (MONIQUE SCOTT / MONIQUE L. SCOTT); mailing addresses differ; both match ISBE record 46300. Listed in cboe_same_race_same_last_word.csv. Kept the earlier filing (10/19/26, filing #22).",luke_2026-10-27,2026-10-27
+ALD-39-002,ALD-39-001,"Same race and name (SAMANTHA NUGENT / SAMANTHA ""SAM"" NUGENT); mailing addresses differ; both match ISBE record 42035. Listed in cboe_same_race_same_last_word.csv. Kept the earlier filing (10/19/26, filing #30).",luke_2026-10-27,2026-10-27
+PDC-02-005,PDC-02-003,"Same race, identical name (ALEXANDER PEREZ); no address in the PDF. Listed in cboe_same_race_same_last_word.csv. Kept the earlier filing (10/23/26). Police District Council is outside the committee step for now.",luke_2026-10-27,2026-10-27

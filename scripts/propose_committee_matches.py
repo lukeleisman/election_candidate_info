@@ -1,7 +1,8 @@
 """List every ISBE committee that could belong to each CBOE candidate — evidence only.
 
-This script never picks a committee. You read the proposals and copy the
-committee IDs you confirm into data/crosswalk/candidate_committee.csv.
+This script never picks anything. Next steps (PLAN.md §3a):
+  scripts/build_isbe_record_review.py  -> you confirm CBOE candidate -> ISBE record
+  scripts/build_candidate_committee.py -> committees of confirmed records + name matches
 
 Inputs:
   data/candidates/candidates_cboe.csv
@@ -15,19 +16,25 @@ Two kinds of evidence (column evidence_source):
       against guessing committees by name — docs/plans/plan-illinois-local-finance.md
       in shu1513/electionssimplified).
   "committee_name_contains": a committee whose name contains both the first and
-      the last word of the CBOE name (normalized), with no ISBE link to a matching
-      candidate record. Weaker; listed because new candidates may not have
-      a link recorded yet.
+      the last word of the CBOE name (normalized). Listed whether or not ISBE also
+      links it (changed 2026-10-27: scripts/build_candidate_committee.py decides
+      which name matches are "name_only", i.e. not ISBE-linked to an accepted
+      record). Catches committees ISBE has no link for, e.g. new candidates.
 Candidates with neither get one row with evidence_source = "none".
 
 Each row carries evidence columns (district match, first-name match, 2027
 election record, committee status / creation date) so the choice can be made
 row by row. Row order: candidate, then evidence_source, then committee ID.
 
-Outputs:
+Output:
   data/crosswalk/candidate_committee_proposals.csv   regenerated every run
-  data/crosswalk/candidate_committee.csv             created once (header only) if missing;
-                                                     never overwritten — you fill it in
+
+Only candidates whose office_code is in COMMITTEE_STEP_OFFICE_CODES are included.
+Duplicate filings (one person filed twice for the same race) are merged: rows of
+data/candidates/duplicate_filings.csv are dropped here, and the kept filing lists
+them in column also_filed_as. That file is hand-entered (user decision
+2026-10-27: combine duplicate filings); candidates_cboe.csv keeps all filings so
+it still matches the CBOE report total.
 
 Usage:
   python scripts/propose_committee_matches.py
@@ -48,9 +55,13 @@ from names import name_suffixes, normalization_steps_on, normalize_name
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 CBOE_CANDIDATES_PATH = REPO_ROOT / "data" / "candidates" / "candidates_cboe.csv"
+DUPLICATE_FILINGS_PATH = REPO_ROOT / "data" / "candidates" / "duplicate_filings.csv"
 ISBE_DIR = REPO_ROOT / "data" / "raw" / "isbe"
 PROPOSALS_OUTPUT_PATH = REPO_ROOT / "data" / "crosswalk" / "candidate_committee_proposals.csv"
-CROSSWALK_PATH = REPO_ROOT / "data" / "crosswalk" / "candidate_committee.csv"
+
+# Offices included in the committee step. Police District Council ("PDC") is left
+# out for now (user decision 2026-10-27, PLAN.md §3a); add "PDC" to include it.
+COMMITTEE_STEP_OFFICE_CODES = {"ALD", "MAYOR", "CLERK", "TREAS"}
 
 # ISBE text files are tab-delimited, Windows-encoded. Undecodable bytes are
 # replaced (shown as �) rather than stopping the run.
@@ -100,7 +111,7 @@ NAME_SEARCH_COMMITTEE_STATUSES = {"A"}
 ELECTION_YEAR = "2027"
 
 OUTPUT_COLUMNS = [
-    "candidate_id", "office_code", "district_number", "ballot_name_raw",
+    "candidate_id", "office_code", "district_number", "ballot_name_raw", "also_filed_as",
     "evidence_source",
     "isbe_candidate_id", "isbe_last_name", "isbe_first_name", "isbe_office", "isbe_district_raw",
     "isbe_district_number", "isbe_district_basis", "district_matches", "first_word_matches",
@@ -110,12 +121,6 @@ OUTPUT_COLUMNS = [
     "committee_status_date", "committee_creation_date",
     "candidates_linked_to_committee",
     "normalization_steps_on",
-]
-
-CROSSWALK_COLUMNS = [
-    "candidate_id", "ballot_name_raw", "committee_id", "committee_name",
-    "committee_role",   # you fill: candidate committee / ward organization / other
-    "confirmed_by", "confirmed_on", "notes",
 ]
 
 
@@ -136,6 +141,24 @@ def words_inside(needle_words, haystack_words):
 
 def main():
     candidates = pd.read_csv(CBOE_CANDIDATES_PATH, dtype=str, keep_default_na=False)
+    candidates_all_ids = candidates["candidate_id"].tolist()
+    in_scope = candidates["office_code"].isin(COMMITTEE_STEP_OFFICE_CODES)
+    print(f"CBOE candidates in the committee step: {int(in_scope.sum())} of {len(candidates)} "
+          f"(offices {sorted(COMMITTEE_STEP_OFFICE_CODES)}); left out by office: "
+          f"{candidates.loc[~in_scope, 'office_code'].value_counts().to_dict()}")
+    candidates = candidates[in_scope]
+
+    # Merge duplicate filings into the filing named in same_person_as.
+    duplicates = pd.read_csv(DUPLICATE_FILINGS_PATH, dtype=str, keep_default_na=False)
+    unknown_ids = (set(duplicates["candidate_id"]) | set(duplicates["same_person_as"])) - set(candidates_all_ids)
+    if unknown_ids:
+        print(f"WARNING: duplicate_filings.csv names candidate IDs not in candidates_cboe.csv: {sorted(unknown_ids)}")
+    also_filed_as = duplicates.groupby("same_person_as")["candidate_id"].agg(lambda ids: "; ".join(sorted(ids)))
+    is_duplicate = candidates["candidate_id"].isin(duplicates["candidate_id"])
+    print(f"duplicate filings merged into an earlier filing: "
+          f"{candidates.loc[is_duplicate, 'candidate_id'].tolist()}")
+    candidates = candidates[~is_duplicate].copy()
+    candidates["also_filed_as"] = candidates["candidate_id"].map(also_filed_as).fillna("")
     isbe_candidates = read_isbe("Candidates.txt")
     isbe_elections = read_isbe("CanElections.txt")
     isbe_links = read_isbe("CmteCandidateLinks.txt")
@@ -205,10 +228,10 @@ def main():
             "office_code": candidate.office_code,
             "district_number": candidate.district_number,
             "ballot_name_raw": candidate.ballot_name_raw,
+            "also_filed_as": candidate.also_filed_as,
             "normalization_steps_on": steps_on,
         }
         candidate_rows = []
-        linked_committee_ids = set()
 
         # 1. ISBE candidate records + their official committee links.
         office_values = ISBE_OFFICES_BY_CBOE_CODE[candidate.office_code]
@@ -237,7 +260,6 @@ def main():
             if not committee_ids:
                 candidate_rows.append({**base, "evidence_source": "isbe_candidate_no_committee_link", **isbe_columns})
             for committee_id in sorted(set(committee_ids)):
-                linked_committee_ids.add(committee_id)
                 candidate_rows.append({**base, "evidence_source": "cmte_candidate_link",
                                        **isbe_columns, **committee_columns(committee_id)})
 
@@ -245,8 +267,6 @@ def main():
         if len(cboe_words) >= 2:
             first_word, last_word = cboe_words[0], cboe_words[-1]
             for committee in searchable_committees.itertuples():
-                if committee.ID in linked_committee_ids:
-                    continue
                 if first_word in committee.name_words and last_word in committee.name_words:
                     candidate_rows.append({**base, "evidence_source": "committee_name_contains",
                                            **committee_columns(committee.ID)})
@@ -260,11 +280,6 @@ def main():
         writer = csv.DictWriter(output_file, fieldnames=OUTPUT_COLUMNS)
         writer.writeheader()
         writer.writerows(output_rows)
-
-    if not CROSSWALK_PATH.exists():
-        with open(CROSSWALK_PATH, "w", newline="") as output_file:
-            csv.writer(output_file).writerow(CROSSWALK_COLUMNS)
-        print(f"created empty {CROSSWALK_PATH.relative_to(REPO_ROOT)} for you to fill in")
 
     proposals = pd.DataFrame(output_rows)
     per_candidate = proposals.groupby("candidate_id")["evidence_source"].agg(set)

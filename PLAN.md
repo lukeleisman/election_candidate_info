@@ -43,6 +43,7 @@ data/candidates/candidates_cboe.csv          **parsed official list, committed (
 data/candidates/candidate_list_comparison.csv  **CBOE vs Notion/Bluesky/pasted lists**
 data/candidates/ballot_status.csv            **objection / Electoral Board outcomes per candidate**
 data/crosswalk/candidate_committee_proposals.csv  data/crosswalk/candidate_committee.csv
+**data/crosswalk/candidate_isbe_review.csv  committee_additions_manual.csv  committee_groups.csv  (§3a)**
 data/endorsements/endorsements_manual.csv   **hand / agent-entered rows**
 data/endorsements/endorsements_extracted.csv **parser + LLM output, with review status**
 data/endorsements/endorsements.csv          **reviewed, matched to candidate_id**
@@ -86,7 +87,72 @@ scripts/  notebooks/  docs/  sessions/
 ### 3. Money and donor mix (extends preliminary steps 3–8)
 Preliminary plan steps 3–7 unchanged (ISBE fetch, Sunshine fetch with failure recording, lobbyist
 portal pull, `propose_committee_matches.py` now driven by `candidates_cboe.csv` for all offices,
-`build_finance_tables.py` with `FINANCE_CHOICES`). **New: `scripts/build_donor_mix.py`** — per
+`build_finance_tables.py` with `FINANCE_CHOICES`).
+
+#### 3a. Candidate → committee crosswalk — revised 2026-10-27 (Illinois Sunshine model, extended)
+**Why revised:** the first version reviewed every candidate × committee pair (327 rows, 90 judgment
+calls). Illinois Sunshine (DataMade, `github.com/datamade/illinois-sunshine`, `etl.py`
+`SunshineCandidateCommittees` + `candidate_money` view) does no committee-level judging: it loads ISBE
+`CmteCandidateLinks.txt` as published and shows every linked committee as its own row with its own
+total. It can do that because it starts from ISBE candidate records; we start from the CBOE ballot, so
+our one real matching problem is **CBOE candidate → ISBE candidate record**. User decision
+(2026-10-27): adopt Sunshine's approach, and improve on it by (1) also tracking committees ISBE does
+not link, and (2) offering named options for adding committees together.
+
+Three layers, each a separate file:
+1. **Candidate → ISBE record (reviewed).** `data/crosswalk/candidate_isbe_review.csv`, one row per
+   CBOE candidate × ISBE candidate record with a matching last name (345 pairs on 2026-10-27; 181 of
+   256 candidates have ≥1, 75 have none). Evidence columns as now (district, first word, suffix,
+   election records). Rule marks pairs where district + first word + suffix all match (129 pairs /
+   124 candidates on 2026-10-27; thresholds as named constants); the rest are judgment calls. This is
+   where the hard cases now live: Burnett Jr vs son, the duplicate Scott / Nugent filings, and
+   people with several ISBE records. Existing marks carry over: an ISBE record with any `yes`
+   committee row → `yes`; the user's `no` rows (Burnett Jr) → `no`.
+2. **Committees (automatic, not reviewed).** `data/crosswalk/candidate_committee.csv`, one row per
+   candidate × committee, column `link_basis`:
+   - `isbe_link` — every `CmteCandidateLinks` committee of an accepted ISBE record, any type or
+     status (Sunshine's rule, unchanged).
+   - `name_only` — committee name contains the candidate's first + last word, no ISBE link to them
+     (18 rows / 15 candidates on 2026-10-27). Listed so nothing ISBE missed is invisible; flagged.
+   - `manual` — from `data/crosswalk/committee_additions_manual.csv` (hand / agent-entered, with
+     source URL): committees found elsewhere (news, candidate site, A-1s). Also holds `exclude` rows
+     if a link is plainly wrong — the exclusion is a visible row, never a silent drop.
+   Every row carries ISBE committee type, status, status date, creation date, and the other
+   candidates linked to the same committee (slates).
+3. **Combining committees (a finance choice, not a crosswalk choice).** Finance tables always show
+   one row per committee first. Candidate totals are computed **side by side** under each named
+   option in `COMMITTEE_COMBINATION_OPTIONS` (in `build_finance_tables.py`), never one chosen, e.g.:
+   - `isbe_linked_candidate_type` — `isbe_link` rows whose ISBE type is Candidate
+   - `isbe_linked_all` — every `isbe_link` row (Sunshine's view)
+   - `isbe_linked_plus_name_only` — adds `name_only` rows
+   - `manual_groups` — combinations you list in `data/crosswalk/committee_groups.csv`
+     (candidate_id, group name, committee IDs, why) — for "add these together when appropriate"
+   Transfers between committees added together are flagged and shown, not netted
+   (`MULTI_COMMITTEE_TRANSFERS`). Slate committees (one committee, several candidates) are marked in
+   every option; how they are counted is an OPEN QUESTION below.
+
+Replaces: `build_committee_review.py` / `apply_review_rule.py` / `apply_committee_review.py` work on
+candidate × ISBE record instead of candidate × committee; `docs/process_committee_review.md` is
+rewritten for that. `candidate_committee_review.csv` was checked against the new crosswalk
+(2026-10-27: all 99 old accepts present, or Police District Council, or in the new judgment calls)
+and removed; it remains in git history. Duplicate filings (one person filed twice) are merged
+through hand-entered `data/candidates/duplicate_filings.csv` (Scott 24, Nugent 39, Perez PDC 2).
+
+User decisions (2026-10-27), superseding the options above where they differ:
+- **Police District Councils skipped for now** in the committee step (`COMMITTEE_STEP_OFFICE_CODES`).
+- Step-1 rule (`rule_v2`): all of district + first name + suffix match → yes; district **and** first
+  name both differ → no; everything else a judgment call.
+- **Slate / shared committees** → own column, not added in (`counts_toward = slate_column`: any
+  committee in the crosswalk for 2+ candidates — this also catches ISBE links like the Aldermanic
+  Black Caucus PAC, linked to 11 aldermen, and JCUA Votes).
+- **`name_only` rows appear in the public table.**
+- **Totals: each committee shown separately + one sum of everything else** (`candidate_sum`).
+  No other combination options until needed; `committee_groups.csv` not built yet.
+- **PACs / closed committees:** no rule now — decide after seeing them.
+- General: **default to Illinois Sunshine when in doubt**; spend effort on what it misses and on
+  bulk work. Endorsements (§4) are the bigger new piece.
+
+**New: `scripts/build_donor_mix.py`** — per
 candidate (confirmed committees only), every rule computed **side by side**, never one chosen:
 - From **D2Totals** (covers non-itemized money): individual itemized $, individual **not-itemized** $
   (≤$150 — small-dollar proxy), transfers in $, loans $, other $, in-kind $, each as $ and % of total.
