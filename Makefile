@@ -36,7 +36,7 @@ committee-proposals:
 isbe-review:
 	$(PYTHON) scripts/build_isbe_record_review.py
 
-# Mark clear cases by rule (reviewed_by = rule_v2); judgment calls stay blank.
+# Mark clear cases by rule (reviewed_by = rule_v3); judgment calls stay blank.
 # See docs/process_committee_review.md.
 isbe-rule:
 	$(PYTHON) scripts/apply_isbe_record_rule.py

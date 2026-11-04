@@ -142,6 +142,10 @@ User decisions (2026-10-27), superseding the options above where they differ:
 - **Police District Councils skipped for now** in the committee step (`COMMITTEE_STEP_OFFICE_CODES`).
 - Step-1 rule (`rule_v2`): all of district + first name + suffix match → yes; district **and** first
   name both differ → no; everything else a judgment call.
+- 2026-11-04 (`rule_v3`): nickname table (`NICKNAME_GROUPS`, `scripts/names.py`). A nickname match
+  (Bob / Robert) turns a would-be **no** into a judgment call; it never accepts by itself.
+- 2026-11-04, **held, may add later:** propose ISBE records for *other* offices (e.g. Michael Patrick
+  Murphy's only record is "President, Cook"). OPEN QUESTION in `scripts/propose_committee_matches.py`.
 - **Slate / shared committees** → own column, not added in (`counts_toward = slate_column`: any
   committee in the crosswalk for 2+ candidates — this also catches ISBE links like the Aldermanic
   Black Caucus PAC, linked to 11 aldermen, and JCUA Votes).

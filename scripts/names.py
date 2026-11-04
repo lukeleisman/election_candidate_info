@@ -34,6 +34,76 @@ NAME_NORMALIZATION_STEPS = {
 
 NAME_SUFFIXES = {"JR", "SR", "II", "III", "IV"}
 
+# First names treated as the same name (nickname <-> formal name). Two first names
+# are equivalent when both appear in one group. A name can be in several groups
+# ("CHRIS" is Christopher or Christine; "NATE" is Nathan or Nathaniel). Written
+# uppercase, accent-free, as normalize_name produces them. Hand-made list (added
+# 2026-11-04 at the user's request): common English nicknames plus the ones seen
+# in the 2027 review sheet. Equivalence never accepts a match by itself; see
+# NICKNAME_EFFECT in scripts/apply_isbe_record_rule.py.
+NICKNAME_GROUPS = [
+    {"ROBERT", "BOB", "BOBBY", "ROB", "ROBBIE", "BERT"},
+    {"WILLIAM", "BILL", "BILLY", "WILL", "WILLIE", "LIAM"},
+    {"JAMES", "JIM", "JIMMY", "JAMIE"},
+    {"JOHN", "JACK", "JOHNNY"},
+    {"JOSEPH", "JOE", "JOEY"},
+    {"MICHAEL", "MIKE", "MIKEY", "MICK"},
+    {"THOMAS", "TOM", "TOMMY"},
+    {"TIMOTHY", "TIM", "TIMMY"},
+    {"CHRISTOPHER", "CHRIS"},
+    {"CHRISTINE", "CHRISTINA", "CHRIS", "CHRISSY", "TINA"},
+    {"MATTHEW", "MATT"},
+    {"NATHANIEL", "NATE", "NAT"},
+    {"NATHAN", "NATE"},
+    {"DANIEL", "DAN", "DANNY"},
+    {"DAVID", "DAVE"},
+    {"RICHARD", "RICK", "RICKY", "RICH", "DICK"},
+    {"EDWARD", "ED", "EDDIE", "TED"},
+    {"THEODORE", "TED", "TEDDY"},
+    {"ANTHONY", "TONY"},
+    {"CHARLES", "CHARLIE", "CHUCK"},
+    {"STEPHEN", "STEVEN", "STEVE"},
+    {"GREGORY", "GREG"},
+    {"PATRICK", "PAT"},
+    {"PATRICIA", "PAT", "PATTY", "TRISH"},
+    {"KATHERINE", "CATHERINE", "KATHLEEN", "KATE", "KATIE", "KATHY", "CATHY"},
+    {"ELIZABETH", "LIZ", "BETH", "BETSY"},
+    {"JENNIFER", "JEN", "JENNY"},
+    {"JESSICA", "JESS", "JESSIE"},
+    {"DEBORAH", "DEBRA", "DEB", "DEBBIE"},
+    {"SAMANTHA", "SAM"},
+    {"SAMUEL", "SAM"},
+    {"ALEXANDER", "ALEX"},
+    {"ALEXANDRA", "ALEX"},
+    {"GILBERT", "GIL"},
+    {"RAYMOND", "RAY"},
+    {"KENNETH", "KEN"},
+    {"RONALD", "RON"},
+    {"DONALD", "DON"},
+    {"GERALD", "GERRY", "JERRY"},
+    {"ANDREW", "ANDY", "DREW"},
+    {"BENJAMIN", "BEN"},
+    {"SUSAN", "SUE", "SUSIE"},
+    {"MARGARET", "PEGGY", "MAGGIE", "MEG"},
+    {"NICHOLAS", "NICK"},
+]
+
+
+def first_names_equivalent(first, second):
+    """True if two first names (already normalized) are equal or share a NICKNAME_GROUPS group."""
+    if first == second:
+        return True
+    return any(first in group and second in group for group in NICKNAME_GROUPS)
+
+
+def quoted_nicknames(name):
+    """Words inside quotes in a raw name: 'WILLIAM "BILL" MORTON' -> ['BILL'].
+
+    normalize_name drops these (drop_quoted_nicknames), so read them from the raw name.
+    """
+    quoted = re.findall(r'["“”]([^"“”]*)["“”]', name)
+    return [normalize_name(text) for text in quoted if normalize_name(text)]
+
 
 def normalization_steps_on():
     """Comma-separated names of the steps currently switched on (for output files)."""

@@ -45,8 +45,10 @@ RECORD_EVIDENCE_SOURCES = {"cmte_candidate_link", "isbe_candidate_no_committee_l
 REVIEW_INPUT_COLUMNS = ["accept", "reviewed_by", "review_notes"]
 REVIEW_KEY_COLUMNS = ["candidate_id", "isbe_candidate_id"]
 
-# reviewed_by value written by scripts/apply_isbe_record_rule.py (RULE_REVIEWER_LABEL there).
-RULE_REVIEWER_LABEL = "rule_v2"
+# reviewed_by values written by scripts/apply_isbe_record_rule.py (RULE_REVIEWER_LABEL and
+# RETIRED_RULE_REVIEWER_LABELS there). Rule marks are not kept for rows no longer proposed.
+RULE_REVIEWER_LABEL = "rule_v3"
+RETIRED_RULE_REVIEWER_LABELS = {"rule_v2"}
 
 # Columns copied from the proposals (one value per candidate x ISBE record).
 RECORD_COLUMNS = [
@@ -109,7 +111,7 @@ def main():
                     review.iat[row_position, review.columns.get_loc(column)] = marked_by_key.at[key, column]
                 carried_over += 1
         orphaned = marked[~marked.set_index(REVIEW_KEY_COLUMNS).index.isin(review_keys)
-                          & (marked["reviewed_by"] != RULE_REVIEWER_LABEL)].copy()
+                          & ~marked["reviewed_by"].isin({RULE_REVIEWER_LABEL} | RETIRED_RULE_REVIEWER_LABELS)].copy()
         orphaned["rule_outcome"] = "no_longer_proposed"
 
     review = review.sort_values(["candidate_id", "isbe_candidate_id"])

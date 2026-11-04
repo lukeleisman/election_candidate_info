@@ -15,7 +15,7 @@ PACs or closed committees should count is decided later, after seeing them.
 ```
 make committee-proposals   # ISBE records with a matching last name, their committees, name matches
 make isbe-review           # review sheet, one row per candidate x ISBE record; keeps earlier marks
-make isbe-rule             # scripts/apply_isbe_record_rule.py marks clear cases (reviewed_by = rule_v2)
+make isbe-rule             # scripts/apply_isbe_record_rule.py marks clear cases (reviewed_by = rule_v3)
 make candidate-committee   # data/crosswalk/candidate_committee.csv, rebuilt from the sheet
 ```
 Hand-edited files: `data/crosswalk/candidate_isbe_review.csv` (accept / reviewed_by /
@@ -33,6 +33,8 @@ Filter the sheet to `rule_outcome = judgment_call` with `accept` blank. `rule_re
 | `isbe_district_has_no_number` | First name + suffix match; ISBE district is just "Chicago" | **yes** if `linked_committees` look like this person's campaign for this race |
 | `district_differs` | First name + suffix match; ISBE ward differs | Pre-2023 ward number (redistricting) → **yes** if it's the same person (incumbent, same committee name) |
 | `first_name_differs` | Ward matches, first name doesn't | Nickname or spelling (Bill/William, Nate/Nathaniel, CBOE typo "LEOARDO") → **yes**. A different person with the same surname (a relative, a past candidate) → **no** |
+| `first_name_is_nickname` | Ward matches; first names are in one nickname group (`NICKNAME_GROUPS`, `scripts/names.py`) | Usually **yes**, unless a relative |
+| `nickname_and_district_differ` | Ward differs **and** first names differ, but are nicknames (Bob / Robert). Would have been an automatic **no** before rule_v3 | Check address: ISBE candidate / committee address vs CBOE mailing address (`data/raw/cboe/candidates_with_addresses.csv`) |
 | `suffix_differs` | Jr / Sr / II / III differs | Parent and child (Burnett Jr vs his son, already marked **no**) |
 | `shared_with_other_candidate` | One ISBE record would go to 2+ candidates | Check `duplicate_filings.csv`; if it's one person filed twice, add a row there |
 
@@ -70,6 +72,15 @@ officers, address, D-1 candidate). Prefer this over news searches.
 > someone else. Don't commit; the user reviews first.
 
 ## OPEN QUESTIONS (the user's, not the reviewer's)
+- **Other ISBE offices (held 2026-11-04, may add later):** proposals only look at ISBE records
+  for the same office (`ISBE_OFFICES_BY_CBOE_CODE` in `scripts/propose_committee_matches.py`).
+  A candidate whose only ISBE record is for another office is missed. Example: MICHAEL PATRICK
+  MURPHY (ALD-37-003): his record 53754 is "President, Cook" (at his ballot address); his
+  committee 40838 arrives only as `name_only`. Possible rule: also propose other-office records
+  whose address matches the CBOE mailing address — how strict a match is not decided.
+- Nickname matches never accept by themselves (`NICKNAME_EFFECT` in
+  `scripts/apply_isbe_record_rule.py`). Whether nickname + ward + suffix match should accept
+  automatically is open.
 - PACs and closed committees that ISBE links to a confirmed record: count in the candidate's
   sum, or show separately? Decided after seeing them; for now they're in `candidate_sum`
   unless shared with another candidate (`slate_column`).

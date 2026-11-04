@@ -77,6 +77,12 @@ ISBE_OFFICES_BY_CBOE_CODE = {
     "TREAS": {"Treasurer"},
     "PDC": {"Police District Council"},
 }
+# OPEN QUESTION (user's; held 2026-11-04, may add later): records for OTHER offices are
+# never proposed, so a candidate whose only ISBE record is for another office is missed.
+# Example: MICHAEL PATRICK MURPHY (ALD-37-003) — ISBE 53754 is "President, Cook", at his
+# CBOE mailing address; his committee 40838 arrives only as name_only. A possible rule:
+# also propose other-office records whose address matches the CBOE mailing address
+# (strictness of the address match not decided). See docs/process_committee_review.md.
 
 # ISBE `District` must look like Chicago, optionally followed by a ward/district
 # number: "Chicago", "Chicago 2", "Chicago-7", "Chicago 18 ". This excludes
