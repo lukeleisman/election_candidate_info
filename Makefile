@@ -5,9 +5,9 @@ PYTHON ?= conda run --no-capture-output -n election-candidate-info python
 # Newest CBOE filing report on disk (file names carry a timestamp, so sort = newest last).
 FILING_REPORT = $(shell ls data/raw/cboe/documents/*/"Candidate Filing Report_"*.pdf 2>/dev/null | sort | tail -1)
 
-.PHONY: all candidates fetch-cboe parse-candidates compare-lists ballot-status fetch-isbe committee-proposals isbe-review isbe-rule candidate-committee
+.PHONY: all candidates fetch-cboe parse-candidates compare-lists ballot-status fetch-isbe committee-proposals isbe-review isbe-rule candidate-committee finance
 
-all: candidates fetch-isbe committee-proposals isbe-review isbe-rule candidate-committee
+all: candidates fetch-isbe committee-proposals isbe-review isbe-rule candidate-committee finance
 
 ## Official candidate list (PLAN.md step 2)
 candidates: fetch-cboe parse-candidates compare-lists ballot-status
@@ -44,3 +44,7 @@ isbe-rule:
 # Committees of accepted records (as on Illinois Sunshine) + name matches + manual rows.
 candidate-committee:
 	$(PYTHON) scripts/build_candidate_committee.py
+
+# Money per candidate (PLAN.md §3 finance decisions; settings in FINANCE_CHOICES).
+finance:
+	$(PYTHON) scripts/build_finance_tables.py

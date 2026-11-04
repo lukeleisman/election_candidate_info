@@ -89,6 +89,36 @@ Preliminary plan steps 3–7 unchanged (ISBE fetch, Sunshine fetch with failure 
 portal pull, `propose_committee_matches.py` now driven by `candidates_cboe.csv` for all offices,
 `build_finance_tables.py` with `FINANCE_CHOICES`).
 
+**Finance decisions (user, 2026-11-04)** — become the `FINANCE_CHOICES` block in
+`scripts/build_finance_tables.py`:
+- **Windows, side by side** (no single cycle start): cash on hand at latest D-2 (no window); raised
+  since 2026-01-01 (Block Club 2023 convention: Jan 1 of the year before the election); raised in
+  the latest full quarter (Sun-Times convention); raised "since 2023" for completeness —
+  exact start date OPEN QUESTION (see below).
+- **A-1 ($1,000+ gifts):** archived A-1 rows are excluded (ISBE archives an A-1 copy once a quarterly
+  covers it: 7,762 of 8,206 A-1 rows since 2025 for crosswalk committees also on a quarterly; all 328
+  unarchived ones are dated after 2026-09-30, plus 2 stray 2009 rows). Unarchived A-1 gifts go in
+  their **own column** ("$1,000+ gifts since last quarterly"), not in raised. May be added later.
+- **Transfers between a candidate's own committees:** reported separately, not counted as raised
+  (no double counting).
+- **Raised = all incoming cash** (individual contributions, transfers in from other committees,
+  other receipts). **Loans in their own column**, not in raised.
+- **Donor counts: unique donors** (a repeat donor counts once). Identity rule OPEN QUESTION (below).
+- Follow-ups (user, 2026-11-04, all as recommended): "since 2023" = **2023-07-01** (first full quarter
+  after the May 15, 2023 swearing-in; windows must start on a quarter because unitemized gifts are
+  per-report totals); **in-kind in its own column**, not raised; **transfers from slate committees
+  count as raised**; donor identity: **three rules side by side** — (last, first, zip) headline,
+  (last, first), (last, first, address1) — itemized donors only, small-dollar total shown beside.
+- Built: `scripts/build_finance_tables.py` (`make finance`) → `data/tables/finance_reports.csv`,
+  `finance_by_committee.csv`, `finance_summary.csv`. Checked against Illinois Sunshine 2026-11-04:
+  funds available match to the cent for La Spata (34616), Taliaferro (25937), Quigley (40800);
+  "contributions since" match for La Spata and Taliaferro; Quigley differs ($113,500 Sunshine vs
+  $56,500 here) — likely A-1s filed after our 2026-10-27 download; refresh ISBE to confirm.
+- **OPEN QUESTION (user's):** transfers in from a candidate's own committees that are *not* in the
+  crosswalk (e.g. Quigley for Congress → Friends of Mike Quigley, $300K) currently count as raised.
+  Surname search also finds relatives / other people (Burnett Sr → son, Michael Scott Jr → Monique
+  Scott, Joe Moore → David Moore), so this can't be a rule; a hand list would be needed.
+
 #### 3a. Candidate → committee crosswalk — revised 2026-10-27 (Illinois Sunshine model, extended)
 **Why revised:** the first version reviewed every candidate × committee pair (327 rows, 90 judgment
 calls). Illinois Sunshine (DataMade, `github.com/datamade/illinois-sunshine`, `etl.py`
