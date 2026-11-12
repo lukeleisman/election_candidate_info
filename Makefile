@@ -5,9 +5,9 @@ PYTHON ?= conda run --no-capture-output -n election-candidate-info python
 # Newest CBOE filing report on disk (file names carry a timestamp, so sort = newest last).
 FILING_REPORT = $(shell ls data/raw/cboe/documents/*/"Candidate Filing Report_"*.pdf 2>/dev/null | sort | tail -1)
 
-.PHONY: all candidates fetch-cboe parse-candidates compare-lists ballot-status fetch-isbe committee-proposals isbe-review isbe-rule candidate-committee finance
+.PHONY: all candidates fetch-cboe parse-candidates compare-lists ballot-status fetch-isbe committee-proposals isbe-review isbe-rule candidate-committee finance donor-mix display-tables dashboard
 
-all: candidates fetch-isbe committee-proposals isbe-review isbe-rule candidate-committee finance
+all: candidates fetch-isbe committee-proposals isbe-review isbe-rule candidate-committee finance donor-mix display-tables dashboard
 
 ## Official candidate list (PLAN.md step 2)
 candidates: fetch-cboe parse-candidates compare-lists ballot-status
@@ -36,7 +36,7 @@ committee-proposals:
 isbe-review:
 	$(PYTHON) scripts/build_isbe_record_review.py
 
-# Mark clear cases by rule (reviewed_by = rule_v3); judgment calls stay blank.
+# Mark clear cases by rule (reviewed_by = rule_v4); judgment calls stay blank.
 # See docs/process_committee_review.md.
 isbe-rule:
 	$(PYTHON) scripts/apply_isbe_record_rule.py
@@ -48,3 +48,14 @@ candidate-committee:
 # Money per candidate (PLAN.md §3 finance decisions; settings in FINANCE_CHOICES).
 finance:
 	$(PYTHON) scripts/build_finance_tables.py
+
+# Donor types, unique donors, concentration (PLAN.md §3). Needs `make finance` first.
+donor-mix:
+	$(PYTHON) scripts/build_donor_mix.py
+
+# Ward-by-ward display tables (reshape only) + local dashboard (open dashboard/index.html).
+display-tables:
+	$(PYTHON) scripts/build_display_tables.py
+
+dashboard: display-tables
+	$(PYTHON) scripts/build_dashboard.py

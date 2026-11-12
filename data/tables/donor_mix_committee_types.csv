@@ -1,0 +1,466 @@
+candidate_id,window,donor_committee_type,dollars,receipt_rows
+ALD-01-001,since_2023_07_01,Candidate,200.0,1
+ALD-01-001,since_2023_07_01,Political Action,15750.0,11
+ALD-01-001,since_2023_07_01,unmatched,22000.0,35
+ALD-01-002,since_2023_07_01,unmatched,10000.0,2
+ALD-01-003,since_2023_07_01,Candidate,500.0,2
+ALD-01-003,since_2023_07_01,Political Party,750.0,2
+ALD-01-003,since_2023_07_01,unmatched,5500.0,8
+ALD-02-001,since_2023_07_01,Candidate,5171.78,7
+ALD-02-001,since_2023_07_01,Political Action,1000.0,1
+ALD-02-001,since_2023_07_01,unmatched,57300.0,53
+ALD-02-002,since_2023_07_01,Candidate,250.0,1
+ALD-04-001,since_2023_07_01,Candidate,46099.54,4
+ALD-04-001,since_2023_07_01,Political Action,2750.0,3
+ALD-04-001,since_2023_07_01,unmatched,45513.0,22
+ALD-05-001,since_2023_07_01,Candidate,1500.0,1
+ALD-05-001,since_2023_07_01,Political Action,18750.0,14
+ALD-05-001,since_2023_07_01,ambiguous,2000.0,2
+ALD-05-001,since_2023_07_01,unmatched,36250.0,43
+ALD-06-001,since_2023_07_01,Political Action,7500.0,2
+ALD-06-003,since_2023_07_01,Political Action,2000.0,2
+ALD-06-003,since_2023_07_01,unmatched,6250.01,7
+ALD-08-002,since_2023_07_01,Candidate,750.0,2
+ALD-08-002,since_2023_07_01,Political Action,7500.0,4
+ALD-08-002,since_2023_07_01,unmatched,50000.0,22
+ALD-09-001,since_2023_07_01,Candidate,17450.0,9
+ALD-09-001,since_2023_07_01,Political Action,6500.0,5
+ALD-09-001,since_2023_07_01,blank_type,1500.0,1
+ALD-09-001,since_2023_07_01,unmatched,23850.0,20
+ALD-10-001,since_2023_07_01,Candidate,3500.0,6
+ALD-10-001,since_2023_07_01,Political Action,10600.0,8
+ALD-10-001,since_2023_07_01,unmatched,138650.0,85
+ALD-11-001,since_2023_07_01,Candidate,4750.0,8
+ALD-11-001,since_2023_07_01,Political Action,23250.0,15
+ALD-11-001,since_2023_07_01,ambiguous,2500.0,3
+ALD-11-001,since_2023_07_01,unmatched,80550.0,85
+ALD-12-001,since_2023_07_01,Candidate,73900.0,5
+ALD-12-001,since_2023_07_01,Political Action,1500.0,1
+ALD-12-001,since_2023_07_01,unmatched,60.0,1
+ALD-12-002,since_2023_07_01,Candidate,1800.0,2
+ALD-12-002,since_2023_07_01,Political Action,1000.0,1
+ALD-13-001,since_2023_07_01,Candidate,900.0,1
+ALD-14-001,since_2023_07_01,Candidate,250.0,1
+ALD-14-001,since_2023_07_01,Political Action,4250.0,6
+ALD-14-001,since_2023_07_01,ambiguous,1500.0,2
+ALD-14-001,since_2023_07_01,unmatched,47650.0,58
+ALD-15-001,since_2023_07_01,Candidate,1250.0,4
+ALD-15-001,since_2023_07_01,Political Action,23000.0,9
+ALD-15-001,since_2023_07_01,ambiguous,3000.0,3
+ALD-15-001,since_2023_07_01,unmatched,66225.0,49
+ALD-16-001,since_2023_07_01,Candidate,1000.0,2
+ALD-16-001,since_2023_07_01,Political Action,23000.0,13
+ALD-16-001,since_2023_07_01,Political Party,200.0,1
+ALD-16-001,since_2023_07_01,ambiguous,2000.0,2
+ALD-16-001,since_2023_07_01,blank_type,500.0,1
+ALD-16-001,since_2023_07_01,unmatched,56750.0,39
+ALD-18-001,since_2023_07_01,unmatched,42500.0,14
+ALD-19-001,since_2023_07_01,unmatched,145600.0,2
+ALD-20-001,since_2023_07_01,unmatched,500.0,1
+ALD-20-005,since_2023_07_01,Political Action,5000.0,1
+ALD-21-001,since_2023_07_01,Candidate,15500.0,11
+ALD-21-001,since_2023_07_01,Political Action,2000.0,2
+ALD-21-001,since_2023_07_01,Political Party,1500.0,2
+ALD-21-001,since_2023_07_01,ambiguous,1000.0,1
+ALD-21-001,since_2023_07_01,unmatched,34840.0,25
+ALD-23-002,since_2023_07_01,Candidate,250.0,1
+ALD-23-002,since_2023_07_01,Political Action,15600.0,14
+ALD-23-002,since_2023_07_01,ambiguous,2000.0,2
+ALD-23-002,since_2023_07_01,unmatched,60750.0,51
+ALD-24-001,since_2023_07_01,Candidate,750.0,2
+ALD-24-001,since_2023_07_01,Political Action,3250.0,4
+ALD-24-001,since_2023_07_01,ambiguous,2000.0,2
+ALD-24-001,since_2023_07_01,unmatched,44250.0,43
+ALD-25-001,since_2023_07_01,unmatched,1500.0,1
+ALD-25-005,since_2023_07_01,Candidate,2500.0,5
+ALD-25-005,since_2023_07_01,Political Action,500.0,1
+ALD-25-005,since_2023_07_01,unmatched,12625.0,9
+ALD-25-006,since_2023_07_01,unmatched,11500.0,2
+ALD-26-001,since_2023_07_01,Candidate,10465.0,11
+ALD-26-001,since_2023_07_01,Political Action,2000.0,3
+ALD-26-001,since_2023_07_01,unmatched,26420.0,24
+ALD-27-001,since_2023_07_01,Candidate,75300.0,3
+ALD-27-001,since_2023_07_01,Political Action,500.0,1
+ALD-27-001,since_2023_07_01,Political Party,250.0,1
+ALD-27-001,since_2023_07_01,unmatched,13175.0,10
+ALD-28-001,since_2023_07_01,Candidate,26000.0,4
+ALD-28-001,since_2023_07_01,Political Action,6000.0,4
+ALD-28-001,since_2023_07_01,unmatched,65050.0,41
+ALD-29-001,since_2023_07_01,Candidate,4250.0,3
+ALD-29-001,since_2023_07_01,Political Action,2750.0,3
+ALD-29-001,since_2023_07_01,ambiguous,2500.0,3
+ALD-29-001,since_2023_07_01,blank_type,1500.0,1
+ALD-29-001,since_2023_07_01,unmatched,42000.0,47
+ALD-30-001,since_2023_07_01,Political Action,2000.0,2
+ALD-30-001,since_2023_07_01,unmatched,1000.0,1
+ALD-30-002,since_2023_07_01,Candidate,25523.37,24
+ALD-30-002,since_2023_07_01,Political Action,4250.0,5
+ALD-30-002,since_2023_07_01,unmatched,38000.0,36
+ALD-31-001,since_2023_07_01,Candidate,14750.0,6
+ALD-31-001,since_2023_07_01,Political Action,18000.0,20
+ALD-31-001,since_2023_07_01,ambiguous,1000.0,1
+ALD-31-001,since_2023_07_01,unmatched,65400.0,49
+ALD-32-001,since_2023_07_01,Candidate,3250.0,7
+ALD-32-001,since_2023_07_01,Political Action,11750.0,9
+ALD-32-001,since_2023_07_01,ambiguous,1000.0,1
+ALD-32-001,since_2023_07_01,unmatched,36750.0,42
+ALD-32-002,since_2023_07_01,Political Action,1250.3200000000002,2
+ALD-33-002,since_2023_07_01,Candidate,36000.0,5
+ALD-33-002,since_2023_07_01,Political Action,9515.0,5
+ALD-33-002,since_2023_07_01,unmatched,22280.0,12
+ALD-34-001,since_2023_07_01,Candidate,8625.0,7
+ALD-34-001,since_2023_07_01,Political Action,1500.0,2
+ALD-34-001,since_2023_07_01,ambiguous,1500.0,2
+ALD-34-001,since_2023_07_01,unmatched,74250.0,48
+ALD-35-001,since_2023_07_01,Political Action,5000.0,1
+ALD-35-002,since_2023_07_01,Candidate,11733.0,12
+ALD-35-002,since_2023_07_01,Political Action,70200.0,5
+ALD-35-002,since_2023_07_01,ambiguous,1000.0,1
+ALD-35-002,since_2023_07_01,unmatched,21750.0,17
+ALD-36-001,since_2023_07_01,Candidate,1500.0,1
+ALD-36-001,since_2023_07_01,Political Action,9500.0,5
+ALD-36-001,since_2023_07_01,Political Party,115000.0,4
+ALD-36-001,since_2023_07_01,unmatched,181750.0,51
+ALD-37-001,since_2023_07_01,Candidate,1700.0,5
+ALD-37-001,since_2023_07_01,Political Action,5000.0,6
+ALD-37-001,since_2023_07_01,Political Party,260.0,1
+ALD-37-001,since_2023_07_01,ambiguous,2000.0,2
+ALD-37-001,since_2023_07_01,unmatched,45600.0,33
+ALD-38-002,since_2023_07_01,Candidate,5630.0,3
+ALD-38-002,since_2023_07_01,Political Action,7500.0,6
+ALD-38-002,since_2023_07_01,ambiguous,2500.0,3
+ALD-38-002,since_2023_07_01,unmatched,77200.0,65
+ALD-39-001,since_2023_07_01,Candidate,13250.0,15
+ALD-39-001,since_2023_07_01,Political Action,29500.0,14
+ALD-39-001,since_2023_07_01,ambiguous,1500.0,2
+ALD-39-001,since_2023_07_01,unmatched,122750.0,108
+ALD-40-001,since_2023_07_01,Candidate,9680.0,14
+ALD-40-001,since_2023_07_01,Political Action,19600.0,18
+ALD-40-001,since_2023_07_01,Political Party,250.0,1
+ALD-40-001,since_2023_07_01,ambiguous,2500.0,3
+ALD-40-001,since_2023_07_01,unmatched,55566.2,55
+ALD-41-001,since_2023_07_01,Candidate,5650.0,3
+ALD-41-001,since_2023_07_01,Political Action,2500.0,1
+ALD-41-001,since_2023_07_01,Political Party,760.0,2
+ALD-41-001,since_2023_07_01,unmatched,134100.0,49
+ALD-42-001,since_2023_07_01,Candidate,10500.0,8
+ALD-42-001,since_2023_07_01,Political Action,8000.0,7
+ALD-42-001,since_2023_07_01,ambiguous,500.0,1
+ALD-42-001,since_2023_07_01,unmatched,276500.0,42
+ALD-43-001,since_2023_07_01,Candidate,4000.0,5
+ALD-43-001,since_2023_07_01,Political Action,3000.0,4
+ALD-43-001,since_2023_07_01,ambiguous,5000.0,4
+ALD-43-001,since_2023_07_01,unmatched,36800.0,40
+ALD-44-003,since_2023_07_01,Candidate,5750.0,8
+ALD-44-003,since_2023_07_01,Political Action,12000.0,12
+ALD-44-003,since_2023_07_01,Political Party,200.0,1
+ALD-44-003,since_2023_07_01,ambiguous,1000.0,1
+ALD-44-003,since_2023_07_01,unmatched,29450.0,33
+ALD-45-002,since_2023_07_01,Political Party,2000.0,1
+ALD-45-003,since_2023_07_01,Candidate,8700.0,8
+ALD-45-003,since_2023_07_01,Political Action,15000.0,6
+ALD-45-003,since_2023_07_01,ambiguous,1500.0,2
+ALD-45-003,since_2023_07_01,unmatched,148500.0,108
+ALD-46-002,since_2023_07_01,Candidate,1500.0,2
+ALD-46-002,since_2023_07_01,Political Action,7500.0,9
+ALD-46-002,since_2023_07_01,unmatched,11751.0,14
+ALD-47-001,since_2023_07_01,Candidate,10831.85,13
+ALD-47-001,since_2023_07_01,Political Action,23293.0,24
+ALD-47-001,since_2023_07_01,ambiguous,6450.0,4
+ALD-47-001,since_2023_07_01,unmatched,46200.0,45
+ALD-48-001,since_2023_07_01,Candidate,12175.0,12
+ALD-48-001,since_2023_07_01,Political Action,13900.0,14
+ALD-48-001,since_2023_07_01,Political Party,2500.0,1
+ALD-48-001,since_2023_07_01,ambiguous,2500.0,3
+ALD-48-001,since_2023_07_01,unmatched,15501.0,20
+ALD-49-002,since_2023_07_01,Candidate,2270.5,5
+ALD-49-002,since_2023_07_01,Political Action,2250.0,4
+ALD-49-002,since_2023_07_01,ambiguous,250.0,1
+ALD-49-002,since_2023_07_01,unmatched,14750.0,12
+ALD-50-001,since_2023_07_01,Candidate,15800.0,13
+ALD-50-001,since_2023_07_01,Political Action,10401.4,10
+ALD-50-001,since_2023_07_01,Political Party,15000.0,2
+ALD-50-001,since_2023_07_01,ambiguous,2500.0,3
+ALD-50-001,since_2023_07_01,unmatched,71050.0,72
+CLERK-00-001,since_2023_07_01,Candidate,4000.0,6
+CLERK-00-001,since_2023_07_01,Political Action,32250.0,22
+CLERK-00-001,since_2023_07_01,ambiguous,10000.0,3
+CLERK-00-001,since_2023_07_01,unmatched,148000.0,53
+MAYOR-00-003,since_2023_07_01,Political Action,5000.0,1
+MAYOR-00-003,since_2023_07_01,unmatched,316000.0,7
+MAYOR-00-005,since_2023_07_01,Candidate,99050.0,13
+MAYOR-00-005,since_2023_07_01,Political Action,829000.0,35
+MAYOR-00-005,since_2023_07_01,ambiguous,120250.0,6
+MAYOR-00-005,since_2023_07_01,blank_type,650000.0,1
+MAYOR-00-005,since_2023_07_01,unmatched,8240950.0,172
+MAYOR-00-006,since_2023_07_01,Candidate,7500.0,3
+MAYOR-00-006,since_2023_07_01,Political Action,239000.0,10
+MAYOR-00-006,since_2023_07_01,ambiguous,5500.0,2
+MAYOR-00-006,since_2023_07_01,unmatched,338250.0,26
+MAYOR-00-007,since_2023_07_01,Candidate,3750.0,4
+MAYOR-00-007,since_2023_07_01,Political Action,157550.0,24
+MAYOR-00-007,since_2023_07_01,Political Party,250.0,1
+MAYOR-00-007,since_2023_07_01,ambiguous,5500.0,4
+MAYOR-00-007,since_2023_07_01,blank_type,68500.0,1
+MAYOR-00-007,since_2023_07_01,unmatched,855000.0,172
+MAYOR-00-013,since_2023_07_01,Candidate,13500.0,8
+MAYOR-00-013,since_2023_07_01,Political Action,25000.0,7
+MAYOR-00-013,since_2023_07_01,Political Party,3500.0,3
+MAYOR-00-013,since_2023_07_01,unmatched,34950.0,21
+MAYOR-00-014,since_2023_07_01,unmatched,1500.0,1
+TREAS-00-001,since_2023_07_01,Candidate,250.0,1
+TREAS-00-002,since_2023_07_01,Candidate,145750.0,4
+TREAS-00-002,since_2023_07_01,Political Action,25000.0,5
+TREAS-00-002,since_2023_07_01,Political Party,30000.0,1
+TREAS-00-002,since_2023_07_01,unmatched,88000.0,12
+ALD-01-001,since_2026_01_01,Political Action,9750.0,4
+ALD-01-001,since_2026_01_01,unmatched,8000.0,13
+ALD-01-002,since_2026_01_01,unmatched,10000.0,2
+ALD-01-003,since_2026_01_01,unmatched,3250.0,3
+ALD-02-001,since_2026_01_01,Candidate,300.0,1
+ALD-02-001,since_2026_01_01,Political Action,1000.0,1
+ALD-02-001,since_2026_01_01,unmatched,10900.0,9
+ALD-02-002,since_2026_01_01,Candidate,250.0,1
+ALD-04-001,since_2026_01_01,Candidate,500.0,1
+ALD-04-001,since_2026_01_01,unmatched,19763.0,10
+ALD-05-001,since_2026_01_01,Political Action,3000.0,2
+ALD-05-001,since_2026_01_01,unmatched,9750.0,11
+ALD-06-001,since_2026_01_01,Political Action,7500.0,2
+ALD-06-003,since_2026_01_01,unmatched,2500.01,2
+ALD-08-002,since_2026_01_01,Candidate,250.0,1
+ALD-08-002,since_2026_01_01,unmatched,22500.0,9
+ALD-09-001,since_2026_01_01,Candidate,10000.0,4
+ALD-09-001,since_2026_01_01,Political Action,5000.0,4
+ALD-09-001,since_2026_01_01,unmatched,13500.0,9
+ALD-10-001,since_2026_01_01,Candidate,1500.0,1
+ALD-10-001,since_2026_01_01,Political Action,3500.0,2
+ALD-10-001,since_2026_01_01,unmatched,47600.0,22
+ALD-11-001,since_2026_01_01,Candidate,2000.0,2
+ALD-11-001,since_2026_01_01,Political Action,9250.0,6
+ALD-11-001,since_2026_01_01,unmatched,23750.0,25
+ALD-12-001,since_2026_01_01,Candidate,50000.0,2
+ALD-12-001,since_2026_01_01,Political Action,1500.0,1
+ALD-12-002,since_2026_01_01,Candidate,1800.0,2
+ALD-12-002,since_2026_01_01,Political Action,1000.0,1
+ALD-13-001,since_2026_01_01,Candidate,900.0,1
+ALD-14-001,since_2026_01_01,Candidate,250.0,1
+ALD-14-001,since_2026_01_01,unmatched,8250.0,8
+ALD-15-001,since_2026_01_01,Candidate,250.0,1
+ALD-15-001,since_2026_01_01,Political Action,6500.0,3
+ALD-15-001,since_2026_01_01,unmatched,22700.0,16
+ALD-16-001,since_2026_01_01,Political Action,11000.0,5
+ALD-16-001,since_2026_01_01,unmatched,12750.0,10
+ALD-18-001,since_2026_01_01,unmatched,8500.0,5
+ALD-19-001,since_2026_01_01,unmatched,145600.0,2
+ALD-20-001,since_2026_01_01,unmatched,500.0,1
+ALD-20-005,since_2026_01_01,Political Action,5000.0,1
+ALD-21-001,since_2026_01_01,Candidate,9000.0,4
+ALD-21-001,since_2026_01_01,Political Action,1000.0,1
+ALD-21-001,since_2026_01_01,Political Party,500.0,1
+ALD-21-001,since_2026_01_01,unmatched,10340.0,9
+ALD-23-002,since_2026_01_01,Political Action,1000.0,1
+ALD-23-002,since_2026_01_01,unmatched,8500.0,7
+ALD-24-001,since_2026_01_01,Candidate,250.0,1
+ALD-24-001,since_2026_01_01,Political Action,1000.0,1
+ALD-24-001,since_2026_01_01,ambiguous,1000.0,1
+ALD-24-001,since_2026_01_01,unmatched,22250.0,20
+ALD-25-001,since_2026_01_01,unmatched,1500.0,1
+ALD-25-005,since_2026_01_01,unmatched,3250.0,2
+ALD-25-006,since_2026_01_01,unmatched,11500.0,2
+ALD-26-001,since_2026_01_01,Candidate,6800.0,4
+ALD-26-001,since_2026_01_01,Political Action,500.0,1
+ALD-26-001,since_2026_01_01,unmatched,6250.0,6
+ALD-27-001,since_2026_01_01,Candidate,2500.0,2
+ALD-27-001,since_2026_01_01,Political Action,500.0,1
+ALD-27-001,since_2026_01_01,unmatched,10675.0,9
+ALD-28-001,since_2026_01_01,Political Action,1500.0,1
+ALD-28-001,since_2026_01_01,unmatched,16300.0,10
+ALD-29-001,since_2026_01_01,Candidate,4250.0,3
+ALD-29-001,since_2026_01_01,Political Action,1750.0,2
+ALD-29-001,since_2026_01_01,ambiguous,1000.0,1
+ALD-29-001,since_2026_01_01,unmatched,9750.0,11
+ALD-30-001,since_2026_01_01,Political Action,2000.0,2
+ALD-30-001,since_2026_01_01,unmatched,1000.0,1
+ALD-30-002,since_2026_01_01,Candidate,5800.0,5
+ALD-30-002,since_2026_01_01,Political Action,2000.0,2
+ALD-30-002,since_2026_01_01,unmatched,14750.0,12
+ALD-31-001,since_2026_01_01,Candidate,250.0,1
+ALD-31-001,since_2026_01_01,Political Action,6750.0,7
+ALD-31-001,since_2026_01_01,unmatched,27750.0,23
+ALD-32-001,since_2026_01_01,Candidate,1000.0,3
+ALD-32-001,since_2026_01_01,Political Action,3750.0,3
+ALD-32-001,since_2026_01_01,unmatched,17000.0,16
+ALD-32-002,since_2026_01_01,Political Action,1250.3200000000002,2
+ALD-33-002,since_2026_01_01,Candidate,23000.0,1
+ALD-33-002,since_2026_01_01,unmatched,3500.0,2
+ALD-34-001,since_2026_01_01,Candidate,1500.0,1
+ALD-34-001,since_2026_01_01,Political Action,1000.0,1
+ALD-34-001,since_2026_01_01,unmatched,10250.0,6
+ALD-35-001,since_2026_01_01,Political Action,5000.0,1
+ALD-35-002,since_2026_01_01,Candidate,9500.0,5
+ALD-35-002,since_2026_01_01,Political Action,2500.0,1
+ALD-35-002,since_2026_01_01,ambiguous,1000.0,1
+ALD-35-002,since_2026_01_01,unmatched,3250.0,5
+ALD-36-001,since_2026_01_01,Candidate,1500.0,1
+ALD-36-001,since_2026_01_01,unmatched,124250.0,18
+ALD-37-001,since_2026_01_01,Candidate,1450.0,4
+ALD-37-001,since_2026_01_01,Political Action,4000.0,5
+ALD-37-001,since_2026_01_01,Political Party,260.0,1
+ALD-37-001,since_2026_01_01,ambiguous,1000.0,1
+ALD-37-001,since_2026_01_01,unmatched,28850.0,21
+ALD-38-002,since_2026_01_01,Candidate,5250.0,2
+ALD-38-002,since_2026_01_01,Political Action,1500.0,1
+ALD-38-002,since_2026_01_01,unmatched,14000.0,10
+ALD-39-001,since_2026_01_01,Candidate,8750.0,7
+ALD-39-001,since_2026_01_01,Political Action,3000.0,3
+ALD-39-001,since_2026_01_01,unmatched,42750.0,29
+ALD-40-001,since_2026_01_01,Candidate,930.0,3
+ALD-40-001,since_2026_01_01,Political Action,3350.0,5
+ALD-40-001,since_2026_01_01,unmatched,27116.2,23
+ALD-41-001,since_2026_01_01,Candidate,5400.0,2
+ALD-41-001,since_2026_01_01,Political Action,2500.0,1
+ALD-41-001,since_2026_01_01,Political Party,160.0,1
+ALD-41-001,since_2026_01_01,unmatched,37900.0,19
+ALD-42-001,since_2026_01_01,Candidate,1000.0,1
+ALD-42-001,since_2026_01_01,unmatched,110000.0,6
+ALD-43-001,since_2026_01_01,Candidate,1000.0,1
+ALD-43-001,since_2026_01_01,Political Action,1500.0,1
+ALD-43-001,since_2026_01_01,unmatched,7050.0,10
+ALD-44-003,since_2026_01_01,Candidate,500.0,1
+ALD-44-003,since_2026_01_01,Political Action,2500.0,2
+ALD-44-003,since_2026_01_01,Political Party,200.0,1
+ALD-44-003,since_2026_01_01,unmatched,6500.0,7
+ALD-45-002,since_2026_01_01,Political Party,2000.0,1
+ALD-45-003,since_2026_01_01,Candidate,6000.0,3
+ALD-45-003,since_2026_01_01,unmatched,28500.0,23
+ALD-46-002,since_2026_01_01,Political Action,3250.0,3
+ALD-46-002,since_2026_01_01,unmatched,5750.0,5
+ALD-47-001,since_2026_01_01,Candidate,3016.45,4
+ALD-47-001,since_2026_01_01,Political Action,6793.0,5
+ALD-47-001,since_2026_01_01,unmatched,12250.0,11
+ALD-48-001,since_2026_01_01,Candidate,2800.0,4
+ALD-48-001,since_2026_01_01,Political Action,8750.0,8
+ALD-48-001,since_2026_01_01,unmatched,5250.0,5
+ALD-49-002,since_2026_01_01,Candidate,500.0,1
+ALD-49-002,since_2026_01_01,Political Action,750.0,2
+ALD-49-002,since_2026_01_01,ambiguous,250.0,1
+ALD-49-002,since_2026_01_01,unmatched,3750.0,3
+ALD-50-001,since_2026_01_01,Candidate,9550.0,5
+ALD-50-001,since_2026_01_01,Political Action,6250.0,5
+ALD-50-001,since_2026_01_01,unmatched,18250.0,16
+CLERK-00-001,since_2026_01_01,Candidate,1500.0,2
+CLERK-00-001,since_2026_01_01,Political Action,12000.0,8
+CLERK-00-001,since_2026_01_01,ambiguous,5000.0,1
+CLERK-00-001,since_2026_01_01,unmatched,61000.0,17
+MAYOR-00-003,since_2026_01_01,Political Action,5000.0,1
+MAYOR-00-003,since_2026_01_01,unmatched,291000.0,6
+MAYOR-00-005,since_2026_01_01,Candidate,500.0,1
+MAYOR-00-005,since_2026_01_01,Political Action,558350.0,10
+MAYOR-00-005,since_2026_01_01,ambiguous,100000.0,1
+MAYOR-00-005,since_2026_01_01,blank_type,650000.0,1
+MAYOR-00-005,since_2026_01_01,unmatched,6933150.0,46
+MAYOR-00-006,since_2026_01_01,Candidate,6500.0,2
+MAYOR-00-006,since_2026_01_01,Political Action,5000.0,1
+MAYOR-00-006,since_2026_01_01,unmatched,4000.0,2
+MAYOR-00-007,since_2026_01_01,Candidate,2000.0,1
+MAYOR-00-007,since_2026_01_01,ambiguous,2500.0,1
+MAYOR-00-007,since_2026_01_01,unmatched,81100.0,14
+MAYOR-00-013,since_2026_01_01,Candidate,4500.0,2
+MAYOR-00-013,since_2026_01_01,Political Action,7500.0,2
+MAYOR-00-013,since_2026_01_01,unmatched,24000.0,12
+TREAS-00-002,since_2026_01_01,Political Action,15500.0,2
+TREAS-00-002,since_2026_01_01,Political Party,30000.0,1
+TREAS-00-002,since_2026_01_01,unmatched,76500.0,4
+ALD-01-001,latest_quarter,Political Action,4250.0,2
+ALD-01-001,latest_quarter,unmatched,3750.0,6
+ALD-02-001,latest_quarter,Candidate,300.0,1
+ALD-02-001,latest_quarter,Political Action,1000.0,1
+ALD-02-001,latest_quarter,unmatched,5400.0,5
+ALD-04-001,latest_quarter,unmatched,10750.0,7
+ALD-06-001,latest_quarter,Political Action,7500.0,2
+ALD-08-002,latest_quarter,Candidate,250.0,1
+ALD-08-002,latest_quarter,unmatched,21000.0,7
+ALD-09-001,latest_quarter,Candidate,2000.0,1
+ALD-09-001,latest_quarter,unmatched,11500.0,6
+ALD-10-001,latest_quarter,unmatched,26600.0,10
+ALD-11-001,latest_quarter,Candidate,1000.0,1
+ALD-11-001,latest_quarter,Political Action,3500.0,2
+ALD-11-001,latest_quarter,unmatched,5000.0,7
+ALD-12-002,latest_quarter,Candidate,1800.0,2
+ALD-12-002,latest_quarter,Political Action,1000.0,1
+ALD-13-001,latest_quarter,Candidate,900.0,1
+ALD-15-001,latest_quarter,unmatched,7000.0,3
+ALD-16-001,latest_quarter,unmatched,1500.0,1
+ALD-18-001,latest_quarter,unmatched,1500.0,2
+ALD-19-001,latest_quarter,unmatched,145600.0,2
+ALD-20-001,latest_quarter,unmatched,500.0,1
+ALD-20-005,latest_quarter,Political Action,5000.0,1
+ALD-21-001,latest_quarter,Candidate,6000.0,2
+ALD-21-001,latest_quarter,Political Party,500.0,1
+ALD-21-001,latest_quarter,unmatched,1000.0,1
+ALD-23-002,latest_quarter,unmatched,4000.0,3
+ALD-24-001,latest_quarter,Candidate,250.0,1
+ALD-24-001,latest_quarter,Political Action,1000.0,1
+ALD-24-001,latest_quarter,unmatched,12750.0,11
+ALD-25-001,latest_quarter,unmatched,1500.0,1
+ALD-25-006,latest_quarter,unmatched,11500.0,2
+ALD-27-001,latest_quarter,Political Action,500.0,1
+ALD-27-001,latest_quarter,unmatched,2500.0,2
+ALD-28-001,latest_quarter,unmatched,3500.0,2
+ALD-29-001,latest_quarter,ambiguous,1000.0,1
+ALD-29-001,latest_quarter,unmatched,2250.0,2
+ALD-30-001,latest_quarter,Political Action,2000.0,2
+ALD-30-001,latest_quarter,unmatched,1000.0,1
+ALD-30-002,latest_quarter,Candidate,5300.0,3
+ALD-30-002,latest_quarter,unmatched,4500.0,6
+ALD-31-001,latest_quarter,Candidate,250.0,1
+ALD-31-001,latest_quarter,Political Action,5500.0,5
+ALD-31-001,latest_quarter,unmatched,13500.0,11
+ALD-32-001,latest_quarter,Candidate,500.0,1
+ALD-32-001,latest_quarter,unmatched,5000.0,5
+ALD-32-002,latest_quarter,Political Action,1250.3200000000002,2
+ALD-34-001,latest_quarter,unmatched,250.0,1
+ALD-35-001,latest_quarter,Political Action,5000.0,1
+ALD-35-002,latest_quarter,Candidate,9500.0,5
+ALD-35-002,latest_quarter,unmatched,1000.0,1
+ALD-36-001,latest_quarter,Candidate,1500.0,1
+ALD-36-001,latest_quarter,unmatched,60750.0,7
+ALD-37-001,latest_quarter,Candidate,500.0,1
+ALD-37-001,latest_quarter,Political Action,1000.0,1
+ALD-37-001,latest_quarter,ambiguous,1000.0,1
+ALD-37-001,latest_quarter,unmatched,21600.0,13
+ALD-38-002,latest_quarter,Candidate,5000.0,1
+ALD-38-002,latest_quarter,Political Action,1500.0,1
+ALD-38-002,latest_quarter,unmatched,2500.0,1
+ALD-39-001,latest_quarter,Candidate,6750.0,4
+ALD-39-001,latest_quarter,unmatched,15000.0,7
+ALD-40-001,latest_quarter,Candidate,930.0,3
+ALD-40-001,latest_quarter,Political Action,2100.0,3
+ALD-40-001,latest_quarter,unmatched,3366.2,7
+ALD-41-001,latest_quarter,Candidate,5000.0,1
+ALD-41-001,latest_quarter,Political Action,2500.0,1
+ALD-41-001,latest_quarter,unmatched,26400.0,12
+ALD-43-001,latest_quarter,Candidate,1000.0,1
+ALD-43-001,latest_quarter,Political Action,1500.0,1
+ALD-43-001,latest_quarter,unmatched,5050.0,8
+ALD-44-003,latest_quarter,Political Party,200.0,1
+ALD-44-003,latest_quarter,unmatched,2000.0,2
+ALD-45-002,latest_quarter,Political Party,2000.0,1
+ALD-45-003,latest_quarter,Candidate,5000.0,1
+ALD-47-001,latest_quarter,Candidate,3016.45,4
+ALD-47-001,latest_quarter,Political Action,5543.0,3
+ALD-47-001,latest_quarter,unmatched,5250.0,5
+ALD-48-001,latest_quarter,Candidate,1050.0,1
+ALD-48-001,latest_quarter,Political Action,6250.0,4
+ALD-49-002,latest_quarter,Political Action,250.0,1
+ALD-50-001,latest_quarter,Candidate,250.0,1
+ALD-50-001,latest_quarter,Political Action,2500.0,1
+ALD-50-001,latest_quarter,unmatched,2500.0,3
+CLERK-00-001,latest_quarter,Political Action,3500.0,2
+CLERK-00-001,latest_quarter,unmatched,20250.0,5
+MAYOR-00-003,latest_quarter,unmatched,211000.0,4
+MAYOR-00-005,latest_quarter,Political Action,157800.0,3
+MAYOR-00-005,latest_quarter,unmatched,695400.0,10
+MAYOR-00-007,latest_quarter,unmatched,15000.0,1
+MAYOR-00-013,latest_quarter,unmatched,2000.0,1
+TREAS-00-002,latest_quarter,unmatched,1000.0,1

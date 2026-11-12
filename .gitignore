@@ -4,3 +4,6 @@
 __pycache__/
 *.pyc
 .DS_Store
+
+# Donor-level rows (names, addresses) — not published by default (PLAN.md §3)
+/data/private/

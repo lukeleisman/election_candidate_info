@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chicago 2027 Candidate Money</title>
+<!-- Template for scripts/build_dashboard.py. Edit here, then `make dashboard`;
+     dashboard/index.html is overwritten on every build. -->
+<style>
+  /* Layout: one column; controls, race figures, cash bars, raised bars, candidate table, committee table. */
+  :root {
+    --bg: #fbfbfa; --panel: #f1f2f4; --fg: #1d2129; --muted: #5d6573;
+    --line: #d9dce1; --accent: #2f6db5; --warn: #a2570b;
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #15181d; --panel: #1e2229; --fg: #e7e9ee; --muted: #9aa2b1;
+            --line: #323843; --accent: #6ea4e8; --warn: #e0a15a; color-scheme: dark; }
+  }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 14px/1.45 var(--font); }
+  .page { max-width: 1200px; margin: 0 auto; padding: 24px 16px 48px; display: flex; flex-direction: column; gap: 24px; }
+  h1 { font-size: 26px; font-weight: 600; margin: 0 0 4px; }
+  h2 { font-size: 17px; font-weight: 600; margin: 0 0 2px; }
+  .lede, .sub { color: var(--muted); margin: 0; max-width: 80ch; }
+  .sub { font-size: 12.5px; margin-bottom: 8px; }
+  .controls { display: flex; flex-wrap: wrap; gap: 16px; }
+  .controls label { display: flex; flex-direction: column; gap: 4px; font-size: 11.5px; color: var(--muted);
+                    text-transform: uppercase; letter-spacing: .05em; }
+  select { font: 14px var(--font); padding: 6px 8px; border: 1px solid var(--line); border-radius: 6px;
+           background: var(--panel); color: var(--fg); min-width: 14rem; }
+  select:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .stats { display: flex; flex-wrap: wrap; gap: 32px; margin: 0; }
+  .stats dt { font-size: 12px; color: var(--muted); }
+  .stats dd { margin: 0; font-size: 22px; font-variant-numeric: tabular-nums; }
+  .bars { display: grid; grid-template-columns: max-content 1fr; gap: 6px 12px; align-items: center; }
+  .bar-name { white-space: nowrap; }
+  .bar-track { display: flex; align-items: center; gap: 8px; min-width: 0; }
+  .bar { height: 16px; background: var(--accent); border-radius: 2px; min-width: 1px; }
+  .bar-value { font-variant-numeric: tabular-nums; color: var(--muted); font-size: 12.5px; white-space: nowrap; }
+  .scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 6px; }
+  table { border-collapse: collapse; width: 100%; font-size: 12.5px; font-variant-numeric: tabular-nums; }
+  th, td { padding: 6px 10px; border-bottom: 1px solid var(--line); text-align: right; vertical-align: top; }
+  th { background: var(--panel); color: var(--muted); font-weight: 600; position: sticky; top: 0; max-width: 9em; vertical-align: bottom; }
+  td.flags { min-width: 10em; max-width: 14em; text-align: left; }
+  td.committees { max-width: 12em; text-align: left; }
+  td.date { white-space: nowrap; }
+  th[data-sort] { cursor: pointer; }
+  th[data-sort]:hover { color: var(--fg); }
+  tr:last-child td { border-bottom: 0; }
+  .left { text-align: left; }
+  td.name { font-weight: 600; white-space: nowrap; text-align: left; }
+  .flag { display: inline-block; padding: 0 7px; margin: 0 4px 2px 0; border: 1px solid var(--line);
+          border-radius: 4px; color: var(--muted); }
+  .flag.warn { border-color: var(--warn); color: var(--warn); }
+  .report-link { display: block; font-weight: 400; font-size: 11.5px; color: var(--muted); }
+  .feedback ul { padding-left: 1.2em; margin: 8px 0 0; display: flex; flex-direction: column; gap: 4px; }
+  details { color: var(--muted); font-size: 12.5px; }
+  details summary { cursor: pointer; color: var(--fg); }
+  details ul { padding-left: 1.2em; max-width: 85ch; display: flex; flex-direction: column; gap: 4px; }
+  code { font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="page">
+  <header>
+    <h1>Chicago 2027 Candidate Money</h1>
+    <p class="lede">Campaign money for candidates on the Feb 23, 2027 ballot, from Illinois State Board of
+      Elections reports through <span id="reports-through"></span> (downloaded <span id="isbe-download"></span>).
+      Police District Council candidates are not included yet.</p>
+  </header>
+
+  <div class="controls">
+    <label for="race-select">Race <select id="race-select"></select></label>
+    <label for="window-select">Money window <select id="window-select"></select></label>
+  </div>
+
+  <dl class="stats">
+    <div><dt>Candidates on the ballot</dt><dd id="stat-candidates">—</dd></div>
+    <div><dt>With a matched committee</dt><dd id="stat-with-committee">—</dd></div>
+    <div><dt>Cash on hand in the race</dt><dd id="stat-cash">—</dd></div>
+  </dl>
+
+  <section>
+    <h2>Cash on hand at the latest report</h2>
+    <p class="sub">A candidate's own committees added together. Shared slate committees are not added.</p>
+    <div class="bars" id="cash-bars"></div>
+  </section>
+
+  <section>
+    <h2>Raised: <span id="raised-window-label"></span></h2>
+    <p class="sub">Same committees as above, for the money window picked above (loans and in-kind not included).
+      Each chart has its own scale.</p>
+    <div class="bars" id="raised-bars"></div>
+  </section>
+
+  <section>
+    <h2>Candidates</h2>
+    <p class="sub">Money columns follow the window picked above, except cash on hand and $1,000+ gifts reported after the
+      last quarterly. Donor columns count itemized gifts only. Click a column header to sort.</p>
+    <div class="scroll"><table id="candidate-table"><thead></thead><tbody></tbody></table></div>
+  </section>
+
+  <section>
+    <h2>Committees behind the totals</h2>
+    <p class="sub">Every committee linked to this race's candidates, one row each. "Added in" counts toward the
+      candidate's total; "Slate, not added" is shared by 2+ candidates.</p>
+    <div class="scroll"><table id="committee-table">
+      <thead><tr>
+        <th class="left">Candidate</th><th class="left">Committee</th><th>ISBE ID</th><th class="left">Type</th>
+        <th>Status</th><th class="left">How found</th><th class="left">Counted as</th><th>Cash</th>
+        <th>As of</th><th title="Raised since Jan 1, 2026">Raised since 1/1/26</th><th title="Raised Jul 1 - Sep 30, 2026">Raised latest qtr</th><th title="Raised since Jul 1, 2023">Raised since 7/1/23</th>
+      </tr></thead>
+      <tbody></tbody>
+    </table></div>
+  </section>
+
+  <details>
+    <summary>What the columns mean, and what is left out</summary>
+    <ul>
+      <li><b>Cash on hand</b>: funds available at the end of each committee's latest report, added across the
+        candidate's own committees. A committee whose latest report is older is flagged "cash not current".</li>
+      <li><b>Raised</b>: individual gifts (itemized and not), transfers from other committees and other receipts, on
+        reports wholly inside the window. Loans and in-kind gifts are separate. Transfers between a candidate's own
+        matched committees are not counted; transfers from their committees for other offices are (open question).</li>
+      <li><b>$1,000+ gifts after the last quarterly</b>: A-1 reports filed since; not in Raised yet.</li>
+      <li><b>Itemized donors</b>: distinct donors of itemized gifts (over $150), people and organizations, by last name +
+        first name + zip. Two other identity rules are in <code>data/tables/donor_mix.csv</code>.</li>
+      <li><b>Small gifts share</b>: individual gifts too small to itemize, as a share of all receipts (raised + loans + in-kind).</li>
+      <li><b>Top 10 donors' share</b>: dollars from the 10 largest itemized donors, as a share of Raised.</li>
+      <li><b>Median gift (people)</b>: median itemized gift from individuals.</li>
+      <li><b>From 606 zips</b>: share of itemized donor dollars from zip codes starting 606 (misses 60707, 60827).</li>
+      <li><b>Matched committee</b>: ballot candidate matched to a State Board of Elections candidate record, then every
+        committee the state links to that record is listed (as Illinois Sunshine does). "Name only" committees carry the
+        candidate's name but the state does not link them. No match can mean no committee yet, or one the matching missed.</li>
+      <li>A person who filed twice is listed twice; the second filing is marked and left out of the race figures.</li>
+    </ul>
+  </details>
+
+  <footer class="feedback" id="feedback">
+    <h2>Corrections and updates</h2>
+    <p class="sub">See something wrong or missing (a committee, a website, a number)? Tell us.</p>
+    <ul id="feedback-links"></ul>
+  </footer>
+</div>
+
+<script>
+const DATA = /*DASHBOARD_DATA*/null;
+
+// ----- formatting -----
+const moneyFormat = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
+const countFormat = new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 });
+const percentFormat = new Intl.NumberFormat("en-US", { style: "percent", maximumFractionDigits: 0 });
+const FORMATS = { money: (v) => moneyFormat.format(v), count: (v) => countFormat.format(v), pct: (v) => percentFormat.format(v) };
+const toNumber = (value) => (value === null || value === undefined || value === "" ? null : Number(value));
+const show = (value, format) => (toNumber(value) === null ? "—" : FORMATS[format](toNumber(value)));
+const LABELS = { isbe_link: "State link", name_only: "Name only", manual: "Added by hand",
+                 candidate_sum: "Added in", slate_column: "Slate, not added", A: "Active", F: "Final" };
+
+// ----- state (kept in the URL hash so a view can be bookmarked: #ALD-01/since_2026_01_01) -----
+const state = { race: DATA.default_race, window: DATA.windows[0].key, sortColumn: "cash_on_hand", sortDescending: true };
+function readHash() {
+  const [race, windowKey] = decodeURIComponent(location.hash.slice(1)).split("/");
+  if (DATA.races.some((r) => r.race_key === race)) state.race = race;
+  if (DATA.windows.some((w) => w.key === windowKey)) state.window = windowKey;
+}
+function writeHash() { history.replaceState(null, "", "#" + state.race + "/" + state.window); }
+
+function element(tag, options = {}, children = []) {
+  const node = document.createElement(tag);
+  if (options.className) node.className = options.className;
+  if (options.text !== undefined) node.textContent = options.text;
+  if (options.style) Object.assign(node.style, options.style);
+  node.append(...children);
+  return node;
+}
+
+function raceCandidates() { return DATA.candidates.filter((row) => row.race_key === state.race); }
+
+// Negative cash on hand is shown as reported (ISBE EndFundsAvail), with a warning flag in the
+// candidate's notes (user, 2026-11-12; e.g. Howard Ray, ALD-37-005, -$1,750 on his Q3 2026 report).
+// false = show the number with no flag.
+const FLAG_NEGATIVE_CASH = true;
+
+// "Report a problem" link under a candidate's name, when FEEDBACK_FORM_PREFILL_URL is set
+// in scripts/build_dashboard.py (the form opens with this candidate filled in).
+function reportLink(row) {
+  const template = DATA.feedback.form_prefill_url;
+  if (!template) return [];
+  const href = template.replace("{candidate_id}", encodeURIComponent(row.candidate_id))
+    .replace("{candidate_name}", encodeURIComponent(row.ballot_name_raw));
+  const link = element("a", { className: "report-link", text: "Report a problem" });
+  link.href = href; link.target = "_blank"; link.rel = "noopener";
+  return [link];
+}
+
+// Footer links; each is hidden when its setting in scripts/build_dashboard.py is empty.
+function drawFeedbackLinks() {
+  const feedback = DATA.feedback;
+  const items = [];
+  const add = (prefix, text, href) => {
+    const link = element("a", { text }); link.href = href;
+    if (!href.startsWith("mailto:")) { link.target = "_blank"; link.rel = "noopener"; }
+    items.push(element("li", {}, [prefix, link]));
+  };
+  if (feedback.form_url) add("Corrections to the data: ", "use this form", feedback.form_url);
+  if (feedback.github_issues_url) add("Problems with the page or code: ", "open an issue on GitHub", feedback.github_issues_url);
+  if (feedback.contact_email) add("Questions, comments, updates: ", feedback.contact_email, "mailto:" + feedback.contact_email);
+  document.getElementById("feedback-links").replaceChildren(...items);
+}
+
+// Flags column (right after the name; split from the committee notes 2026-11-12, user):
+// things to look at before trusting the row's numbers.
+function warningFlags(row) {
+  const flags = [];
+  if (row.duplicate_filing_of) flags.push("Second filing of " + row.duplicate_filing_of);
+  else if (Number(row.committees_added) === 0) flags.push("No committee matched");
+  if (Number(row.name_only_committees) > 0) flags.push(row.name_only_committees + " committee matched by name only");
+  if (row.committees_cash_not_current) flags.push("Cash not current: " + row.committees_cash_not_current);
+  if (FLAG_NEGATIVE_CASH && (toNumber(row.cash_on_hand) ?? 0) < 0) flags.push("Committee reported negative funds available");
+  return flags.map((text) => element("span", { className: "flag warn", text }));
+}
+
+// Committees column (last): how many committees were added together, and slates left out.
+function committeeNotes(row) {
+  const notes = [];
+  if (!row.duplicate_filing_of && Number(row.committees_added) > 0)
+    notes.push(row.committees_added + (Number(row.committees_added) === 1 ? " committee" : " committees"));
+  if (row.slate_committees_not_added) notes.push("Slate not added: " + row.slate_committees_not_added);
+  return notes.map((text) => element("span", { className: "flag", text }));
+}
+
+function drawStats() {
+  const race = DATA.races.find((r) => r.race_key === state.race);
+  document.getElementById("stat-candidates").textContent = show(race.candidates, "count");
+  document.getElementById("stat-with-committee").textContent = show(race.with_committee, "count");
+  document.getElementById("stat-cash").textContent = show(race.cash_on_hand_total, "money");
+}
+
+// Bar order in each chart (added 2026-11-12). "own_value": each chart sorted by its own
+// number, largest first. Alternative "cash_order": the raised chart keeps the cash chart's
+// order so a name sits in the same row in both.
+const BAR_ORDER = "own_value";
+
+// One horizontal bar chart: a row per candidate (second filings left out), bar length
+// relative to the largest value in this race. Missing value -> text only.
+function drawBarChart(boxId, field, sortField) {
+  const people = raceCandidates().filter((row) => !row.duplicate_filing_of)
+    .sort((a, b) => (toNumber(b[sortField]) ?? -1) - (toNumber(a[sortField]) ?? -1));
+  const largest = Math.max(1, ...people.map((row) => toNumber(row[field]) ?? 0));
+  const box = document.getElementById(boxId);
+  box.replaceChildren(...people.flatMap((row) => {
+    const amount = toNumber(row[field]);
+    const track = element("div", { className: "bar-track" });
+    if (amount !== null) track.append(element("div", { className: "bar", style: { width: (Math.max(amount, 0) / largest * 70) + "%" } }));
+    track.append(element("span", { className: "bar-value", text: amount === null ? "no committee report" : moneyFormat.format(amount) }));
+    track.title = amount === null ? "" : row.ballot_name_raw + ": $" + amount.toLocaleString("en-US", { minimumFractionDigits: 2 });
+    return [element("div", { className: "bar-name", text: row.ballot_name_raw }), track];
+  }));
+}
+
+function drawBars() {
+  drawBarChart("cash-bars", "cash_on_hand", "cash_on_hand");
+  const raisedField = state.window + "_raised";
+  drawBarChart("raised-bars", raisedField, BAR_ORDER === "cash_order" ? "cash_on_hand" : raisedField);
+  document.getElementById("raised-window-label").textContent =
+    DATA.windows.find((w) => w.key === state.window).label;
+}
+
+function candidateColumns() {
+  return DATA.candidate_columns.map((c) => ({ ...c, field: c.column.replace("{window}", state.window) }));
+}
+
+function drawCandidateTable() {
+  const columns = candidateColumns();
+  const table = document.getElementById("candidate-table");
+  const header = element("tr", {}, [element("th", { className: "left", text: "Candidate" }),
+    element("th", { className: "left", text: "Flags" }),
+    ...columns.map((c) => {
+      const th = element("th", { text: c.header + (state.sortColumn === c.column ? (state.sortDescending ? " ▼" : " ▲") : "") });
+      th.dataset.sort = c.column;
+      th.title = c.description + " (column " + c.field + " in display_candidates.csv)";
+      th.onclick = () => {
+        state.sortDescending = state.sortColumn === c.column ? !state.sortDescending : true;
+        state.sortColumn = c.column;
+        drawCandidateTable();
+      };
+      return th;
+    }),
+    element("th", { className: "left", text: "Committees" })]);
+  table.tHead.replaceChildren(header);
+  const sortField = state.sortColumn.replace("{window}", state.window);
+  const rows = raceCandidates().sort((a, b) => {
+    const difference = (toNumber(a[sortField]) ?? -Infinity) - (toNumber(b[sortField]) ?? -Infinity);
+    return state.sortDescending ? -difference : difference;
+  });
+  table.tBodies[0].replaceChildren(...rows.map((row) => element("tr", {}, [
+    element("td", { className: "name" }, [row.ballot_name_raw, ...reportLink(row)]),
+    element("td", { className: "left flags" }, warningFlags(row)),
+    ...columns.map((c) => element("td", { text: show(row[c.field], c.format) })),
+    element("td", { className: "left committees" }, committeeNotes(row)),
+  ])));
+}
+
+function drawCommitteeTable() {
+  const names = new Map(raceCandidates().map((row) => [row.candidate_id, row.ballot_name_raw]));
+  const rows = DATA.committees.filter((row) => names.has(row.candidate_id));
+  const text = (value) => LABELS[value] || value || "—";
+  document.querySelector("#committee-table tbody").replaceChildren(...rows.map((row) => element("tr", {}, [
+    element("td", { className: "left", text: names.get(row.candidate_id) }),
+    element("td", { className: "left", text: row.committee_name }),
+    element("td", { text: row.committee_id }),
+    element("td", { className: "left", text: text(row.committee_type) }),
+    element("td", { text: text(row.committee_status) }),
+    element("td", { className: "left", text: text(row.link_basis) }),
+    element("td", { className: "left", text: text(row.counts_toward) }),
+    element("td", { text: show(row.cash_on_hand, "money") }),
+    element("td", { className: "date", text: (row.cash_on_hand_report_end || "—").slice(0, 10) }),
+    element("td", { text: show(row.since_2026_01_01_raised, "money") }),
+    element("td", { text: show(row.latest_quarter_raised, "money") }),
+    element("td", { text: show(row.since_2023_07_01_raised, "money") }),
+  ])));
+}
+
+function drawAll() { writeHash(); drawStats(); drawBars(); drawCandidateTable(); drawCommitteeTable(); }
+
+// ----- set up -----
+document.getElementById("reports-through").textContent = DATA.reports_through;
+document.getElementById("isbe-download").textContent = DATA.isbe_download;
+drawFeedbackLinks();
+readHash();
+const raceSelect = document.getElementById("race-select");
+raceSelect.append(...DATA.races.map((r) => new Option(r.race_label + "  (" + r.candidates + ")", r.race_key)));
+const windowSelect = document.getElementById("window-select");
+windowSelect.append(...DATA.windows.map((w) => new Option(w.label, w.key)));
+raceSelect.value = state.race;
+windowSelect.value = state.window;
+raceSelect.onchange = () => { state.race = raceSelect.value; drawAll(); };
+windowSelect.onchange = () => { state.window = windowSelect.value; drawAll(); };
+window.addEventListener("hashchange", () => { readHash(); raceSelect.value = state.race; windowSelect.value = state.window; drawAll(); });
+drawAll();
+</script>
+</body>
+</html>
