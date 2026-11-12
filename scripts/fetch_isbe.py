@@ -37,7 +37,9 @@ ISBE_BASE_URL = "https://www.elections.il.gov/CampaignDisclosureDataFiles/"
 
 # Every file listed in the data dictionary that this project uses, plus the
 # dictionary itself. Investments / Officers / PrevOfficers / CmteOfficerLinks
-# are not used yet and are left out.
+# are not used yet and are left out. Expenditures.txt (~790 MB, ~25 min at ISBE's
+# ~0.5 MB/s) was dropped 2026-11-12 (user): no script reads it. To get it again, add it back
+# here or run: python scripts/fetch_isbe.py Expenditures.txt (allowed by ON_REQUEST_FILES).
 FILES_TO_FETCH = [
     "CampaignDisclosureDataDictionary.txt",
     "Candidates.txt",
@@ -46,9 +48,11 @@ FILES_TO_FETCH = [
     "Committees.txt",
     "FiledDocs.txt",
     "D2Totals.txt",
-    "Expenditures.txt",
     "Receipts.txt",
 ]
+
+# Files fetched only when named on the command line (not part of a plain run / make fetch-isbe).
+ON_REQUEST_FILES = ["Expenditures.txt"]
 
 # WebFetch was refused (403) on 2026-10-04; curl with a browser User-Agent worked.
 USER_AGENT = (
@@ -120,9 +124,9 @@ def main():
     arguments = sys.argv[1:]
     force = "--force" in arguments
     requested = [argument for argument in arguments if argument != "--force"] or FILES_TO_FETCH
-    unknown = set(requested) - set(FILES_TO_FETCH)
+    unknown = set(requested) - set(FILES_TO_FETCH) - set(ON_REQUEST_FILES)
     if unknown:
-        raise SystemExit(f"not in FILES_TO_FETCH: {sorted(unknown)}")
+        raise SystemExit(f"not in FILES_TO_FETCH or ON_REQUEST_FILES: {sorted(unknown)}")
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     manifest = load_manifest()
