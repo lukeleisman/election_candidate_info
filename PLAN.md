@@ -211,7 +211,11 @@ candidate (confirmed committees only), every rule computed **side by side**, nev
 - **`config/endorsement_sources.csv`** (you curate; I seed it from the preliminary list: UWF, CTU, CFL,
   SEIU HCII, Chicago DSA, IVI-IPO, Sierra Club IL, PP IL Action, Equality IL, FOP, Better Streets,
   Sun-Times / Tribune editorial boards, chielections.com, ward orgs, plus candidate campaign sites):
-  `source_id, org_name, url, page_kind (html/pdf/image), parser (name or "manual"), verified_on, reuse_terms_checked, notes`.
+  `source_id, org_name, url, page_kind (html/pdf/image), parser (name or "manual"), verified_on, notes`.
+- **Access policy (user, 2026-11-05):** no terms-of-service or robots.txt checks; Chrome is fine; ask the
+  user before sending multiple requests to one website. The fetch script pulls only the specific
+  registry pages; discovery of new information uses normal search/fetch tools.
+  See `sessions/2026-11-04-endorsements.md`.
 - **`scripts/fetch_endorsement_pages.py`** — snapshots every registry URL into
   `data/raw/endorsements/<source_id>/<timestamp>.<ext>` + manifest with sha256; reports which pages
   changed since the last run (so reruns show new endorsements).
