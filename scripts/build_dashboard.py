@@ -10,6 +10,9 @@ in RACE_STATS, which are computed here and printed so they can be checked.
 Inputs:
   data/tables/display_candidates.csv
   data/tables/display_committees.csv
+  data/tables/incumbents.csv          scripts/check_incumbents.py   (i) marker
+  data/tables/candidate_links.csv     scripts/build_candidate_links.py
+  data/tables/top_donors.csv          scripts/build_donor_mix.py
   scripts/dashboard_template.html        page layout, styles and drawing code
 Output:
   dashboard/index.html
@@ -31,6 +34,9 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 TABLES_DIR = REPO_ROOT / "data" / "tables"
 CANDIDATES_PATH = TABLES_DIR / "display_candidates.csv"
 COMMITTEES_PATH = TABLES_DIR / "display_committees.csv"
+INCUMBENTS_PATH = TABLES_DIR / "incumbents.csv"
+LINKS_PATH = TABLES_DIR / "candidate_links.csv"
+TOP_DONORS_PATH = TABLES_DIR / "top_donors.csv"
 TEMPLATE_PATH = REPO_ROOT / "scripts" / "dashboard_template.html"
 OUTPUT_PATH = REPO_ROOT / "dashboard" / "index.html"
 
@@ -104,6 +110,14 @@ DATA_SOURCES = [
 # exactly on 2026-11-12 began in 2025-26. Empty string hides the column.
 SUNSHINE_STYLE_SHOWN_IF_FIRST_REPORT_ON_OR_AFTER = "2023-07-01"
 
+# Labels for link kinds in the candidate sections (kinds: build_candidate_links.LINK_KIND_ORDER).
+LINK_KIND_LABELS = {"campaign": "Campaign site", "office": "Office site", "social": "Social",
+                    "fundraising": "Fundraising page", "endorsements": "Endorsements page", "other": "Other"}
+
+# Incumbent marker text and the date the incumbent table describes (data/input/incumbents_manual.csv).
+# FUTURE ELECTIONS: the incumbents table is for the Feb 2027 election only (scripts/check_incumbents.py).
+INCUMBENT_AS_OF_LABEL = "Nov 2026"
+
 # Race shown when the page opens.
 DEFAULT_RACE_KEY = "ALD-01"
 
@@ -156,6 +170,23 @@ def main():
     races = races.assign(race_order=races["race_order"].astype(int)).sort_values("race_order")
     races = races.merge(race_stats, on="race_key", how="left")
 
+    incumbents = pd.read_csv(INCUMBENTS_PATH, dtype=str, keep_default_na=False)
+    links = pd.read_csv(LINKS_PATH, dtype=str, keep_default_na=False)
+    top_donors = pd.read_csv(TOP_DONORS_PATH, dtype=str, keep_default_na=False)
+    shown_ids = set(candidates["candidate_id"])
+    for name, frame in [("incumbents", incumbents), ("links", links), ("top donors", top_donors)]:
+        unknown = sorted(set(frame["candidate_id"]) - shown_ids)
+        if unknown:
+            print(f"NOTE: {name} rows for candidates not on the page (left out): {unknown}")
+
+    # Raised vs the sum of its D-2 lines (mix_raised, from donor_mix.csv): printed if they differ.
+    for window_key, _ in WINDOWS:
+        difference = (pd.to_numeric(candidates[f"{window_key}_raised"], errors="coerce")
+                      - pd.to_numeric(candidates[f"{window_key}_mix_raised"], errors="coerce")).abs()
+        if (difference > 0.01).any():
+            print(f"NOTE {window_key}: raised differs from its breakdown for "
+                  f"{candidates.loc[difference > 0.01, 'candidate_id'].tolist()}")
+
     data = {
         "reports_through": REPORTS_THROUGH_LABEL,
         "isbe_download": isbe_download_label(),
@@ -169,6 +200,11 @@ def main():
         "windows": [{"key": key, "label": label} for key, label in WINDOWS],
         "candidate_columns": [{"column": column, "header": header, "description": description, "format": fmt}
                               for column, header, description, fmt in CANDIDATE_COLUMNS],
+        "incumbent_as_of": INCUMBENT_AS_OF_LABEL,
+        "link_kind_labels": LINK_KIND_LABELS,
+        "incumbents": records(incumbents[["candidate_id", "officeholder_name", "source_url"]]),
+        "links": records(links[["candidate_id", "link_kind", "platform", "url", "found_by", "source_statuses"]]),
+        "top_donors": records(top_donors),
         "races": records(races),
         "candidates": records(candidates),
         "committees": records(committees),

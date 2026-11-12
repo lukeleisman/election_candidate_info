@@ -5,9 +5,9 @@ PYTHON ?= conda run --no-capture-output -n election-candidate-info python
 # Newest CBOE filing report on disk (file names carry a timestamp, so sort = newest last).
 FILING_REPORT = $(shell ls data/raw/cboe/documents/*/"Candidate Filing Report_"*.pdf 2>/dev/null | sort | tail -1)
 
-.PHONY: all candidates fetch-cboe parse-candidates compare-lists ballot-status fetch-isbe committee-proposals isbe-review isbe-rule candidate-committee finance donor-mix display-tables dashboard
+.PHONY: all candidates fetch-cboe parse-candidates compare-lists ballot-status fetch-isbe committee-proposals isbe-review isbe-rule candidate-committee finance donor-mix display-tables fetch-ward-offices incumbents candidate-links dashboard
 
-all: candidates fetch-isbe committee-proposals isbe-review isbe-rule candidate-committee finance donor-mix display-tables dashboard
+all: candidates fetch-isbe committee-proposals isbe-review isbe-rule candidate-committee finance donor-mix display-tables incumbents candidate-links dashboard
 
 ## Official candidate list (PLAN.md step 2)
 candidates: fetch-cboe parse-candidates compare-lists ballot-status
@@ -57,5 +57,18 @@ donor-mix:
 display-tables:
 	$(PYTHON) scripts/build_display_tables.py
 
-dashboard: display-tables
+# City data portal "Ward Offices" (one request), used only to cross-check the incumbents table.
+fetch-ward-offices:
+	mkdir -p data/raw/city
+	curl -sSf --max-time 60 -o data/raw/city/ward_offices_htai-wnw4.json "https://data.cityofchicago.org/resource/htai-wnw4.json?\$$limit=100"
+
+# Hand table of current officeholders -> (i) marker. Feb 2027 election only (see the script).
+incumbents: display-tables
+	$(PYTHON) scripts/check_incumbents.py
+
+# Every website / social / fundraising link from the three website sources.
+candidate-links:
+	$(PYTHON) scripts/build_candidate_links.py
+
+dashboard: display-tables incumbents candidate-links
 	$(PYTHON) scripts/build_dashboard.py

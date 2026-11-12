@@ -54,6 +54,16 @@ DONOR_MIX_COLUMNS = {
     "top10_share_of_raised": "top10_share_of_raised__last_first_zip",
     "median_gift": "median_gift",
     "chicago_by_zip_share": "chicago_by_zip_share",
+    # What Raised is made of (D-2 lines, own-committee transfers already out of transfers_in),
+    # for the candidate section's breakdown (added 2026-11-12). mix_raised should equal
+    # <window>_raised from finance_summary.csv; build_dashboard.py prints any difference.
+    "mix_individual_itemized": "individual_itemized",
+    "mix_individual_not_itemized": "individual_not_itemized",
+    "mix_transfers_in": "transfers_in",
+    "mix_other_receipts": "other_receipts",
+    "mix_own_committee_transfers_in": "own_committee_transfers_in",
+    "mix_raised": "raised",
+    "mix_d2_reports": "d2_reports",
 }
 
 # Per-window finance figures shown, copied from finance_summary.csv as <window>_<name>.

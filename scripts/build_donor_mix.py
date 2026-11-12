@@ -14,6 +14,9 @@ Outputs:
   data/tables/donor_mix.csv                     one row per candidate x money window; every
                                                  donor-identity rule side by side (column suffix)
   data/tables/donor_mix_committee_types.csv     transfers in, by the giving committee's ISBE type
+  data/tables/top_donors.csv                    the TOP_DONOR_COUNT biggest donors per candidate x
+                                                 window, the same donors as the top-10 share figure;
+                                                 public fields only (TOP_DONOR_PUBLIC_FIELDS)
   data/private/donor_mix_receipts.csv           every itemized receipt behind the numbers, with
                                                  its tags. GITIGNORED: donor names and addresses
                                                  (publishing donor-level rows: default no, PLAN.md)
@@ -105,6 +108,18 @@ HEADLINE_IDENTITY_RULE = "last_first_zip"
 
 # Concentration: share of itemized donor dollars from the N biggest donors (per identity rule).
 TOP_DONOR_COUNT = 10
+
+# Top-donor list for the dashboard (user, 2026-11-12: list the top donors, link to Illinois
+# Sunshine for the full list). Same donors, rule and count as the top-10 share above
+# (HEADLINE_IDENTITY_RULE), so the list adds up to that share's dollars.
+TOP_DONORS_OUTPUT_PATH = TABLES_DIR / "top_donors.csv"
+# Fields published per donor. Street address is left out on purpose (it stays in data/private/).
+# Spelling shown: the name, city, employer and occupation on the donor's largest receipt
+# (TOP_DONOR_NAME_SPELLING); a donor's receipts can spell these differently.
+TOP_DONOR_PUBLIC_FIELDS = ["donor_name", "donor_type", "city", "state", "employer", "occupation"]
+TOP_DONOR_NAME_SPELLING = "from_largest_receipt"
+# Ties at the cutoff: donors with equal totals are ordered by name, then the first
+# TOP_DONOR_COUNT are kept (same dollar total as the share figure either way).
 
 # OPEN QUESTION: median / mean gift computed over receipt rows of these donor types only.
 # Now: people only (a "typical individual gift"); organizations and committees give larger,
@@ -241,6 +256,30 @@ def d2_mix(window_reports, candidate_committees, own_by_candidate):
     return pd.DataFrame(rows)
 
 
+def top_donors(window_receipts, window_name):
+    """The TOP_DONOR_COUNT biggest donors per candidate in one window: same donor set
+    (DONOR_TYPES_COUNTED, own-committee transfers out) and identity rule as receipt_metrics."""
+    key_columns = DONOR_IDENTITY_RULES[HEADLINE_IDENTITY_RULE]
+    donors = window_receipts[window_receipts["donor_type"].isin(DONOR_TYPES_COUNTED)
+                             & ~window_receipts["own_committee_transfer"]]
+    rows = []
+    for candidate_id, receipts in donors.groupby("candidate_id"):
+        grouped = receipts.groupby(key_columns)
+        totals = grouped["amount"].agg(["sum", "count"]).reset_index()
+        # TOP_DONOR_NAME_SPELLING: fields from each donor's largest receipt.
+        largest = receipts.sort_values("amount", ascending=False).drop_duplicates(key_columns)
+        totals = totals.merge(largest, on=key_columns, how="left")
+        totals["donor_name"] = (totals["FirstName"].str.strip() + " " + totals["LastOnlyName"].str.strip()).str.strip()
+        totals = totals.sort_values(["sum", "donor_name"], ascending=[False, True]).head(TOP_DONOR_COUNT)
+        for rank, donor in enumerate(totals.itertuples(), start=1):
+            rows.append({"candidate_id": candidate_id, "window": window_name, "rank": rank,
+                         "donor_name": donor.donor_name, "donor_type": donor.donor_type,
+                         "city": donor.City.strip(), "state": donor.State.strip(),
+                         "employer": donor.Employer.strip(), "occupation": donor.Occupation.strip(),
+                         "total": round(donor.sum, 2), "receipts": donor.count})
+    return pd.DataFrame(rows, columns=["candidate_id", "window", "rank", *TOP_DONOR_PUBLIC_FIELDS, "total", "receipts"])
+
+
 def receipt_metrics(window_receipts, raised_by_candidate):
     """Layer 2 for one window: per candidate, donor types / unique donors / concentration / geography."""
     rows = []
@@ -314,7 +353,7 @@ def main():
     for window_name, frame in window_reports.items():
         receipts[f"in_{window_name}"] = receipts["FiledDocID"].isin(set(frame["FiledDocID"]))
 
-    mix_rows, type_rows = [], []
+    mix_rows, type_rows, top_donor_rows = [], [], []
     for window_name, frame in window_reports.items():
         in_window = receipts[receipts[f"in_{window_name}"]]
         own_by_candidate = in_window[in_window["own_committee_transfer"]].groupby("candidate_id")["amount"].sum()
@@ -341,6 +380,7 @@ def main():
             print(f"    {row.candidate_id}: D-2 ${row.d2_itemized_minus_own_transfers:,.2f} vs receipts "
                   f"${row.itemized_donor_dollars:,.2f} (gap ${row.itemized_reconciliation_gap:,.2f})")
         mix_rows.append(combined)
+        top_donor_rows.append(top_donors(in_window, window_name))
 
         transfers = in_window[(in_window["donor_type"] == "committee_transfer") & ~in_window["own_committee_transfer"]]
         by_type = transfers.groupby(["candidate_id", "donor_committee_type"])["amount"].agg(["sum", "count"])
@@ -359,6 +399,11 @@ def main():
     print(committee_types[committee_types["window"] == "since_2023_07_01"].groupby(
         "donor_committee_type")[["dollars", "receipt_rows"]].sum().to_string())
 
+    top = pd.concat(top_donor_rows, ignore_index=True)
+    top.to_csv(TOP_DONORS_OUTPUT_PATH, index=False)
+    print(f"top donors: {len(top)} rows for {top['candidate_id'].nunique()} candidates "
+          f"(TOP_DONOR_COUNT={TOP_DONOR_COUNT}, rule {HEADLINE_IDENTITY_RULE})")
+
     receipt_output_columns = (["candidate_id", "CommitteeID", "FiledDocID", "ID", "RcvDate", "Amount", "D2Part",
                                "donor_type", "own_committee_transfer", "LastOnlyName", "FirstName", "Address1",
                                "City", "State", "Zip", "Employer", "Occupation", "donor_committee_type",
@@ -370,7 +415,7 @@ def main():
           f"{HEADLINE_IDENTITY_RULE}, TOP_DONOR_COUNT={TOP_DONOR_COUNT}, GIFT_STATISTIC_DONOR_TYPES="
           f"{GIFT_STATISTIC_DONOR_TYPES}, SELF_LOAN_MATCH={SELF_LOAN_MATCH}, "
           f"DONOR_COMMITTEE_NAME_MATCH={DONOR_COMMITTEE_NAME_MATCH}")
-    for path in [DONOR_MIX_OUTPUT_PATH, COMMITTEE_TYPES_OUTPUT_PATH, RECEIPTS_OUTPUT_PATH]:
+    for path in [DONOR_MIX_OUTPUT_PATH, COMMITTEE_TYPES_OUTPUT_PATH, TOP_DONORS_OUTPUT_PATH, RECEIPTS_OUTPUT_PATH]:
         print(f"wrote {path.relative_to(REPO_ROOT)}")
 
 

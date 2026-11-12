@@ -58,6 +58,23 @@
   .report-link a { color: inherit; }
   .source-links { display: block; font-size: 11.5px; color: var(--muted); white-space: nowrap; }
   .source-links a { color: inherit; }
+  .incumbent { font-weight: 400; color: var(--muted); margin-left: 4px; cursor: help; }
+  a.name-link { color: inherit; text-decoration: none; border-bottom: 1px dotted var(--muted); }
+  a.name-link:hover { color: var(--accent); }
+  td a.number-link { color: inherit; }
+  .cards { display: flex; flex-direction: column; gap: 16px; }
+  .card { border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px; background: var(--bg);
+          display: flex; flex-direction: column; gap: 10px; scroll-margin-top: 12px; }
+  .card.highlight { outline: 2px solid var(--accent); }
+  .card h3 { font-size: 16px; margin: 0; }
+  .card h4 { font-size: 13px; margin: 0 0 4px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px 24px; }
+  .card ul { margin: 0; padding-left: 1.1em; font-size: 13px; }
+  .card table { font-size: 12.5px; }
+  .card .empty { color: var(--muted); font-size: 13px; margin: 0; }
+  .link-meta { color: var(--muted); font-size: 11.5px; }
+  tr.total td { font-weight: 600; border-top: 1px solid var(--muted); }
+  tr.aside td { color: var(--muted); }
   .feedback ul { padding-left: 1.2em; margin: 8px 0 0; display: flex; flex-direction: column; gap: 4px; }
   details { color: var(--muted); font-size: 12.5px; }
   details summary { cursor: pointer; color: var(--fg); }
@@ -86,23 +103,30 @@
   </dl>
 
   <section>
-    <h2>Cash on hand at the latest report</h2>
-    <p class="sub">A candidate's own committees added together. Shared slate committees are not added.</p>
-    <div class="bars" id="cash-bars"></div>
-  </section>
-
-  <section>
     <h2>Raised: <span id="raised-window-label"></span></h2>
-    <p class="sub">Same committees as above, for the money window picked above (loans and in-kind not included).
-      Each chart has its own scale.</p>
+    <p class="sub">A candidate's own committees added together, for the money window picked above (loans and in-kind
+      not included). Shared slate committees are not added. Each chart has its own scale.</p>
     <div class="bars" id="raised-bars"></div>
   </section>
 
   <section>
-    <h2>Candidates</h2>
+    <h2>Cash on hand at the latest report</h2>
+    <p class="sub">Same committees as above.</p>
+    <div class="bars" id="cash-bars"></div>
+  </section>
+
+  <section>
+    <h2>Money by candidate</h2>
     <p class="sub">Money columns follow the window picked above, except cash on hand and $1,000+ gifts reported after the
-      last quarterly. Donor columns count itemized gifts only. Click a column header to sort.</p>
+      last quarterly. Donor columns count itemized gifts only. Click a column header to sort; click a name or a Raised
+      figure for that candidate's details below. <span class="incumbent-legend"></span></p>
     <div class="scroll"><table id="candidate-table"><thead></thead><tbody></tbody></table></div>
+  </section>
+
+  <section>
+    <h2>Endorsements</h2>
+    <p class="sub" id="endorsements-note">Not collected yet. Endorsements will be listed here, each with a link to where it
+      was announced.</p>
   </section>
 
   <section>
@@ -119,6 +143,13 @@
       </tr></thead>
       <tbody></tbody>
     </table></div>
+  </section>
+
+  <section>
+    <h2>Candidates</h2>
+    <p class="sub">Each candidate's links, money and top donors. Links come from web searches and are not all checked by
+      hand yet; tell us if one is wrong (Report a problem). <span class="incumbent-legend"></span></p>
+    <div class="cards" id="candidate-cards"></div>
   </section>
 
   <details>
@@ -175,18 +206,24 @@ const LABELS = { isbe_link: "State link", name_only: "Name only", manual: "Added
 
 // ----- state (kept in the URL hash so a view can be bookmarked: #ALD-01/since_2026_01_01) -----
 const state = { race: DATA.default_race, window: DATA.windows[0].key, sortColumn: "cash_on_hand", sortDescending: true };
+// Hash: #race/window or #race/window/candidate_id (the third part scrolls to that candidate's section).
 function readHash() {
-  const [race, windowKey] = decodeURIComponent(location.hash.slice(1)).split("/");
+  const [race, windowKey, candidateId] = decodeURIComponent(location.hash.slice(1)).split("/");
   if (DATA.races.some((r) => r.race_key === race)) state.race = race;
   if (DATA.windows.some((w) => w.key === windowKey)) state.window = windowKey;
+  state.candidate = DATA.candidates.some((c) => c.candidate_id === candidateId && c.race_key === state.race) ? candidateId : null;
 }
-function writeHash() { history.replaceState(null, "", "#" + state.race + "/" + state.window); }
+function writeHash() {
+  history.replaceState(null, "", "#" + state.race + "/" + state.window + (state.candidate ? "/" + state.candidate : ""));
+}
 
 function element(tag, options = {}, children = []) {
   const node = document.createElement(tag);
   if (options.className) node.className = options.className;
   if (options.text !== undefined) node.textContent = options.text;
   if (options.style) Object.assign(node.style, options.style);
+  if (options.title) node.title = options.title;
+  if (options.href) node.href = options.href;
   node.append(...children);
   return node;
 }
@@ -288,6 +325,125 @@ function drawDataSources() {
   }));
 }
 
+// ----- incumbents, names and candidate sections -----
+const INCUMBENTS = new Map(DATA.incumbents.map((row) => [row.candidate_id, row]));
+
+// Ballot name, plus "(i)" when the incumbents table names this candidate (scripts/check_incumbents.py).
+function nameWithIncumbent(row) {
+  const incumbent = INCUMBENTS.get(row.candidate_id);
+  if (!incumbent) return [row.ballot_name_raw];
+  return [row.ballot_name_raw, element("span", { className: "incumbent", text: "(i)",
+    title: "Holds this office now (" + DATA.incumbent_as_of + "): " + incumbent.officeholder_name })];
+}
+
+// Link that jumps to a candidate's section (#race/window/candidate_id).
+function candidateLink(row, children, className = "name-link") {
+  const link = element("a", { className, href: "#" + state.race + "/" + state.window + "/" + row.candidate_id }, children);
+  link.onclick = (event) => { event.preventDefault(); state.candidate = row.candidate_id; writeHash(); showCard(row.candidate_id); };
+  return link;
+}
+
+function showCard(candidateId) {
+  document.querySelectorAll(".card.highlight").forEach((node) => node.classList.remove("highlight"));
+  const card = document.getElementById("card-" + candidateId);
+  if (!card) return;
+  card.classList.add("highlight");
+  card.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function externalLink(text, href, title) {
+  const link = element("a", { text, href, title }); link.target = "_blank"; link.rel = "noopener";
+  return link;
+}
+
+// Links block: one line per link, grouped in the order of build_candidate_links.LINK_KIND_ORDER.
+function linksBlock(row) {
+  const links = DATA.links.filter((link) => link.candidate_id === row.candidate_id);
+  if (!links.length) return [element("p", { className: "empty", text: "None found yet." })];
+  return [element("ul", {}, links.map((link) => {
+    const label = DATA.link_kind_labels[link.link_kind] + (link.platform ? " (" + link.platform + ")" : "");
+    const shortUrl = link.url.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "");
+    return element("li", {}, [label + ": ", externalLink(shortUrl, link.url),
+      element("span", { className: "link-meta", text: "  found by " + link.found_by.replaceAll("_", " "),
+        title: "Status in each source: " + link.source_statuses })]);
+  }))];
+}
+
+// What Raised is made of in the picked window (columns <window>_mix_* in display_candidates.csv,
+// copied from donor_mix.csv). Loans and in-kind are shown below the total, not added.
+function moneyBlock(row) {
+  const w = state.window;
+  if (toNumber(row[w + "_raised"]) === null)
+    return [element("p", { className: "empty", text: "No committee report in this window." })];
+  const line = (label, value, className = "") => element("tr", { className }, [
+    element("td", { className: "left", text: label }), element("td", { text: show(value, "money") })]);
+  return [element("table", {}, [element("tbody", {}, [
+    line("Itemized gifts from people and organizations", row[w + "_mix_individual_itemized"]),
+    line("Small gifts (not itemized)", row[w + "_mix_individual_not_itemized"]),
+    line("Transfers from other committees", row[w + "_mix_transfers_in"]),
+    line("Other receipts", row[w + "_mix_other_receipts"]),
+    line("Raised", row[w + "_raised"], "total"),
+    line("Loans (not in Raised)", row[w + "_loans"], "aside"),
+    line("In-kind gifts (not in Raised)", row[w + "_in_kind"], "aside"),
+    line("Transfers between own committees (left out)", row[w + "_mix_own_committee_transfers_in"], "aside"),
+    line("Cash on hand at the latest report", row.cash_on_hand, "aside"),
+  ])]), element("p", { className: "link-meta", text: "From " + (row[w + "_mix_d2_reports"] || "0") +
+    " quarterly or other D-2 reports wholly inside the window." })];
+}
+
+// Top donors in the picked window (data/tables/top_donors.csv), with Sunshine links for the full list.
+function donorsBlock(row, committees) {
+  const donors = DATA.top_donors.filter((d) => d.candidate_id === row.candidate_id && d.window === state.window);
+  const sunshine = DATA.committee_source_links.find((source) => source.label === "Sunshine");
+  const fullList = committees.length && sunshine
+    ? [element("p", { className: "link-meta" }, ["Full donor lists on Illinois Sunshine: ",
+        ...committees.flatMap((committee, index) => [index ? " · " : "",
+          externalLink(committee.committee_name, sunshine.url.replace("{committee_id}", committee.committee_id))])])]
+    : [];
+  if (!donors.length) return [element("p", { className: "empty", text: "No itemized donors in this window." }), ...fullList];
+  const TYPE_LABELS = { person: "Person", organization: "Organization", committee_transfer: "Committee", other_receipt: "Other" };
+  const work = (d) => [d.occupation, d.employer].filter(Boolean).join(", ");
+  return [element("table", {}, [
+    element("thead", {}, [element("tr", {}, ["#", "Donor", "Type", "Where", "Work", "Total", "Gifts"].map((h, i) =>
+      element("th", { className: i >= 1 && i <= 4 ? "left" : "", text: h })))]),
+    element("tbody", {}, donors.map((d) => element("tr", {}, [
+      element("td", { text: d.rank }), element("td", { className: "left", text: d.donor_name }),
+      element("td", { className: "left", text: TYPE_LABELS[d.donor_type] || d.donor_type }),
+      element("td", { className: "left", text: [d.city, d.state].filter(Boolean).join(", ") }),
+      element("td", { className: "left", text: work(d) }),
+      element("td", { text: show(d.total, "money") }), element("td", { text: d.receipts }),
+    ]))),
+  ]), element("p", { className: "link-meta", text: "Itemized gifts only, grouped by last name + first name + zip " +
+    "(the same donors as the Top 10 share column)." }), ...fullList];
+}
+
+function drawCards() {
+  const rows = raceCandidates().sort((a, b) => a.candidate_id.localeCompare(b.candidate_id));
+  const windowLabel = DATA.windows.find((w) => w.key === state.window).label;
+  document.getElementById("candidate-cards").replaceChildren(...rows.map((row) => {
+    const committees = DATA.committees.filter((c) => c.candidate_id === row.candidate_id && c.counts_toward === "candidate_sum");
+    const committeeList = committees.length
+      ? element("ul", {}, committees.map((c) => element("li", {}, [c.committee_name + " (" + c.committee_id + "): ",
+          element("span", { className: "source-links" }, sourceLinks(c.committee_id))])))
+      : element("p", { className: "empty", text: "No committee matched." });
+    const section = (title, children) => element("div", {}, [element("h4", { text: title }), ...children]);
+    const card = element("article", { className: "card" }, [
+      element("h3", {}, nameWithIncumbent(row)),
+      ...reportLink(row),
+      ...warningFlags(row).length ? [element("div", {}, warningFlags(row))] : [],
+      element("div", { className: "card-grid" }, [
+        section("Links", linksBlock(row)),
+        section("Committees", [committeeList]),
+        section("Raised: " + windowLabel, moneyBlock(row)),
+        section("Endorsements", [element("p", { className: "empty", text: "Not collected yet." })]),
+      ]),
+      section("Top donors: " + windowLabel, donorsBlock(row, committees)),
+    ]);
+    card.id = "card-" + row.candidate_id;
+    return card;
+  }));
+}
+
 function drawStats() {
   const race = DATA.races.find((r) => r.race_key === state.race);
   document.getElementById("stat-candidates").textContent = show(race.candidates, "count");
@@ -313,7 +469,7 @@ function drawBarChart(boxId, field, sortField) {
     if (amount !== null) track.append(element("div", { className: "bar", style: { width: (Math.max(amount, 0) / largest * 70) + "%" } }));
     track.append(element("span", { className: "bar-value", text: amount === null ? "no committee report" : moneyFormat.format(amount) }));
     track.title = amount === null ? "" : row.ballot_name_raw + ": $" + amount.toLocaleString("en-US", { minimumFractionDigits: 2 });
-    return [element("div", { className: "bar-name", text: row.ballot_name_raw }), track];
+    return [element("div", { className: "bar-name" }, nameWithIncumbent(row)), track];
   }));
 }
 
@@ -353,9 +509,11 @@ function drawCandidateTable() {
     return state.sortDescending ? -difference : difference;
   });
   table.tBodies[0].replaceChildren(...rows.map((row) => element("tr", {}, [
-    element("td", { className: "name" }, [row.ballot_name_raw, ...reportLink(row)]),
+    element("td", { className: "name" }, [candidateLink(row, nameWithIncumbent(row)), ...reportLink(row)]),
     element("td", { className: "left flags" }, warningFlags(row)),
-    ...columns.map((c) => element("td", { text: show(row[c.field], c.format) })),
+    ...columns.map((c) => c.column === "{window}_raised" && toNumber(row[c.field]) !== null
+      ? element("td", {}, [candidateLink(row, [show(row[c.field], c.format)], "number-link")])
+      : element("td", { text: show(row[c.field], c.format) })),
     element("td", { className: "left committees" }, committeeNotes(row)),
   ])));
 }
@@ -382,7 +540,13 @@ function drawCommitteeTable() {
   ])));
 }
 
-function drawAll() { writeHash(); drawStats(); drawBars(); drawCandidateTable(); drawCommitteeTable(); }
+function drawAll() {
+  writeHash(); drawStats(); drawBars(); drawCandidateTable(); drawCommitteeTable(); drawCards();
+  document.querySelectorAll(".incumbent-legend").forEach((node) => {
+    node.textContent = "(i) = holds this office now (" + DATA.incumbent_as_of + ").";
+  });
+  if (state.candidate) showCard(state.candidate);
+}
 
 // ----- set up -----
 document.getElementById("reports-through").textContent = DATA.reports_through;
@@ -397,7 +561,7 @@ const windowSelect = document.getElementById("window-select");
 windowSelect.append(...DATA.windows.map((w) => new Option(w.label, w.key)));
 raceSelect.value = state.race;
 windowSelect.value = state.window;
-raceSelect.onchange = () => { state.race = raceSelect.value; drawAll(); };
+raceSelect.onchange = () => { state.race = raceSelect.value; state.candidate = null; drawAll(); };
 windowSelect.onchange = () => { state.window = windowSelect.value; drawAll(); };
 window.addEventListener("hashchange", () => { readHash(); raceSelect.value = state.race; windowSelect.value = state.window; drawAll(); });
 drawAll();
