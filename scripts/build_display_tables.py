@@ -110,7 +110,9 @@ def main():
 
     committee_columns = ["candidate_id", "committee_id", "committee_name", "committee_type", "committee_status",
                          "counts_toward", "link_basis", "cash_on_hand", "cash_on_hand_report_end",
-                         "a1_gifts_since_last_report"] + [f"{window}_raised" for window in WINDOWS]
+                         "a1_gifts_since_last_report"] + [f"{window}_raised" for window in WINDOWS] + [
+                         # Sunshine-style total (SUNSHINE_STYLE_DOCUMENT_TYPES in build_finance_tables.py)
+                         "sunshine_style_total", "sunshine_style_first_report_begin"]
     committees = by_committee[by_committee["candidate_id"].isin(set(output["candidate_id"]))][committee_columns]
     committees.to_csv(COMMITTEES_OUTPUT_PATH, index=False)
 

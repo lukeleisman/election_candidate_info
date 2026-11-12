@@ -49,11 +49,15 @@
   th[data-sort]:hover { color: var(--fg); }
   tr:last-child td { border-bottom: 0; }
   .left { text-align: left; }
+  td.muted { color: var(--muted); }
   td.name { font-weight: 600; white-space: nowrap; text-align: left; }
   .flag { display: inline-block; padding: 0 7px; margin: 0 4px 2px 0; border: 1px solid var(--line);
           border-radius: 4px; color: var(--muted); }
   .flag.warn { border-color: var(--warn); color: var(--warn); }
   .report-link { display: block; font-weight: 400; font-size: 11.5px; color: var(--muted); }
+  .report-link a { color: inherit; }
+  .source-links { display: block; font-size: 11.5px; color: var(--muted); white-space: nowrap; }
+  .source-links a { color: inherit; }
   .feedback ul { padding-left: 1.2em; margin: 8px 0 0; display: flex; flex-direction: column; gap: 4px; }
   details { color: var(--muted); font-size: 12.5px; }
   details summary { cursor: pointer; color: var(--fg); }
@@ -110,6 +114,8 @@
         <th class="left">Candidate</th><th class="left">Committee</th><th>ISBE ID</th><th class="left">Type</th>
         <th>Status</th><th class="left">How found</th><th class="left">Counted as</th><th>Cash</th>
         <th>As of</th><th title="Raised since Jan 1, 2026">Raised since 1/1/26</th><th title="Raised Jul 1 - Sep 30, 2026">Raised latest qtr</th><th title="Raised since Jul 1, 2023">Raised since 7/1/23</th>
+        <th id="sunshine-style-header" title="Built to match the 'Funds Raised' figure on Illinois Sunshine's race pages: all receipts including loans and in-kind, from the committee's first report, plus $1,000+ reports after Sep 30. Shown only for newer committees (see notes below).">Sunshine-style total</th>
+        <th class="left" title="This committee's pages at the State Board of Elections and Illinois Sunshine">Look up</th>
       </tr></thead>
       <tbody></tbody>
     </table></div>
@@ -133,9 +139,19 @@
       <li><b>Matched committee</b>: ballot candidate matched to a State Board of Elections candidate record, then every
         committee the state links to that record is listed (as Illinois Sunshine does). "Name only" committees carry the
         candidate's name but the state does not link them. No match can mean no committee yet, or one the matching missed.</li>
+      <li><b>Sunshine-style total</b> (committee table): our attempt to match the "Funds Raised" figure on Illinois
+        Sunshine's race pages, which counts loans and in-kind gifts and starts at the committee's first report. It matched
+        Sunshine exactly for committees started in 2025-26 (checked Nov 12, 2026). For older committees Sunshine starts
+        at a date in 2023 we could not reproduce, so they show "not comparable".</li>
       <li>A person who filed twice is listed twice; the second filing is marked and left out of the race figures.</li>
     </ul>
   </details>
+
+  <section class="feedback">
+    <h2>Sources</h2>
+    <p class="sub">Each committee also links to its own pages in the tables above ("Look up").</p>
+    <ul id="data-sources"></ul>
+  </section>
 
   <footer class="feedback" id="feedback">
     <h2>Corrections and updates</h2>
@@ -182,16 +198,24 @@ function raceCandidates() { return DATA.candidates.filter((row) => row.race_key 
 // false = show the number with no flag.
 const FLAG_NEGATIVE_CASH = true;
 
-// "Report a problem" link under a candidate's name, when FEEDBACK_FORM_PREFILL_URL is set
-// in scripts/build_dashboard.py (the form opens with this candidate filled in).
+// Small line under a candidate's name: the candidate ID, then a "Report a problem" link when
+// FEEDBACK_FORM_PREFILL_URL is set in scripts/build_dashboard.py (the form opens with this
+// candidate filled in). The ID is shown so people who reach the form another way can type it
+// (user, 2026-11-12, option A; the form's Candidate ID question points here).
+// SHOW_CANDIDATE_ID = false hides the ID and leaves only the link.
+const SHOW_CANDIDATE_ID = true;
 function reportLink(row) {
+  const parts = SHOW_CANDIDATE_ID ? [element("span", { text: row.candidate_id, title: "Candidate ID (for the corrections form)" })] : [];
   const template = DATA.feedback.form_prefill_url;
-  if (!template) return [];
-  const href = template.replace("{candidate_id}", encodeURIComponent(row.candidate_id))
-    .replace("{candidate_name}", encodeURIComponent(row.ballot_name_raw));
-  const link = element("a", { className: "report-link", text: "Report a problem" });
-  link.href = href; link.target = "_blank"; link.rel = "noopener";
-  return [link];
+  if (template) {
+    const href = template.replace("{candidate_id}", encodeURIComponent(row.candidate_id))
+      .replace("{candidate_name}", encodeURIComponent(row.ballot_name_raw));
+    const link = element("a", { text: "Report a problem" });
+    link.href = href; link.target = "_blank"; link.rel = "noopener";
+    if (parts.length) parts.push(" · ");
+    parts.push(link);
+  }
+  return parts.length ? [element("span", { className: "report-link" }, parts)] : [];
 }
 
 // Footer links; each is hidden when its setting in scripts/build_dashboard.py is empty.
@@ -227,7 +251,41 @@ function committeeNotes(row) {
   if (!row.duplicate_filing_of && Number(row.committees_added) > 0)
     notes.push(row.committees_added + (Number(row.committees_added) === 1 ? " committee" : " committees"));
   if (row.slate_committees_not_added) notes.push("Slate not added: " + row.slate_committees_not_added);
-  return notes.map((text) => element("span", { className: "flag", text }));
+  const lookups = DATA.committees
+    .filter((committee) => committee.candidate_id === row.candidate_id && committee.counts_toward === "candidate_sum")
+    .map((committee) => element("span", { className: "source-links" },
+      [committee.committee_id + ": ", ...sourceLinks(committee.committee_id)]));
+  return [...notes.map((text) => element("span", { className: "flag", text })), ...lookups];
+}
+
+// Links to one committee's pages (COMMITTEE_SOURCE_LINKS in scripts/build_dashboard.py),
+// separated by " · ".
+function sourceLinks(committeeId) {
+  return DATA.committee_source_links.flatMap((source, index) => {
+    const link = element("a", { text: source.label });
+    link.href = source.url.replace("{committee_id}", encodeURIComponent(committeeId));
+    link.title = source.description; link.target = "_blank"; link.rel = "noopener";
+    return index === 0 ? [link] : [" · ", link];
+  });
+}
+
+// Sunshine-style total cell: the figure only when the committee's first quarterly began on or after
+// SUNSHINE_STYLE_SHOWN_IF_FIRST_REPORT_ON_OR_AFTER (scripts/build_dashboard.py); otherwise "not comparable".
+function sunshineStyleCell(row) {
+  const firstReport = row.sunshine_style_first_report_begin;
+  if (!firstReport) return element("td", { text: "—" });
+  if (firstReport < DATA.sunshine_style_cutoff)
+    return element("td", { className: "muted", text: "not comparable", title: "First report began " + firstReport + "; our figure covers all of it, Sunshine's starts in 2023" });
+  return element("td", { text: show(row.sunshine_style_total, "money"), title: "From the first report, beginning " + firstReport });
+}
+
+// "Sources" section (DATA_SOURCES in scripts/build_dashboard.py).
+function drawDataSources() {
+  document.getElementById("data-sources").replaceChildren(...DATA.data_sources.map((source) => {
+    const link = element("a", { text: source.name });
+    link.href = source.url; link.target = "_blank"; link.rel = "noopener";
+    return element("li", {}, [link, ": " + source.use]);
+  }));
 }
 
 function drawStats() {
@@ -319,6 +377,8 @@ function drawCommitteeTable() {
     element("td", { text: show(row.since_2026_01_01_raised, "money") }),
     element("td", { text: show(row.latest_quarter_raised, "money") }),
     element("td", { text: show(row.since_2023_07_01_raised, "money") }),
+    ...(DATA.sunshine_style_cutoff ? [sunshineStyleCell(row)] : []),
+    element("td", { className: "left" }, [element("span", { className: "source-links" }, sourceLinks(row.committee_id))]),
   ])));
 }
 
@@ -328,6 +388,8 @@ function drawAll() { writeHash(); drawStats(); drawBars(); drawCandidateTable();
 document.getElementById("reports-through").textContent = DATA.reports_through;
 document.getElementById("isbe-download").textContent = DATA.isbe_download;
 drawFeedbackLinks();
+drawDataSources();
+if (!DATA.sunshine_style_cutoff) document.getElementById("sunshine-style-header").remove();
 readHash();
 const raceSelect = document.getElementById("race-select");
 raceSelect.append(...DATA.races.map((r) => new Option(r.race_label + "  (" + r.candidates + ")", r.race_key)));

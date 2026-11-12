@@ -74,6 +74,36 @@ def isbe_download_label():
     newest = datetime.strptime(max(downloads)[:10], "%Y-%m-%d")
     return f"{newest:%b} {newest.day}, {newest.year}"
 
+# Links to each committee's own pages, so visitors can explore beyond the dashboard (user,
+# 2026-11-12). (label shown, URL with {committee_id} = ISBE committee ID, tooltip). Shown in the
+# committee table and under each candidate's committees. Both formats checked 2026-11-12 with
+# committee 34616 (La Spata): each returned 200 and the committee's page. An empty list hides them.
+COMMITTEE_SOURCE_LINKS = [
+    ("ISBE", "https://www.elections.il.gov/CampaignDisclosure/CommitteeDetail.aspx?id={committee_id}",
+     "Official filings at the Illinois State Board of Elections"),
+    ("Sunshine", "https://illinoissunshine.org/committees/{committee_id}/",
+     "Illinois Sunshine (Reform for Illinois): the same state data, with donor and spending detail"),
+]
+
+# Page-level sources listed in the "Sources" section: (name, URL, what we take from it).
+DATA_SOURCES = [
+    ("Chicago Board of Election Commissioners: candidates", "https://chicagoelections.gov/getting-ballot/candidates",
+     "who filed to be on the ballot (scripts/fetch_cboe.py)"),
+    ("Illinois State Board of Elections: campaign disclosure data files",
+     "https://www.elections.il.gov/CampaignDisclosureDataFiles/",
+     "committees, reports and receipts behind every money figure (scripts/fetch_isbe.py)"),
+    ("Illinois Sunshine", "https://illinoissunshine.org/",
+     "not used for the numbers; the same state data in a friendlier site, linked per committee"),
+]
+
+# Sunshine-style total column in the committee table (user, 2026-11-12, option 1;
+# sunshine_style_total in build_finance_tables.py). Shown only for committees whose first quarterly
+# began on or after this date; older committees show "not comparable", because our figure covers
+# all their history while Sunshine starts somewhere in spring 2023 (OPEN QUESTION there).
+# 2023-07-01 = the same start as our longest money window; every committee that matched Sunshine
+# exactly on 2026-11-12 began in 2025-26. Empty string hides the column.
+SUNSHINE_STYLE_SHOWN_IF_FIRST_REPORT_ON_OR_AFTER = "2023-07-01"
+
 # Race shown when the page opens.
 DEFAULT_RACE_KEY = "ALD-01"
 
@@ -131,6 +161,10 @@ def main():
         "isbe_download": isbe_download_label(),
         "feedback": {"form_url": FEEDBACK_FORM_URL, "form_prefill_url": FEEDBACK_FORM_PREFILL_URL,
                      "github_issues_url": GITHUB_ISSUES_URL, "contact_email": CONTACT_EMAIL},
+        "committee_source_links": [{"label": label, "url": url, "description": description}
+                                   for label, url, description in COMMITTEE_SOURCE_LINKS],
+        "data_sources": [{"name": name, "url": url, "use": use} for name, url, use in DATA_SOURCES],
+        "sunshine_style_cutoff": SUNSHINE_STYLE_SHOWN_IF_FIRST_REPORT_ON_OR_AFTER,
         "default_race": DEFAULT_RACE_KEY,
         "windows": [{"key": key, "label": label} for key, label in WINDOWS],
         "candidate_columns": [{"column": column, "header": header, "description": description, "format": fmt}

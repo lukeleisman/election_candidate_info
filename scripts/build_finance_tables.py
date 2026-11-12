@@ -120,6 +120,25 @@ COMMITTEE_NAME_MATCH = "exact_after_uppercase_and_punctuation_to_space"
 # on or before REPORTS_THROUGH_DATE are printed and not counted.
 A1_DOCUMENT_TYPE = "A-1"
 
+# Sunshine-style total (user, 2026-11-12, option 1): a per-committee figure built to line up with
+# the "Funds Raised" column of https://illinoissunshine.org/mayoral-races/, so visitors can
+# reconcile our numbers with theirs. Sunshine's current code is not public; this rule was found
+# by matching their page on 2026-11-12 (session log). It is NOT one of our money windows:
+#   sunshine_style_total = D-2 TotalReceipts + TotalInKind on every used report of the types in
+#       SUNSHINE_STYLE_DOCUMENT_TYPES (all of the committee's history), PLUS every unarchived A-1
+#       receipt dated after REPORTS_THROUGH_DATE (gifts, transfers, loans and in-kind).
+#   Includes loans and in-kind; own-committee transfers are not taken out.
+# Matched Sunshine to the cent on 2026-11-12 for 6 committees whose first report began in 2025-26
+# (Kelly 40942, Quigley 40800, Wilson 41192, Brewer 41238, Quinlan 41442, Nee 41265).
+# OPEN QUESTION: for older committees (Giannoulias 19323, Johnson 34198, Mendoza 18308, Cardenas
+# 17290) Sunshine starts at some date in spring 2023 that we could not reproduce, so their figure
+# here (all history) will be higher than Sunshine's. Holberg 40876: ours is $11,650 higher than
+# Sunshine, unexplained. sunshine_style_first_report_begin is written so the start is visible.
+# Document types: Quarterly only, as in Sunshine's 2018 code (eads/illinois-sunshine etl.py,
+# ContestedRaces_getFundsRaisedTotal); every matched committee had only quarterlies.
+SUNSHINE_STYLE_DOCUMENT_TYPES = {"Quarterly"}
+SUNSHINE_STYLE_REPORT_COLUMNS = ["TotalReceipts", "TotalInKind"]
+
 # ---------------------------------------------------------------------------
 
 BY_COMMITTEE_KEY = ["candidate_id", "committee_id"]
@@ -317,6 +336,16 @@ def main():
     if len(a1):
         print(f"A-1 receipts after {REPORTS_THROUGH_DATE}: {len(a1)} rows, ${a1['amount'].sum():,.2f}, "
               f"latest dated {str(a1['received'].max())[:10]}")
+
+    # Sunshine-style total (see SUNSHINE_STYLE_DOCUMENT_TYPES): all-history D-2 receipts + in-kind,
+    # plus every A-1 receipt after REPORTS_THROUGH_DATE.
+    sunshine_reports = reports[reports["used"] & reports["DocName"].isin(SUNSHINE_STYLE_DOCUMENT_TYPES)]
+    sunshine_d2 = money(sunshine_reports, SUNSHINE_STYLE_REPORT_COLUMNS).groupby(sunshine_reports["CommitteeID"]).sum()
+    sunshine_first = sunshine_reports.groupby("CommitteeID")["RptPdBegDate"].min().str[:10]
+    a1_all = a1.groupby("CommitteeID")["amount"].sum()
+    by_committee["sunshine_style_total"] = (by_committee["committee_id"].map(sunshine_d2).fillna(0)
+                                            + by_committee["committee_id"].map(a1_all).fillna(0))
+    by_committee["sunshine_style_first_report_begin"] = by_committee["committee_id"].map(sunshine_first)
 
     by_committee = by_committee.sort_values(BY_COMMITTEE_KEY)
     by_committee.to_csv(BY_COMMITTEE_OUTPUT_PATH, index=False)
