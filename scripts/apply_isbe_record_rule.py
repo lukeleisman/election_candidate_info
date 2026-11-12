@@ -11,10 +11,16 @@ Each open row gets `rule_outcome` and `rule_reason`, checked in this order:
   judgment_call  shared_with_other_candidate  would be accepted, but the same ISBE record would
                                               also be accepted for another CBOE candidate
                                               (duplicate filings: Ward 24 Scott, Ward 39 Nugent)
+  judgment_call  last_name_<match type>       would be accepted, but the last name matched only
+                                              loosely (hyphen vs space, word order; added 2026-11-12)
+  judgment_call  district_town_unknown        would be accepted, but the ISBE district is a bare number
+                                              and the address is blank / redacted (added 2026-11-12)
   accept_yes     all_match                    every column in ACCEPT_WHEN_ALL_TRUE is True
   judgment_call  nickname_and_district_differ  would be rejected (next line), but the first names
                                               are nicknames of each other (Bob / Robert; table
                                               NICKNAME_GROUPS in scripts/names.py; added 2026-11-04)
+  judgment_call  isbe_first_name_is_other_ballot_word  would be rejected, but the ISBE first name is a
+                                              later ballot word (DONGBO MARK SU / "Mark"; 2026-11-12)
   accept_no      first_name_and_district_differ  every column in REJECT_WHEN_ALL_FALSE is False
                                               (same surname, different person — user chose this
                                               rule 2026-10-27; 156 of 300 rows that day)
@@ -48,13 +54,14 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 REVIEW_PATH = REPO_ROOT / "data" / "crosswalk" / "candidate_isbe_review.csv"
 
 # v1 was the per-committee rule (scripts/apply_review_rule.py, retired 2026-10-27).
-# v2 (2026-10-27) had no nickname check; v3 (2026-11-04) adds it.
+# v2 (2026-10-27) had no nickname check; v3 (2026-11-04) adds it; v4 (2026-11-12) adds
+# the loose last-name check (LOOSE_LAST_NAME_EFFECT).
 # Keep RULE_REVIEWER_LABEL in step with scripts/build_isbe_record_review.py.
-RULE_REVIEWER_LABEL = "rule_v3"
+RULE_REVIEWER_LABEL = "rule_v4"
 
 # Earlier rule labels: their marks are cleared and recomputed like the current
 # label's, never treated as a person's mark.
-RETIRED_RULE_REVIEWER_LABELS = {"rule_v2"}
+RETIRED_RULE_REVIEWER_LABELS = {"rule_v2", "rule_v3"}
 
 # Accept: ISBE ward/district number, first name word, and Jr/Sr/II/III all match
 # the ballot name (columns computed in scripts/propose_committee_matches.py).
@@ -71,6 +78,26 @@ REJECT_WHEN_ALL_FALSE = ["district_matches", "first_word_matches"]
 # OPEN QUESTION (user's): also accept automatically when the nickname matches and
 # district + suffix match? Not done: every such row so far was reviewed by hand.
 NICKNAME_EFFECT = "judgment_call_instead_of_no"
+
+# Last name matched only loosely (column last_name_match_type is not EXACT_LAST_NAME_MATCH_TYPE:
+# hyphen vs space, or words in another order; see LOOSE_LAST_NAME_MATCHES_ON in
+# scripts/propose_committee_matches.py). Chosen 2026-11-12 (user: flag for human confirmation):
+#   "judgment_call_instead_of_yes"  a would-be accept becomes judgment call
+#                                   last_name_<type> (e.g. last_name_word_order_differs).
+#                                   Would-be rejects stay rejects (different first name AND ward).
+LOOSE_LAST_NAME_EFFECT = "judgment_call_instead_of_yes"
+EXACT_LAST_NAME_MATCH_TYPE = "exact_words"
+
+# ISBE district bases where the town is not known (address blank / redacted; see
+# BARE_NUMBER_DISTRICT_NO_ADDRESS_COUNTS in scripts/propose_committee_matches.py). Added
+# 2026-11-12: a would-be accept becomes judgment call district_town_unknown.
+UNCERTAIN_DISTRICT_BASES = {"bare_number_and_no_address"}
+
+# Added 2026-11-12 (user: "broader rules are better than narrow, with anything fishy marked
+# for manual judgment"). When the ISBE first name is a later word of the ballot name (ballot
+# "DONGBO MARK SU", ISBE "Mark Su"), a would-be reject becomes judgment call
+# isbe_first_name_is_other_ballot_word. False = reject as before.
+OTHER_BALLOT_WORD_MAKES_JUDGMENT_CALL = True
 
 # Also compare the ISBE first name with a quoted nickname on the ballot
 # ('WILLIAM "BILL" MORTON' vs ISBE "Bill"). normalize_name drops quoted nicknames,
@@ -90,14 +117,27 @@ def first_name_is_nickname(row):
     return any(first_names_equivalent(ballot_name, isbe_first) for ballot_name in ballot_names if ballot_name)
 
 
+def isbe_first_name_is_other_ballot_word(row):
+    """True if the ISBE first name's first word is a ballot word other than the first
+    ('DONGBO MARK SU' vs ISBE 'Mark')."""
+    isbe_first = (normalize_name(row["isbe_first_name"]).split() or [""])[0]
+    return bool(isbe_first) and isbe_first in normalize_name(row["ballot_name_raw"]).split()[1:]
+
+
 def rule_outcome(row):
     """(outcome, reason) for one open row, before the shared-record check."""
     if all(row[column] == "True" for column in ACCEPT_WHEN_ALL_TRUE):
+        if row["last_name_match_type"] != EXACT_LAST_NAME_MATCH_TYPE:
+            return "judgment_call", f"last_name_{row['last_name_match_type']}"
+        if row["isbe_district_basis"] in UNCERTAIN_DISTRICT_BASES:
+            return "judgment_call", "district_town_unknown"
         return "accept_yes", "all_match"
     nickname = first_name_is_nickname(row)
     if all(row[column] == "False" for column in REJECT_WHEN_ALL_FALSE):
         if nickname:
             return "judgment_call", "nickname_and_district_differ"
+        if OTHER_BALLOT_WORD_MAKES_JUDGMENT_CALL and isbe_first_name_is_other_ballot_word(row):
+            return "judgment_call", "isbe_first_name_is_other_ballot_word"
         return "accept_no", "first_name_and_district_differ"
     if row["suffix_matches"] == "False" and row["first_word_matches"] == "True":
         return "judgment_call", "suffix_differs"

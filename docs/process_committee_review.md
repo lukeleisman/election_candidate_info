@@ -15,7 +15,7 @@ PACs or closed committees should count is decided later, after seeing them.
 ```
 make committee-proposals   # ISBE records with a matching last name, their committees, name matches
 make isbe-review           # review sheet, one row per candidate x ISBE record; keeps earlier marks
-make isbe-rule             # scripts/apply_isbe_record_rule.py marks clear cases (reviewed_by = rule_v3)
+make isbe-rule             # scripts/apply_isbe_record_rule.py marks clear cases (reviewed_by = rule_v4)
 make candidate-committee   # data/crosswalk/candidate_committee.csv, rebuilt from the sheet
 ```
 Hand-edited files: `data/crosswalk/candidate_isbe_review.csv` (accept / reviewed_by /
@@ -36,6 +36,8 @@ Filter the sheet to `rule_outcome = judgment_call` with `accept` blank. `rule_re
 | `first_name_is_nickname` | Ward matches; first names are in one nickname group (`NICKNAME_GROUPS`, `scripts/names.py`) | Usually **yes**, unless a relative |
 | `nickname_and_district_differ` | Ward differs **and** first names differ, but are nicknames (Bob / Robert). Would have been an automatic **no** before rule_v3 | Check address: ISBE candidate / committee address vs CBOE mailing address (`data/raw/cboe/candidates_with_addresses.csv`) |
 | `suffix_differs` | Jr / Sr / II / III differs | Parent and child (Burnett Jr vs his son, already marked **no**) |
+| `last_name_hyphen_space_differs` | Everything else matches; last name matches only with hyphens read as spaces (ballot SIGCHO-LOPEZ, ISBE "Sigcho Lopez"). Added rule_v4 (2026-11-12) | **yes** if the same person; also check partial matches (ISBE "Ward" vs ballot GUNN-WARD) |
+| `last_name_word_order_differs` | Everything else matches; last-name words appear in another order (ballot CUNNINGHAM POUW, ISBE "Pouw Cunningham"). Added rule_v4 | **yes** if the same person |
 | `shared_with_other_candidate` | One ISBE record would go to 2+ candidates | Check `duplicate_filings.csv`; if it's one person filed twice, add a row there |
 
 Columns that help: `isbe_first_name`, `isbe_district_raw`, `linked_committees` (ID, name,

@@ -95,14 +95,48 @@ CHICAGO_DISTRICT_PATTERN = re.compile(r"^\s*Chicago\s*(?:[-\s]\s*(\d+))?\s*$", r
 # Burnett, ISBE 53650; Bill Thanoukos, 53984). Such a record counts as Chicago
 # when its address City (lowercased, trimmed) is in this set. ASSUMPTION: a
 # candidate for another town's ward does not have a Chicago mailing address.
-BARE_NUMBER_DISTRICT_PATTERN = re.compile(r"^\s*(\d+)\s*$")
+# Widened 2026-11-12: an ordinal and/or "Ward" is allowed too ("6th", "6th Ward"); seen on
+# Allyson Renee Scrutchens, ISBE 54196 (District "6th", address "Redaction Requested").
+BARE_NUMBER_DISTRICT_PATTERN = re.compile(r"^\s*(\d+)\s*(?:st|nd|rd|th)?\s*(?:ward)?\s*$", re.IGNORECASE)
 BARE_NUMBER_DISTRICT_ADDRESS_CITIES = {"chicago"}
+
+# Added 2026-11-12 (user: broader rules, anything fishy to manual review): a number-only
+# district whose address City is blank (e.g. "Redaction Requested") also counts as
+# Chicago, with district_basis = BARE_NUMBER_NO_ADDRESS_BASIS. The town can't be told,
+# so scripts/apply_isbe_record_rule.py never auto-accepts these (UNCERTAIN_DISTRICT_BASES).
+# False = drop them as before.
+BARE_NUMBER_DISTRICT_NO_ADDRESS_COUNTS = True
+BARE_NUMBER_NO_ADDRESS_BASIS = "bare_number_and_no_address"
 
 # Last-name rule: the ISBE LastName, normalized (scripts/names.py), must appear
 # as a run of whole words inside the normalized CBOE ballot name. Handles
 # multi-word surnames ("LA SPATA", "RODRIGUEZ SANCHEZ"). Suffixes ("Jr") are
 # dropped by the normalization.
 LAST_NAME_RULE = "isbe_last_name_words_inside_cboe_name"
+
+# Looser last-name matches (added 2026-11-12, user). Each one that is on is tried in this
+# order, after the exact LAST_NAME_RULE. The kind of match is written to column
+# last_name_match_type, and scripts/apply_isbe_record_rule.py never auto-accepts a row
+# whose type is not "exact_words". User: "if the order doesn't match (or anytime there
+# is something weird) we can proceed with the match, but should make sure it's flagged
+# for human confirmation."
+#   hyphen_space_differs  split hyphens into separate words on both sides, then apply
+#                         LAST_NAME_RULE. Ballot "SIGCHO-LOPEZ" vs ISBE "Sigcho Lopez"
+#                         (28403). Side effect: ISBE "Ward" now matches ballot
+#                         "GUNN-WARD" (as ISBE "Ross" already matches "HEALY ROSS").
+#   word_order_differs    every ISBE last-name word (hyphens split) is a ballot word,
+#                         in any order. Ballot "LEAH CUNNINGHAM POUW" vs ISBE
+#                         "Pouw Cunningham" (54055).
+LOOSE_LAST_NAME_MATCHES_ON = {
+    "hyphen_space_differs": True,
+    "word_order_differs": True,
+}
+EXACT_LAST_NAME_MATCH_TYPE = "exact_words"
+
+# For "committee_name_contains": a hyphenated last ballot word ("SIGCHO-LOPEZ") matches
+# a committee name that has the hyphenated word OR every part as its own word ("Sigcho
+# Lopez"). Added 2026-11-12. False = the hyphenated word must appear as written.
+COMMITTEE_NAME_SEARCH_SPLITS_HYPHENS = True
 
 # For "committee_name_contains": only committees whose Status is in this set.
 # The dictionary says "Active or Final", but the file codes them "A" / "F"
@@ -120,7 +154,8 @@ OUTPUT_COLUMNS = [
     "candidate_id", "office_code", "district_number", "ballot_name_raw", "also_filed_as",
     "evidence_source",
     "isbe_candidate_id", "isbe_last_name", "isbe_first_name", "isbe_office", "isbe_district_raw",
-    "isbe_district_number", "isbe_district_basis", "district_matches", "first_word_matches",
+    "isbe_district_number", "isbe_district_basis", "last_name_match_type",
+    "district_matches", "first_word_matches",
     "suffix_matches",
     "isbe_election_records", f"has_{ELECTION_YEAR}_election_record",
     "committee_id", "committee_name", "committee_type", "committee_status",
@@ -143,6 +178,35 @@ def words_inside(needle_words, haystack_words):
     if length == 0:
         return False
     return any(haystack_words[i:i + length] == needle_words for i in range(len(haystack_words) - length + 1))
+
+
+def split_hyphens(words):
+    """['BYRON', 'SIGCHO-LOPEZ'] -> ['BYRON', 'SIGCHO', 'LOPEZ']."""
+    return [part for word in words for part in word.split("-") if part]
+
+
+def last_name_match_type(isbe_last_name_words, cboe_words):
+    """How the ISBE last name matches the ballot name: EXACT_LAST_NAME_MATCH_TYPE, one of
+    the LOOSE_LAST_NAME_MATCHES_ON types (first that applies), or None for no match."""
+    if words_inside(isbe_last_name_words, cboe_words):
+        return EXACT_LAST_NAME_MATCH_TYPE
+    isbe_parts, cboe_parts = split_hyphens(isbe_last_name_words), split_hyphens(cboe_words)
+    if LOOSE_LAST_NAME_MATCHES_ON["hyphen_space_differs"] and words_inside(isbe_parts, cboe_parts):
+        return "hyphen_space_differs"
+    if LOOSE_LAST_NAME_MATCHES_ON["word_order_differs"] and isbe_parts and set(isbe_parts) <= set(cboe_parts):
+        return "word_order_differs"
+    return None
+
+
+def committee_name_has_word(committee_words, ballot_word):
+    """True if the ballot word is in the committee name; with COMMITTEE_NAME_SEARCH_SPLITS_HYPHENS,
+    a hyphenated ballot word also counts when each part is a word of the (hyphen-split) name."""
+    if ballot_word in committee_words:
+        return True
+    if COMMITTEE_NAME_SEARCH_SPLITS_HYPHENS and "-" in ballot_word:
+        committee_parts = set(split_hyphens(committee_words))
+        return all(part in committee_parts for part in split_hyphens([ballot_word]))
+    return False
 
 
 def main():
@@ -186,10 +250,16 @@ def main():
         isbe_candidates["District"].str.match(BARE_NUMBER_DISTRICT_PATTERN)
         & isbe_candidates["City"].str.strip().str.lower().isin(BARE_NUMBER_DISTRICT_ADDRESS_CITIES)
     )
-    isbe_candidates["is_chicago"] = named_district | bare_district
+    bare_district_no_address = (
+        isbe_candidates["District"].str.match(BARE_NUMBER_DISTRICT_PATTERN)
+        & (isbe_candidates["City"].str.strip() == "")
+        & BARE_NUMBER_DISTRICT_NO_ADDRESS_COUNTS
+    )
+    isbe_candidates["is_chicago"] = named_district | bare_district | bare_district_no_address
     isbe_candidates["district_basis"] = ""
     isbe_candidates.loc[named_district, "district_basis"] = "district_text_chicago"
     isbe_candidates.loc[bare_district, "district_basis"] = "bare_number_and_chicago_address"
+    isbe_candidates.loc[bare_district_no_address, "district_basis"] = BARE_NUMBER_NO_ADDRESS_BASIS
     isbe_candidates["district_number"] = (
         isbe_candidates["District"].str.extract(CHICAGO_DISTRICT_PATTERN)[0]
         .fillna(isbe_candidates["District"].str.extract(BARE_NUMBER_DISTRICT_PATTERN)[0])
@@ -243,7 +313,8 @@ def main():
         office_values = ISBE_OFFICES_BY_CBOE_CODE[candidate.office_code]
         same_office = chicago[chicago["Office"].isin(office_values)]
         for isbe_row in same_office.itertuples():
-            if not words_inside(isbe_row.last_name_words, cboe_words):
+            match_type = last_name_match_type(isbe_row.last_name_words, cboe_words)
+            if match_type is None:
                 continue
             elections = sorted(elections_by_candidate.get(isbe_row.ID, []), reverse=True)
             isbe_columns = {
@@ -254,6 +325,7 @@ def main():
                 "isbe_district_raw": isbe_row.District,
                 "isbe_district_number": isbe_row.district_number,
                 "isbe_district_basis": isbe_row.district_basis,
+                "last_name_match_type": match_type,
                 "district_matches": isbe_row.district_number == candidate.district_number,
                 "first_word_matches": bool(cboe_words) and isbe_row.first_word == cboe_words[0],
                 # Jr / Sr / II / III / IV written in each name (dropped by normalization).
@@ -273,7 +345,8 @@ def main():
         if len(cboe_words) >= 2:
             first_word, last_word = cboe_words[0], cboe_words[-1]
             for committee in searchable_committees.itertuples():
-                if first_word in committee.name_words and last_word in committee.name_words:
+                if (committee_name_has_word(committee.name_words, first_word)
+                        and committee_name_has_word(committee.name_words, last_word)):
                     candidate_rows.append({**base, "evidence_source": "committee_name_contains",
                                            **committee_columns(committee.ID)})
 

@@ -47,15 +47,15 @@ REVIEW_KEY_COLUMNS = ["candidate_id", "isbe_candidate_id"]
 
 # reviewed_by values written by scripts/apply_isbe_record_rule.py (RULE_REVIEWER_LABEL and
 # RETIRED_RULE_REVIEWER_LABELS there). Rule marks are not kept for rows no longer proposed.
-RULE_REVIEWER_LABEL = "rule_v3"
-RETIRED_RULE_REVIEWER_LABELS = {"rule_v2"}
+RULE_REVIEWER_LABEL = "rule_v4"
+RETIRED_RULE_REVIEWER_LABELS = {"rule_v2", "rule_v3"}
 
 # Columns copied from the proposals (one value per candidate x ISBE record).
 RECORD_COLUMNS = [
     "candidate_id", "office_code", "district_number", "ballot_name_raw", "also_filed_as",
     "isbe_candidate_id", "isbe_last_name", "isbe_first_name", "isbe_office",
     "isbe_district_raw", "isbe_district_number", "isbe_district_basis",
-    "district_matches", "first_word_matches", "suffix_matches",
+    "last_name_match_type", "district_matches", "first_word_matches", "suffix_matches",
     "isbe_election_records", "has_2027_election_record", "normalization_steps_on",
 ]
 
@@ -63,7 +63,8 @@ RECORD_COLUMNS = [
 SHEET_COLUMNS = [
     "rule_outcome", "rule_reason", *REVIEW_INPUT_COLUMNS,
     "candidate_id", "ballot_name_raw", "isbe_candidate_id", "isbe_last_name", "isbe_first_name",
-    "district_number", "isbe_district_raw", "district_matches", "first_word_matches", "suffix_matches",
+    "district_number", "isbe_district_raw", "last_name_match_type",
+    "district_matches", "first_word_matches", "suffix_matches",
     "linked_committee_count", "linked_committees", "other_candidates_matching_record",
     "isbe_election_records", "has_2027_election_record",
     "also_filed_as", "office_code", "isbe_office", "isbe_district_number", "isbe_district_basis", "normalization_steps_on",
