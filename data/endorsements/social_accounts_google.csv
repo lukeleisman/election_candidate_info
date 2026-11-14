@@ -1,101 +1,181 @@
-candidate_id,raw_file,retrieved,platform,account_label,count_shown,count_floor,count_unit,linked_from_campaign_site
-ALD-01-001,ALD-01-001.txt,2026-11-12T12:11:57-06:00,Instagram,daniel.la.spata,2.2K+,2200,followers,False
-ALD-01-001,ALD-01-001.txt,2026-11-12T12:11:57-06:00,Facebook,Alderman La Spata 1st Ward,3K+,3000,followers,False
-ALD-01-001,ALD-01-001.txt,2026-11-12T12:11:57-06:00,LinkedIn,Daniel La Spata,730+,730,followers,False
-ALD-01-001,ALD-01-001.txt,2026-11-12T12:11:57-06:00,Facebook,Daniel La Spata for the 1st Ward,1.7K+,1700,followers,False
-ALD-01-002,ALD-01-002.txt,2026-11-12T12:12:22-06:00,Instagram,billfor1st,490+,490,followers,False
-ALD-01-002,ALD-01-002.txt,2026-11-12T12:12:22-06:00,Facebook,Bill Thanoukos for 1st Ward Alderman,80+,80,followers,False
-ALD-01-002,ALD-01-002.txt,2026-11-12T12:12:22-06:00,TikTok,Bill Thanoukos for 1st Ward,40+,40,followers,False
-ALD-02-001,ALD-02-001.txt,2026-11-12T12:13:28-06:00,Instagram,brianforchicago,430+,430,followers,True
-ALD-02-001,ALD-02-001.txt,2026-11-12T12:13:28-06:00,X,AldHopkins,110+,110,followers,False
-ALD-02-002,ALD-02-002.txt,2026-11-12T12:13:46-06:00,LinkedIn,Richard O.,2.6K+,2600,followers,False
-ALD-02-002,ALD-02-002.txt,2026-11-12T12:13:46-06:00,Instagram,roshoyoola,16.3K+,16300,followers,False
-ALD-02-002,ALD-02-002.txt,2026-11-12T12:13:46-06:00,Instagram,richard4ward2,370+,370,followers,False
-ALD-03-001,ALD-03-001.txt,2026-11-12T12:14:09-06:00,Instagram,citizensforpatdowell,200+,200,followers,True
-ALD-03-002,ALD-03-002.txt,2026-11-12T12:14:33-06:00,Instagram,raheemfor3,560+,560,followers,True
-ALD-03-003,ALD-03-003_2.txt,2026-11-12T12:15:19-06:00,Instagram,qushonaharris,8.1K+,8100,followers,True
-ALD-04-001,ALD-04-001.txt,2026-11-12T12:15:45-06:00,LinkedIn,Lamont J. Robinson,320+,320,followers,False
-ALD-04-001,ALD-04-001.txt,2026-11-12T12:15:45-06:00,Facebook,Lamont Robinson For Alderman,420+,420,followers,False
-ALD-04-001,ALD-04-001.txt,2026-11-12T12:15:45-06:00,Instagram,votelamontjrobinson,340+,340,followers,True
-ALD-05-001,ALD-05-001.txt,2026-11-12T12:16:06-06:00,Facebook,5th Ward Alderman Desmon Yancy,1K+,1000,followers,False
-ALD-05-001,ALD-05-001.txt,2026-11-12T12:16:06-06:00,Instagram,yancyfor5thward,510+,510,followers,True
-ALD-05-001,ALD-05-001.txt,2026-11-12T12:16:06-06:00,Facebook,Desmon Yancy 5th Ward Alder- Political,850+,850,followers,False
-ALD-05-002,ALD-05-002.txt,2026-11-12T12:16:26-06:00,LinkedIn,Ryan Greenlaw,1.6K+,1600,followers,False
-ALD-05-002,ALD-05-002.txt,2026-11-12T12:16:26-06:00,Instagram,itsgreenlaw,1.2K+,1200,followers,False
-ALD-06-001,ALD-06-001.txt,2026-11-12T12:16:44-06:00,LinkedIn,Allyson Scrutchens,1.8K+,1800,followers,False
-ALD-06-003,ALD-06-003.txt,2026-11-12T12:17:31-06:00,Instagram,6wardcentral,1.9K+,1900,followers,False
-ALD-06-003,ALD-06-003.txt,2026-11-12T12:17:31-06:00,Instagram,williamhallfor6,810+,810,followers,True
-ALD-06-003,ALD-06-003.txt,2026-11-12T12:17:31-06:00,X,WilliamHallfor6,20+,20,followers,True
-ALD-07-001,ALD-07-001.txt,2026-11-12T12:17:59-06:00,Facebook,Greg Mitchell 7th Ward Alderman,3K+,3000,followers,False
-ALD-07-002,ALD-07-002.txt,2026-11-12T12:18:23-06:00,Facebook,Nate Pendleton for 7th Ward Alderman,350+,350,followers,False
-ALD-07-002,ALD-07-002.txt,2026-11-12T12:18:23-06:00,Instagram,friendsofnatependleton,220+,220,followers,True
-ALD-07-002,ALD-07-002.txt,2026-11-12T12:18:23-06:00,Facebook,Nate Pendleton for 7th Ward Alderman,350+,350,followers,False
-ALD-07-003,ALD-07-003.txt,2026-11-12T12:18:49-06:00,Instagram,sheilafor7thward,100+,100,followers,False
-ALD-07-003,ALD-07-003.txt,2026-11-12T12:18:49-06:00,Facebook,Sheila for the 7th Ward,150+,150,followers,False
-ALD-07-005,ALD-07-005.txt,2026-11-12T12:19:55-06:00,Facebook,Cher Phillips for Chicago's 7th Ward Alderman,120+,120,followers,False
-ALD-08-001,ALD-08-001_2.txt,2026-11-12T12:22:40-06:00,Instagram,yolandaforjudge,750+,750,followers,False
-ALD-08-001,ALD-08-001_2.txt,2026-11-12T12:22:40-06:00,Facebook,Yolanda Mack,13.5K+,13500,followers,False
-ALD-08-001,ALD-08-001_2.txt,2026-11-12T12:22:40-06:00,LinkedIn,Yolanda Mack,2.1K+,2100,followers,False
-ALD-08-002,ALD-08-002.txt,2026-11-12T12:23:08-06:00,X,AldermanHarris,3.5K+,3500,followers,True
-ALD-08-003,ALD-08-003_2.txt,2026-11-12T12:23:42-06:00,LinkedIn,Jaye Jones,200+,200,followers,False
-ALD-08-003,ALD-08-003_2.txt,2026-11-12T12:23:42-06:00,Instagram,jonesfor8thward,180+,180,followers,True
-ALD-08-003,ALD-08-003_2.txt,2026-11-12T12:23:42-06:00,Facebook,Jaye Jones,5.4K+,5400,followers,False
-ALD-08-004,ALD-08-004.txt,2026-11-12T12:24:07-06:00,Instagram,ruthiemoorefor8,60+,60,followers,True
-ALD-08-005,ALD-08-005.txt,2026-11-12T12:24:40-06:00,LinkedIn,Brittney G.,1.1K+,1100,followers,False
-ALD-08-005,ALD-08-005_2.txt,2026-11-12T12:24:40-06:00,Facebook,Brittney Bee Gault,740+,740,followers,False
-ALD-08-005,ALD-08-005_2.txt,2026-11-12T12:24:40-06:00,Instagram,beethebroker,110+,110,followers,False
-ALD-08-005,ALD-08-005_2.txt,2026-11-12T12:24:40-06:00,LinkedIn,Brittney G.,1.1K+,1100,followers,False
-ALD-08-005,ALD-08-005_2.txt,2026-11-12T12:24:40-06:00,Instagram,beegault8,30+,30,followers,False
-ALD-09-001,ALD-09-001.txt,2026-11-12T12:25:08-06:00,Facebook,9th Ward Alderman Anthony A. Beale,3.2K+,3200,followers,False
-ALD-09-001,ALD-09-001.txt,2026-11-12T12:25:08-06:00,X,Alderman_Beale,1.6K+,1600,followers,False
-ALD-09-002,ALD-09-002_2.txt,2026-11-12T12:25:37-06:00,LinkedIn,"Cecelia Harrison RHIA, CCA, CRCR, RON",1.1K+,1100,followers,False
-ALD-09-002,ALD-09-002_2.txt,2026-11-12T12:25:37-06:00,Instagram,ceceliaharrisonfor9thward,40+,40,followers,False
-ALD-09-002,ALD-09-002_2.txt,2026-11-12T12:25:37-06:00,LinkedIn,"Cecelia Harrison-Long, MPH, CLSSGB",660+,660,followers,False
-ALD-09-003,ALD-09-003_2.txt,2026-11-12T12:26:10-06:00,Instagram,the_wizzard44,1.2K+,1200,followers,False
-ALD-10-001,ALD-10-001.txt,2026-11-12T12:26:39-06:00,Facebook,Alderman Peter Chico,8.9K+,8900,followers,False
-ALD-11-001,ALD-11-001.txt,2026-11-12T12:27:26-06:00,Facebook,Nicole Lee for 11th Ward Alderman,740+,740,followers,False
-ALD-12-001,ALD-12-001_2.txt,2026-11-12T12:28:19-06:00,Instagram,the12thward,4.4K+,4400,followers,True
-ALD-12-001,ALD-12-001_2.txt,2026-11-12T12:28:19-06:00,Facebook,12th Ward Alderwoman Julia Ramirez,7K+,7000,followers,False
-ALD-12-002,ALD-12-002.txt,2026-11-12T12:28:46-06:00,Instagram,claudiafor12thward,170+,170,followers,True
-ALD-12-003,ALD-12-003_2.txt,2026-11-12T12:29:23-06:00,Instagram,carlossssssanchez,2.6K+,2600,followers,False
-ALD-13-002,ALD-13-002_2.txt,2026-11-12T12:30:35-06:00,LinkedIn,Skyler Cepek,10+,10,followers,False
-ALD-13-002,ALD-13-002_2.txt,2026-11-12T12:30:35-06:00,Instagram,skylercepek,330+,330,followers,True
-ALD-14-001,ALD-14-001_2.txt,2026-11-12T12:32:21-06:00,Facebook,Alderwoman Jeylú B. Gutiérrez,1.8K+,1800,followers,False
-ALD-14-001,ALD-14-001_2.txt,2026-11-12T12:32:21-06:00,LinkedIn,Jeylu Gutierrez,30+,30,followers,False
-ALD-14-002,ALD-14-002_2.txt,2026-11-12T12:33:04-06:00,Instagram,raulareyes1,870+,870,followers,False
-ALD-15-001,ALD-15-001.txt,2026-11-12T12:33:32-06:00,Instagram,aldermanraymondlopez,2K+,2000,followers,True
-ALD-16-001,ALD-16-001.txt,2026-11-12T12:36:38-06:00,Instagram,stephaniedcoleman,10.9K+,10900,followers,True
-ALD-16-001,ALD-16-001.txt,2026-11-12T12:36:38-06:00,Facebook,Stephanie D. Coleman,10K+,10000,followers,False
-ALD-16-001,ALD-16-001.txt,2026-11-12T12:36:38-06:00,Instagram,aldstephaniedcoleman,3.7K+,3700,followers,False
-ALD-16-002,ALD-16-002_2.txt,2026-11-12T12:37:26-06:00,Instagram,fletcherforbetter,330+,330,followers,False
-ALD-16-002,ALD-16-002_2.txt,2026-11-12T12:37:26-06:00,Facebook,Shenina Fletcher,2K+,2000,followers,False
-ALD-16-003,ALD-16-003.txt,2026-11-12T12:38:03-06:00,LinkedIn,Janell Nelson,1.4K+,1400,followers,False
-ALD-16-003,ALD-16-003_2.txt,2026-11-12T12:38:03-06:00,LinkedIn,Cheryl Blackmond,180+,180,followers,False
-ALD-16-003,ALD-16-003_2.txt,2026-11-12T12:38:03-06:00,LinkedIn,Cheryl Blackmond,5,5,followers,False
-ALD-16-004,ALD-16-004_2.txt,2026-11-12T12:38:39-06:00,LinkedIn,Eddie Johnson III,230+,230,followers,False
-CLERK-00-001,CLERK-00-001.txt,2026-11-12T12:10:27-06:00,LinkedIn,Anna Valencia,5.9K+,5900,followers,False
-CLERK-00-001,CLERK-00-001.txt,2026-11-12T12:10:27-06:00,Facebook,Anna Valencia,5.5K+,5500,followers,False
-CLERK-00-001,CLERK-00-001.txt,2026-11-12T12:10:27-06:00,Instagram,voteannavalencia,1.5K+,1500,followers,True
-MAYOR-00-001,MAYOR-00-001.txt,2026-11-12T12:01:13-06:00,Facebook,Willie Wilson,89.1K+,89100,followers,False
-MAYOR-00-004,MAYOR-00-004.txt,2026-11-12T12:03:06-06:00,LinkedIn,Matthew Brewer,2.7K+,2700,followers,False
-MAYOR-00-004,MAYOR-00-004.txt,2026-11-12T12:03:06-06:00,Instagram,brewer4chicago,1.8K+,1800,followers,True
-MAYOR-00-005,MAYOR-00-005.txt,2026-11-12T12:04:03-06:00,Facebook,Alexi Giannoulias,23K+,23000,followers,False
-MAYOR-00-006,MAYOR-00-006.txt,2026-11-12T12:04:38-06:00,LinkedIn,Brandon Johnson,54.6K+,54600,followers,False
-MAYOR-00-006,MAYOR-00-006.txt,2026-11-12T12:04:38-06:00,Instagram,brandon4chicago,46.3K+,46300,followers,True
-MAYOR-00-007,MAYOR-00-007.txt,2026-11-12T12:05:06-06:00,LinkedIn,Susana Mendoza,1.4K+,1400,followers,False
-MAYOR-00-007,MAYOR-00-007.txt,2026-11-12T12:05:06-06:00,Facebook,Susana A. Mendoza,125.3K+,125300,followers,False
-MAYOR-00-007,MAYOR-00-007.txt,2026-11-12T12:05:06-06:00,X,susanamendoza10,17.3K+,17300,followers,True
-MAYOR-00-010,MAYOR-00-010.txt,2026-11-12T12:06:46-06:00,LinkedIn,John Kitover,510+,510,followers,False
-MAYOR-00-010,MAYOR-00-010.txt,2026-11-12T12:06:46-06:00,YouTube,🇺🇸 John Kitover Mayor Chicago 2027,930+,930,followers,False
-MAYOR-00-010,MAYOR-00-010.txt,2026-11-12T12:06:46-06:00,Instagram,johnkitover_,310+,310,followers,False
-MAYOR-00-011,MAYOR-00-011.txt,2026-11-12T12:07:21-06:00,Instagram,daniellecarterwalters,38.9K+,38900,followers,True
-MAYOR-00-012,MAYOR-00-012.txt,2026-11-12T12:07:48-06:00,Facebook,Maria Pappas,13K+,13000,followers,False
-MAYOR-00-013,MAYOR-00-013.txt,2026-11-12T12:08:17-06:00,Facebook,Commissioner George A. Cardenas,6.3K+,6300,followers,False
-MAYOR-00-014,MAYOR-00-014.txt,2026-11-12T12:08:47-06:00,Instagram,joeforchicago,3K+,3000,followers,True
-MAYOR-00-014,MAYOR-00-014.txt,2026-11-12T12:08:47-06:00,LinkedIn,Joe Holberg,8.4K+,8400,followers,False
-MAYOR-00-015,MAYOR-00-015.txt,2026-11-12T12:09:19-06:00,Instagram,zoemaformayor,720+,720,followers,True
-MAYOR-00-016,MAYOR-00-016.txt,2026-11-12T12:09:50-06:00,LinkedIn,"Jessica ""Jesse"" Maronto",690+,690,followers,False
-MAYOR-00-016,MAYOR-00-016.txt,2026-11-12T12:09:50-06:00,Facebook,Jesse Maronto,40+,40,followers,False
-TREAS-00-002,TREAS-00-002.txt,2026-11-12T12:11:31-06:00,LinkedIn,Melissa Conyears-Ervin,940+,940,followers,False
-TREAS-00-002,TREAS-00-002.txt,2026-11-12T12:11:31-06:00,Facebook,Chicago Treasurer Melissa Conyears-Ervin,7.8K+,7800,followers,False
-TREAS-00-002,TREAS-00-002.txt,2026-11-12T12:11:31-06:00,X,ChiTreasurer,2.8K+,2800,followers,False
+candidate_id,raw_file,retrieved,found_as,platform,account_label,count_shown,count_floor,count_unit,handle_in_recorded_links,title_line,title_handle,address_line,profile_url,card_link_url
+ALD-01-001,ALD-01-001.txt,2026-11-12T12:11:57-06:00,account_card,Instagram,daniel.la.spata,2.2K+,2200,followers,False,Daniel La Spata,,,,
+ALD-01-001,ALD-01-001.txt,2026-11-12T12:11:57-06:00,account_card,Facebook,Alderman La Spata 1st Ward,3K+,3000,followers,False,Alderman La Spata 1st Ward (@The1stWard),The1stWard,,,
+ALD-01-001,ALD-01-001.txt,2026-11-12T12:11:57-06:00,account_card,LinkedIn,Daniel La Spata,730+,730,followers,False,Daniel La Spata - 1st Ward Alderman at City of Chicago,,,,
+ALD-01-001,ALD-01-001.txt,2026-11-12T12:11:57-06:00,account_card,Facebook,Daniel La Spata for the 1st Ward,1.7K+,1700,followers,False,Daniel La Spata for the 1st Ward (@DanielLaSpata1stWard),DanielLaSpata1stWard,,,
+ALD-01-002,ALD-01-002.txt,2026-11-12T12:12:22-06:00,account_card,Instagram,billfor1st,490+,490,followers,False,Bill Thanoukos for 1st Ward (@billfor1st),billfor1st,,,
+ALD-01-002,ALD-01-002.txt,2026-11-12T12:12:22-06:00,account_card,Facebook,Bill Thanoukos for 1st Ward Alderman,80+,80,followers,False,Bill Thanoukos for 1st Ward Alderman,,,,
+ALD-01-002,ALD-01-002.txt,2026-11-12T12:12:22-06:00,account_card,TikTok,Bill Thanoukos for 1st Ward,40+,40,followers,False,Bill Thanoukos for 1st Ward (@billfor1st),billfor1st,,,
+ALD-02-001,ALD-02-001.txt,2026-11-12T12:13:28-06:00,account_card,Instagram,brianforchicago,430+,430,followers,True,Brian Hopkins for Chicago (@brianforchicago),brianforchicago,,,
+ALD-02-001,ALD-02-001.txt,2026-11-12T12:13:28-06:00,account_card,X,AldHopkins,110+,110,followers,False,Office of Alderman Brian Hopkins (@AldHopkins) ...,AldHopkins,,,
+ALD-02-002,ALD-02-002.txt,2026-11-12T12:13:46-06:00,account_card,LinkedIn,Richard O.,2.6K+,2600,followers,False,Richard O. - Candidate at Richard4Ward2 Campaign,,,,
+ALD-02-002,ALD-02-002.txt,2026-11-12T12:13:46-06:00,account_card,Instagram,roshoyoola,16.3K+,16300,followers,False,Richard Omoniyi-Shoyoola (@roshoyoola),roshoyoola,,,
+ALD-02-002,ALD-02-002.txt,2026-11-12T12:13:46-06:00,account_card,Instagram,richard4ward2,370+,370,followers,False,Richard For Ward 2 (@richard4ward2),richard4ward2,,,
+ALD-03-001,ALD-03-001.txt,2026-11-12T12:14:09-06:00,account_card,Instagram,citizensforpatdowell,200+,200,followers,True,CitizensforPatDowell,,,,
+ALD-03-002,ALD-03-002.txt,2026-11-12T12:14:33-06:00,account_card,Instagram,raheemfor3,560+,560,followers,True,Raheem Uqdah (@raheemfor3) - Instagram,raheemfor3,,,
+ALD-03-003,ALD-03-003_2.txt,2026-11-12T12:15:19-06:00,account_card,Instagram,qushonaharris,8.1K+,8100,followers,True,🥉 (@qushonaharris) • Instagram photos and videos,qushonaharris,,,
+ALD-04-001,ALD-04-001.txt,2026-11-12T12:15:45-06:00,account_card,LinkedIn,Lamont J. Robinson,320+,320,followers,False,Lamont J. Robinson - 4th Ward Alderman | City of Chicago,,,,
+ALD-04-001,ALD-04-001.txt,2026-11-12T12:15:45-06:00,account_card,Facebook,Lamont Robinson For Alderman,420+,420,followers,False,Lamont Robinson For Alderman (@lamontrobinsonfor4),lamontrobinsonfor4,,,
+ALD-04-001,ALD-04-001.txt,2026-11-12T12:15:45-06:00,account_card,Instagram,votelamontjrobinson,340+,340,followers,True,Lamont J. Robinson (@votelamontjrobinson),votelamontjrobinson,,,
+ALD-05-001,ALD-05-001.txt,2026-11-12T12:16:06-06:00,account_card,Facebook,5th Ward Alderman Desmon Yancy,1K+,1000,followers,False,5th Ward Alderman Desmon Yancy (@AlderYancy5),AlderYancy5,,,
+ALD-05-001,ALD-05-001.txt,2026-11-12T12:16:06-06:00,account_card,Instagram,yancyfor5thward,510+,510,followers,True,Desmon Yancy (@yancyfor5thward),yancyfor5thward,,,
+ALD-05-001,ALD-05-001.txt,2026-11-12T12:16:06-06:00,account_card,Facebook,Desmon Yancy 5th Ward Alder- Political,850+,850,followers,False,Desmon Yancy 5th Ward Alder- Political (@YancyForThe5th),YancyForThe5th,,,
+ALD-05-002,ALD-05-002.txt,2026-11-12T12:16:26-06:00,account_card,LinkedIn,Ryan Greenlaw,1.6K+,1600,followers,False,Ryan Greenlaw - Exploring the intersection of social impact ...,,,,
+ALD-05-002,ALD-05-002.txt,2026-11-12T12:16:26-06:00,account_card,Instagram,itsgreenlaw,1.2K+,1200,followers,False,Ryan Greenlaw (@itsgreenlaw),itsgreenlaw,,,
+ALD-05-002,ALD-05-002.txt,2026-11-12T12:16:26-06:00,address_line,Threads,@dalphon.hamilton103,,,,False,Ryan is a former student of mine. I would definitely consider ...,,https://www.threads.com › @dalphon.hamilton103,https://www.threads.net/@dalphon.hamilton103,
+ALD-06-001,ALD-06-001.txt,2026-11-12T12:16:44-06:00,account_card,LinkedIn,Allyson Scrutchens,1.8K+,1800,followers,False,Allyson Scrutchens - Founder and President at FORWARD ...,,,,
+ALD-06-003,ALD-06-003.txt,2026-11-12T12:17:31-06:00,account_card,Instagram,6wardcentral,1.9K+,1900,followers,False,Alderman William E. Hall (@6wardcentral),6wardcentral,,,
+ALD-06-003,ALD-06-003.txt,2026-11-12T12:17:31-06:00,account_card,Instagram,williamhallfor6,810+,810,followers,True,William E. Hall (@williamhallfor6),williamhallfor6,,,
+ALD-06-003,ALD-06-003.txt,2026-11-12T12:17:31-06:00,account_card,X,WilliamHallfor6,20+,20,followers,True,William Hall (@WilliamHallfor6) / X,WilliamHallfor6,,,
+ALD-07-001,ALD-07-001.txt,2026-11-12T12:17:59-06:00,account_card,Facebook,Greg Mitchell 7th Ward Alderman,3K+,3000,followers,False,Greg Mitchell 7th Ward Alderman | Chicago IL,,,,
+ALD-07-001,ALD-07-001.txt,2026-11-12T12:17:59-06:00,address_line,Facebook,AldGregMitchell,,,,False,Greg Mitchell 7th Ward Alderman - Chicago,,https://www.facebook.com › AldGregMitchell › mentions,https://www.facebook.com/AldGregMitchell,
+ALD-07-002,ALD-07-002.txt,2026-11-12T12:18:23-06:00,account_card,Facebook,Nate Pendleton for 7th Ward Alderman,350+,350,followers,False,Nate Pendleton for 7th Ward Alderman,,,,
+ALD-07-002,ALD-07-002.txt,2026-11-12T12:18:23-06:00,account_card,Instagram,friendsofnatependleton,220+,220,followers,True,Nate Pendleton for 7th Ward Alderman ...,,,,
+ALD-07-002,ALD-07-002.txt,2026-11-12T12:18:23-06:00,account_card,Facebook,Nate Pendleton for 7th Ward Alderman,350+,350,followers,False,Nate Pendleton for 7th Ward Alderman,,,,
+ALD-07-003,ALD-07-003.txt,2026-11-12T12:18:49-06:00,account_card,Instagram,sheilafor7thward,100+,100,followers,False,Sheila Gunn-Ward (@sheilafor7thward),sheilafor7thward,,,
+ALD-07-003,ALD-07-003.txt,2026-11-12T12:18:49-06:00,account_card,Facebook,Sheila for the 7th Ward,150+,150,followers,False,Sheila for the 7th Ward,,,,
+ALD-07-005,ALD-07-005.txt,2026-11-12T12:19:55-06:00,account_card,Facebook,Cher Phillips for Chicago's 7th Ward Alderman,120+,120,followers,False,Cher Phillips for Chicago's 7th Ward Alderman,,,,
+ALD-08-001,ALD-08-001_2.txt,2026-11-12T12:22:40-06:00,account_card,Instagram,yolandaforjudge,750+,750,followers,False,Yolanda R. Mack (@yolandaforjudge),yolandaforjudge,,,
+ALD-08-001,ALD-08-001_2.txt,2026-11-12T12:22:40-06:00,account_card,Facebook,Yolanda Mack,13.5K+,13500,followers,False,Yolanda Mack,,,,
+ALD-08-001,ALD-08-001_2.txt,2026-11-12T12:22:40-06:00,account_card,LinkedIn,Yolanda Mack,2.1K+,2100,followers,False,Yolanda Mack - DeKalb State Court Judge,,,,
+ALD-08-002,ALD-08-002.txt,2026-11-12T12:23:08-06:00,account_card,X,AldermanHarris,3.5K+,3500,followers,True,Ald. Michelle Harris (@AldermanHarris) ...,AldermanHarris,,,
+ALD-08-003,ALD-08-003_2.txt,2026-11-12T12:23:42-06:00,account_card,LinkedIn,Jaye Jones,200+,200,followers,False,Jaye Jones - Candidate for Chicago City Council 8th Ward ...,,,,
+ALD-08-003,ALD-08-003_2.txt,2026-11-12T12:23:42-06:00,account_card,Instagram,jonesfor8thward,180+,180,followers,True,Dr. Jaye Jones (@jonesfor8thward),jonesfor8thward,,,
+ALD-08-003,ALD-08-003_2.txt,2026-11-12T12:23:42-06:00,account_card,Facebook,Jaye Jones,5.4K+,5400,followers,False,Jaye Jones (@jaye.jones1),jaye.jones1,,,
+ALD-08-004,ALD-08-004.txt,2026-11-12T12:24:07-06:00,account_card,Instagram,ruthiemoorefor8,60+,60,followers,True,(@ruthiemoorefor8) • Instagram photos and videos,ruthiemoorefor8,,,
+ALD-08-005,ALD-08-005.txt,2026-11-12T12:24:40-06:00,account_card,LinkedIn,Brittney G.,1.1K+,1100,followers,False,"Brittney G. - Candidate, Chicago 8th Ward Alderman",,,,
+ALD-08-005,ALD-08-005_2.txt,2026-11-12T12:24:40-06:00,account_card,Facebook,Brittney Bee Gault,740+,740,followers,False,Brittney Bee Gault (@BeeGault8),BeeGault8,,,
+ALD-08-005,ALD-08-005_2.txt,2026-11-12T12:24:40-06:00,account_card,Instagram,beethebroker,110+,110,followers,False,Brittney “Bee” Gault | CHI📍IL Broker (@beethebroker),beethebroker,,,
+ALD-08-005,ALD-08-005_2.txt,2026-11-12T12:24:40-06:00,account_card,LinkedIn,Brittney G.,1.1K+,1100,followers,False,"Brittney G. - Candidate, Chicago 8th Ward Alderman",,,,
+ALD-08-005,ALD-08-005_2.txt,2026-11-12T12:24:40-06:00,account_card,Instagram,beegault8,30+,30,followers,False,Future of 8th Ward Chicago (@beegault8),beegault8,,,
+ALD-09-001,ALD-09-001.txt,2026-11-12T12:25:08-06:00,account_card,Facebook,9th Ward Alderman Anthony A. Beale,3.2K+,3200,followers,False,9th Ward Alderman Anthony A. Beale (@AldBeale),AldBeale,,,
+ALD-09-001,ALD-09-001.txt,2026-11-12T12:25:08-06:00,account_card,X,Alderman_Beale,1.6K+,1600,followers,False,Anthony Beale (@Alderman_Beale) ...,Alderman_Beale,,,
+ALD-09-002,ALD-09-002_2.txt,2026-11-12T12:25:37-06:00,account_card,LinkedIn,"Cecelia Harrison RHIA, CCA, CRCR, RON",1.1K+,1100,followers,False,"Cecelia Harrison RHIA, CCA, CRCR, RON",,,,
+ALD-09-002,ALD-09-002_2.txt,2026-11-12T12:25:37-06:00,account_card,Instagram,ceceliaharrisonfor9thward,40+,40,followers,False,Cecelia Harrison (@ceceliaharrisonfor9thward),ceceliaharrisonfor9thward,,,
+ALD-09-002,ALD-09-002_2.txt,2026-11-12T12:25:37-06:00,account_card,LinkedIn,"Cecelia Harrison-Long, MPH, CLSSGB",660+,660,followers,False,"Cecelia Harrison-Long, MPH, CLSSGB - Infection Prevention",,,,
+ALD-09-003,ALD-09-003_2.txt,2026-11-12T12:26:10-06:00,account_card,Instagram,the_wizzard44,1.2K+,1200,followers,False,the_wizzard44 - Kenny Williams,,,,
+ALD-10-001,ALD-10-001.txt,2026-11-12T12:26:39-06:00,account_card,Facebook,Alderman Peter Chico,8.9K+,8900,followers,False,Alderman Peter Chico (@aldermanpeterchico),aldermanpeterchico,,,
+ALD-11-001,ALD-11-001.txt,2026-11-12T12:27:26-06:00,account_card,Facebook,Nicole Lee for 11th Ward Alderman,740+,740,followers,False,Nicole Lee for 11th Ward Alderman (@votenicolelee11),votenicolelee11,,,
+ALD-12-001,ALD-12-001_2.txt,2026-11-12T12:28:19-06:00,account_card,Instagram,the12thward,4.4K+,4400,followers,True,Alderwoman Julia Ramirez (@the12thward),the12thward,,,
+ALD-12-001,ALD-12-001_2.txt,2026-11-12T12:28:19-06:00,account_card,Facebook,12th Ward Alderwoman Julia Ramirez,7K+,7000,followers,False,12th Ward Alderwoman Julia Ramirez (@the12thward),the12thward,,,
+ALD-12-002,ALD-12-002.txt,2026-11-12T12:28:46-06:00,account_card,Instagram,claudiafor12thward,170+,170,followers,True,12th Ward Candidate (@claudiafor12thward),claudiafor12thward,,,
+ALD-12-003,ALD-12-003_2.txt,2026-11-12T12:29:23-06:00,account_card,Instagram,carlossssssanchez,2.6K+,2600,followers,False,Carlos S. Sanchez (@carlossssssanchez),carlossssssanchez,,,
+ALD-13-002,ALD-13-002_2.txt,2026-11-12T12:30:35-06:00,account_card,LinkedIn,Skyler Cepek,10+,10,followers,False,Skyler Cepek - Legislative Assistant at State of Illinois,,,,
+ALD-13-002,ALD-13-002_2.txt,2026-11-12T12:30:35-06:00,account_card,Instagram,skylercepek,330+,330,followers,True,Skyler Cepek (@skylercepek),skylercepek,,,
+ALD-14-001,ALD-14-001_2.txt,2026-11-12T12:32:21-06:00,account_card,Facebook,Alderwoman Jeylú B. Gutiérrez,1.8K+,1800,followers,False,Alderwoman Jeylú B. Gutiérrez (@AldJeylu),AldJeylu,,,
+ALD-14-001,ALD-14-001_2.txt,2026-11-12T12:32:21-06:00,account_card,LinkedIn,Jeylu Gutierrez,30+,30,followers,False,Jeylu Gutierrez - 14th Ward Alderwoman,,,,
+ALD-14-002,ALD-14-002_2.txt,2026-11-12T12:33:04-06:00,account_card,Instagram,raulareyes1,870+,870,followers,False,Raul A. Reyes (@raulareyes1),raulareyes1,,,
+ALD-15-001,ALD-15-001.txt,2026-11-12T12:33:32-06:00,account_card,Instagram,aldermanraymondlopez,2K+,2000,followers,True,Alderman Raymond Lopez (@aldermanraymondlopez),aldermanraymondlopez,,,
+ALD-16-001,ALD-16-001.txt,2026-11-12T12:36:38-06:00,account_card,Instagram,stephaniedcoleman,10.9K+,10900,followers,True,Ald. Stephanie D. Coleman (@stephaniedcoleman),stephaniedcoleman,,,
+ALD-16-001,ALD-16-001.txt,2026-11-12T12:36:38-06:00,account_card,Facebook,Stephanie D. Coleman,10K+,10000,followers,False,Stephanie D. Coleman,,,,
+ALD-16-001,ALD-16-001.txt,2026-11-12T12:36:38-06:00,account_card,Instagram,aldstephaniedcoleman,3.7K+,3700,followers,False,Alderman Stephanie D. Coleman (@aldstephaniedcoleman),aldstephaniedcoleman,,,
+ALD-16-002,ALD-16-002_2.txt,2026-11-12T12:37:26-06:00,account_card,Instagram,fletcherforbetter,330+,330,followers,False,Shenina Fletcher (@fletcherforbetter),fletcherforbetter,,,
+ALD-16-002,ALD-16-002_2.txt,2026-11-12T12:37:26-06:00,account_card,Facebook,Shenina Fletcher,2K+,2000,followers,False,Shenina Fletcher (@fletcherforbetter),fletcherforbetter,,,
+ALD-16-003,ALD-16-003.txt,2026-11-12T12:38:03-06:00,account_card,LinkedIn,Janell Nelson,1.4K+,1400,followers,False,Janell Nelson - Creative Strategist. Co-Founder & Director ...,,,,
+ALD-16-003,ALD-16-003_2.txt,2026-11-12T12:38:03-06:00,account_card,LinkedIn,Cheryl Blackmond,180+,180,followers,False,Cheryl Blackmond - owner at Just Turkey,,,,
+ALD-16-003,ALD-16-003_2.txt,2026-11-12T12:38:03-06:00,account_card,LinkedIn,Cheryl Blackmond,5,5,followers,False,Cheryl Blackmond,,,,
+ALD-16-004,ALD-16-004_2.txt,2026-11-12T12:38:39-06:00,account_card,LinkedIn,Eddie Johnson III,230+,230,followers,False,Eddie Johnson III - Executive Director at Antioch ...,,,,
+ALD-17-001,ALD-17-001.txt,2026-11-13T21:16:42-06:00,account_card,Facebook,Alderman David Moore,2.4K+,2400,followers,False,Alderman David Moore,,,,
+ALD-17-001,ALD-17-001.txt,2026-11-13T21:16:42-06:00,account_card,X,AldermanHMoore,90+,90,followers,True,David H. Moore (@AldermanHMoore) ...,AldermanHMoore,,,
+ALD-17-003,ALD-17-003.txt,2026-11-13T21:19:19-06:00,account_card,Instagram,chicagoflipsred,33.3K+,33300,followers,True,"All Hands on Deck (@chicagoflipsred) · Chicago, IL",chicagoflipsred,,,
+ALD-17-004,ALD-17-004.txt,2026-11-13T21:22:07-06:00,account_card,LinkedIn,Adrienne Garner,530+,530,followers,False,Adrienne Garner - Public Relations and Communications ...,,,,
+ALD-17-005,ALD-17-005.txt,2026-11-13T21:25:36-06:00,account_card,LinkedIn,Adrienne Garner,530+,530,followers,False,Adrienne Garner - Public Relations and Communications ...,,,,
+ALD-18-001,ALD-18-001.txt,2026-11-13T21:27:38-06:00,account_card,Instagram,aldermancurtis18,1.1K+,1100,followers,True,Alderman Derrick G. Curtis (@aldermancurtis18),aldermancurtis18,,,
+ALD-18-002,ALD-18-002_2.txt,2026-11-13T21:30:05-06:00,account_card,Facebook,Alderman Joshua Barksdale,6,6,followers,False,Alderman Joshua Barksdale (@AldermanBarksdale),AldermanBarksdale,,,
+ALD-18-002,ALD-18-002_2.txt,2026-11-13T21:30:05-06:00,account_card,LinkedIn,Josh Barksdale,100+,100,followers,False,Josh Barksdale - Divinerstyles Inc.,,,,
+ALD-18-003,ALD-18-003.txt,2026-11-13T21:31:18-06:00,account_card,Instagram,artemizatammychavez,150+,150,followers,True,Artemiza “Tammy” Chavez (@artemizatammychavez),artemizatammychavez,,,
+ALD-18-004,ALD-18-004.txt,2026-11-13T21:32:50-06:00,account_card,Instagram,flowersfor18thwardalderman,80+,80,followers,True,Glenford Flowers (@flowersfor18thwardalderman),flowersfor18thwardalderman,,,
+ALD-18-005,ALD-18-005_2.txt,2026-11-13T21:35:07-06:00,account_card,Instagram,nicoleallisong,3K+,3000,followers,False,Nicole Allison ♡ (@nicoleallisong),nicoleallisong,,,
+ALD-18-005,ALD-18-005_2.txt,2026-11-13T21:35:07-06:00,account_card,LinkedIn,Nicole Allison,5.5K+,5500,followers,False,"Nicole Allison - New York, New York, United States",,,,
+ALD-18-005,ALD-18-005_2.txt,2026-11-13T21:35:07-06:00,account_card,Facebook,Nicole Allison,3.8K+,3800,followers,False,Nicole Allison,,,,
+ALD-18-005,ALD-18-005_2.txt,2026-11-13T21:35:07-06:00,account_card,Instagram,nicoleallisonofficial,23.4K+,23400,followers,False,Nicole (@nicoleallisonofficial) • Instagram photos and videos,nicoleallisonofficial,,,
+ALD-18-006,ALD-18-006_2.txt,2026-11-13T21:37:19-06:00,account_card,LinkedIn,Toni C. Galloway,30+,30,followers,False,Toni C. Galloway - Cook County State's Attorney's Office,,,,
+ALD-19-001,ALD-19-001.txt,2026-11-13T21:39:47-06:00,account_card,Facebook,ErinRoss19,540+,540,followers,True,ErinRoss19 (@erinrossfor19),erinrossfor19,,,
+ALD-19-001,ALD-19-001_2.txt,2026-11-13T21:39:47-06:00,account_card,Facebook,ErinRoss19,540+,540,followers,True,ErinRoss19 (@erinrossfor19),erinrossfor19,,,
+ALD-19-002,ALD-19-002_2.txt,2026-11-13T21:42:15-06:00,account_card,Instagram,jillian.robinson96,1.3K+,1300,followers,False,Jillian Robinson (@jillian.robinson96),jillian.robinson96,,,
+ALD-19-002,ALD-19-002_2.txt,2026-11-13T21:42:15-06:00,account_card,LinkedIn,Jillian Robinson Weaver,950+,950,followers,False,Jillian Robinson Weaver - Emmy-Winning TV Producer,,,,
+ALD-19-002,ALD-19-002_2.txt,2026-11-13T21:42:15-06:00,account_card,Facebook,Jillian Robinson,610+,610,followers,False,Jillian Robinson,,,,
+ALD-20-001,ALD-20-001.txt,2026-11-13T21:47:31-06:00,account_card,X,J1Ramann,2.6K+,2600,followers,True,J1Ramann - Jeanette Taylor,,,,
+ALD-20-001,ALD-20-001.txt,2026-11-13T21:47:31-06:00,address_line,Facebook,Taylorfor20th,,,,True,Jeanette B. Taylor Candidate for 20th Ward (@Taylorfor20th),,https://www.facebook.com › Taylorfor20th › videos,https://www.facebook.com/Taylorfor20th,
+ALD-20-001,ALD-20-001_2.txt,2026-11-13T21:47:31-06:00,account_card,Facebook,Alderwoman Jeanette B. Taylor 20th ward,3.3K+,3300,followers,False,Alderwoman Jeanette B. Taylor 20th ward,,,,
+ALD-20-001,ALD-20-001_2.txt,2026-11-13T21:47:31-06:00,account_card,Instagram,taylorfor20th,2.4K+,2400,followers,True,Jeanette Taylor (@taylorfor20th),taylorfor20th,,,
+ALD-20-002,ALD-20-002.txt,2026-11-13T21:50:04-06:00,account_card,Facebook,Tshey Gebre for 20th Ward Alderman.,180+,180,followers,False,Tshey Gebre for 20th Ward Alderman.,,,,
+ALD-20-002,ALD-20-002.txt,2026-11-13T21:50:04-06:00,account_card,Instagram,candidate_for_alderperson,280+,280,followers,True,Tshey Gebre (@candidate_for_alderperson),candidate_for_alderperson,,,
+ALD-20-002,ALD-20-002.txt,2026-11-13T21:50:04-06:00,address_line,Threads,@ghee_buttersnaps0,,,,True,TsheyGebre #20thWard #Chicago #NewLeadership ...,,https://www.threads.com › @ghee_buttersnaps0,https://www.threads.net/@ghee_buttersnaps0,
+ALD-20-002,ALD-20-002_2.txt,2026-11-13T21:50:04-06:00,account_card,Instagram,ghee_buttersnaps0,400+,400,followers,True,Tshey M Gebre (@ghee_buttersnaps0),ghee_buttersnaps0,,,
+ALD-20-002,ALD-20-002_2.txt,2026-11-13T21:50:04-06:00,account_card,Facebook,Tshey Gebre for 20th Ward Alderman.,180+,180,followers,False,Tshey Gebre for 20th Ward Alderman.,,,,
+ALD-20-003,ALD-20-003_2.txt,2026-11-13T21:52:15-06:00,account_card,Instagram,jen4ward20,100+,100,followers,True,Jennifer Maddox (@jen4ward20),jen4ward20,,,
+ALD-20-004,ALD-20-004_2.txt,2026-11-13T21:54:35-06:00,account_card,Instagram,big_man_factory_,4.2K+,4200,followers,False,Andre Smith (@big_man_factory_),big_man_factory_,,,
+ALD-20-005,ALD-20-005_2.txt,2026-11-13T21:57:12-06:00,account_card,LinkedIn,Jarquetta Egeston,2K+,2000,followers,False,"Jarquetta Egeston - Managing Director, Xchange Chicago",,,,
+ALD-20-005,ALD-20-005_2.txt,2026-11-13T21:57:12-06:00,account_card,Instagram,jarquettafor20,710+,710,followers,True,Jarquetta Egeston (@jarquettafor20),jarquettafor20,,,
+ALD-21-001,ALD-21-001.txt,2026-11-13T21:58:19-06:00,account_card,Instagram,aldmosley21,2K+,2000,followers,True,Alderman Ronnie Mosley (@aldmosley21),aldmosley21,,,
+ALD-21-001,ALD-21-001.txt,2026-11-13T21:58:19-06:00,account_card,Facebook,Ronnie Mosley,1.3K+,1300,followers,False,Ronnie Mosley (@RLMosley21),RLMosley21,,,
+ALD-21-001,ALD-21-001.txt,2026-11-13T21:58:19-06:00,address_line,X,21Mosley,,,,True,Ronnie Mosley (@21Mosley) / X,,https://x.com › 21Mosley,https://x.com/21Mosley,
+ALD-22-001,ALD-22-001.txt,2026-11-13T22:00:52-06:00,address_line,X,@FrankCalabrese,,,,True,Frank Calabrese,,https://x.com › @FrankCalabrese,https://x.com/@FrankCalabrese,
+ALD-23-001,ALD-23-001.txt,2026-11-13T22:00:52-06:00,account_card,Instagram,leonardofor23,400+,400,followers,True,Leonardo Rojas-Banda (@leonardofor23),leonardofor23,,,
+ALD-23-001,ALD-23-001.txt,2026-11-13T22:00:52-06:00,account_card,TikTok,Leonardo Rojas-Banda for 23rd,1.1K+,1100,followers,False,Leonardo Rojas-Banda (@leonardofor23),leonardofor23,,,
+ALD-23-002,ALD-23-002.txt,2026-11-13T22:16:42-06:00,account_card,Facebook,23rd Ward Alderman Silvana Tabares,6.6K+,6600,followers,False,23rd Ward Alderman Silvana Tabares (@23rdWardTabares),23rdWardTabares,,,
+ALD-23-002,ALD-23-002.txt,2026-11-13T22:16:42-06:00,account_card,Instagram,23rdward_tabares,1.8K+,1800,followers,True,23rd Ward Alderman Silvana Tabares (@23rdward_tabares),23rdward_tabares,,,
+ALD-23-002,ALD-23-002.txt,2026-11-13T22:16:42-06:00,account_card,X,AldermanTabares,3.1K+,3100,followers,True,Silvana Tabares (@AldermanTabares) ...,AldermanTabares,,,
+ALD-24-001,ALD-24-001.txt,2026-11-13T22:17:48-06:00,address_line,Instagram,alderwomanscott,,,,True,"Alderwoman Monique L. Scott (@alderwomanscott) · Chicago, IL",,https://www.instagram.com › alderwomanscott,https://www.instagram.com/alderwomanscott/,
+ALD-24-003,ALD-24-003.txt,2026-11-13T22:20:36-06:00,address_line,Instagram,alderwomanscott,,,,True,"Alderwoman Monique L. Scott (@alderwomanscott) · Chicago, IL",,https://www.instagram.com › alderwomanscott,https://www.instagram.com/alderwomanscott/,
+ALD-25-002,ALD-25-002.txt,2026-11-13T22:25:37-06:00,account_card,Instagram,leoforcommunity,1.3K+,1300,followers,True,Leonardo “Leo” Quintero (@leoforcommunity),leoforcommunity,,,
+ALD-25-003,ALD-25-003.txt,2026-11-13T22:27:25-06:00,account_card,Instagram,watkinsfor25th,310+,310,followers,True,Ian Watkins For The 25th Ward (@watkinsfor25th),watkinsfor25th,,,
+ALD-25-004,ALD-25-004_2.txt,2026-11-13T22:30:13-06:00,account_card,Facebook,Chula Ortiz Alderperson Candidate,110+,110,followers,False,Chula Ortiz Alderperson Candidate,,,,
+ALD-25-004,ALD-25-004_2.txt,2026-11-13T22:30:13-06:00,account_card,Instagram,ortiz.chula,1.1K+,1100,followers,True,Chula Ortiz (@ortiz.chula) • Instagram photos and videos,ortiz.chula,,,
+ALD-25-005,ALD-25-005.txt,2026-11-13T22:31:30-06:00,account_card,Instagram,bsigcho,3.6K+,3600,followers,True,Byron Sigcho Lopez (@bsigcho),bsigcho,,,
+ALD-25-005,ALD-25-005.txt,2026-11-13T22:31:30-06:00,account_card,LinkedIn,Byron Sigcho,1.7K+,1700,followers,False,"Byron Sigcho - Alderman, Chicago's 25th Ward",,,,
+ALD-25-006,ALD-25-006_2.txt,2026-11-13T22:34:00-06:00,account_card,Instagram,312chacon,650+,650,followers,True,Miguel Chacon (@312chacon),312chacon,,,
+ALD-25-006,ALD-25-006_2.txt,2026-11-13T22:34:00-06:00,account_card,LinkedIn,Miguel Chacon,500+,500,followers,False,Miguel Chacon - Real Estate Broker at Compass,,,,
+ALD-25-007,ALD-25-007.txt,2026-11-13T22:35:14-06:00,account_card,LinkedIn,Nubia Batista Willman,3.1K+,3100,followers,False,Nubia Batista Willman - Immigration Attorney. Advocate. ...,,,,
+ALD-25-007,ALD-25-007.txt,2026-11-13T22:35:14-06:00,account_card,Instagram,nubiafor25,450+,450,followers,True,Nubia Batista Willman for 25th Ward Alderman (@ ...,,,,
+ALD-25-007,ALD-25-007.txt,2026-11-13T22:35:14-06:00,account_card,Facebook,Nubia Batista Willman for 25th Ward Alderman,70+,70,followers,False,Nubia Batista Willman for 25th Ward Alderman,,,,
+ALD-26-001,ALD-26-001_2.txt,2026-11-13T22:37:50-06:00,account_card,Instagram,26thwardchicago,31.4K+,31400,followers,True,Alderperson Jessie L. Fuentes (@26thwardchicago),26thwardchicago,,,
+ALD-26-001,ALD-26-001_2.txt,2026-11-13T22:37:50-06:00,account_card,LinkedIn,Alderperson Jessie Fuentes,2.4K+,2400,followers,False,Alderperson Jessie Fuentes,,,,
+ALD-26-002,ALD-26-002.txt,2026-11-13T22:39:49-06:00,account_card,Facebook,26th Ward News,770+,770,followers,False,26th Ward News (@26thWardNews),26thWardNews,,,
+ALD-26-002,ALD-26-002_2.txt,2026-11-13T22:39:49-06:00,account_card,LinkedIn,"Dr Angee Gonzalez Rodriguez, DHS, MLS",730+,730,followers,False,"Dr Angee Gonzalez Rodriguez, DHS, MLS",,,,
+ALD-27-001,ALD-27-001.txt,2026-11-13T22:41:21-06:00,account_card,LinkedIn,Walter Redmond Burnett,1.7K+,1700,followers,False,Walter Redmond Burnett - 27th Ward Alderman,,,,
+ALD-27-001,ALD-27-001.txt,2026-11-13T22:41:21-06:00,account_card,Instagram,312walt,3.6K+,3600,followers,True,Walter Redmond Burnett (@312walt),312walt,,,
+ALD-27-001,ALD-27-001.txt,2026-11-13T22:41:21-06:00,account_card,Facebook,Walter Red Burnett for 27th Ward Alderman,560+,560,followers,False,Walter Red Burnett for 27th Ward Alderman (@ward27th),ward27th,,,
+ALD-27-002,ALD-27-002_2.txt,2026-11-13T22:43:23-06:00,account_card,Instagram,_maryeason_,960+,960,followers,True,Mary Eason (@_maryeason_),_maryeason_,,,
+ALD-27-002,ALD-27-002_2.txt,2026-11-13T22:43:23-06:00,address_line,Facebook,mary.eason.79,,,,True,Mary Eason,,https://www.facebook.com › mary.eason.79,https://www.facebook.com/mary.eason.79,
+ALD-27-003,ALD-27-003.txt,2026-11-13T22:44:49-06:00,account_card,Instagram,natecornell27,280+,280,followers,True,Nate Cornell for 27th Ward (@natecornell27),natecornell27,,,
+ALD-27-004,ALD-27-004.txt,2026-11-13T22:46:04-06:00,account_card,Facebook,Dan Olas,20+,20,followers,False,Dan Olas (@DanOlas27),DanOlas27,,,
+ALD-28-001,ALD-28-001.txt,2026-11-13T22:48:55-06:00,account_card,Facebook,Alderman Jason C. Ervin,5.4K+,5400,followers,False,Alderman Jason C. Ervin (@AldermanErvin),AldermanErvin,,,
+ALD-28-001,ALD-28-001.txt,2026-11-13T22:48:55-06:00,account_card,LinkedIn,Jason C. Ervin,1.4K+,1400,followers,False,Jason C. Ervin - Alderman at City of Chicago,,,,
+ALD-28-002,ALD-28-002.txt,2026-11-13T22:49:56-06:00,account_card,Instagram,preciousfor28thward,40+,40,followers,True,Precious Joy Frasier (@preciousfor28thward),preciousfor28thward,,,
+ALD-29-001,ALD-29-001.txt,2026-11-13T22:51:19-06:00,account_card,Facebook,Chris Taliaferro - 29th Ward Alderman,3.2K+,3200,followers,False,Chris Taliaferro - 29th Ward Alderman,,,,
+ALD-29-003,ALD-29-003_2.txt,2026-11-13T22:54:58-06:00,account_card,LinkedIn,Yvette Mckinnie,240+,240,followers,False,Yvette Mckinnie - Founder/CEO Of LIFE CHANGING ...,,,,
+ALD-30-001,ALD-30-001.txt,2026-11-13T22:56:07-06:00,account_card,Instagram,judyvelezfor30th,80+,80,followers,True,JudyVelezFor30th,,,,
+ALD-30-001,ALD-30-001.txt,2026-11-13T22:56:07-06:00,account_card,Facebook,Judy Velez For 30th,90+,90,followers,False,Judy Velez For 30th,,,,
+ALD-30-002,ALD-30-002.txt,2026-11-13T22:57:31-06:00,account_card,Instagram,alderwomancruz,2.6K+,2600,followers,True,Ruth Cruz (@alderwomancruz),alderwomancruz,,,
+ALD-30-002,ALD-30-002.txt,2026-11-13T22:57:31-06:00,account_card,Facebook,30th Ward Alderwoman Ruth Cruz,3.2K+,3200,followers,False,30th Ward Alderwoman Ruth Cruz (@alderwomancruz),alderwomancruz,,,
+ALD-31-001,ALD-31-001.txt,2026-11-13T22:58:29-06:00,account_card,Facebook,"Alderman Felix Cardona, Jr.",6.5K+,6500,followers,False,"Alderman Felix Cardona, Jr. (@AldermanCardona)",AldermanCardona,,,
+ALD-31-001,ALD-31-001.txt,2026-11-13T22:58:29-06:00,account_card,Instagram,alder.felixcardonajr,490+,490,followers,True,Felix Cardona Jr (@alder.felixcardonajr),alder.felixcardonajr,,,
+ALD-31-002,ALD-31-002.txt,2026-11-13T22:59:29-06:00,account_card,Facebook,Alonso Zaragoza,42.9K+,42900,followers,False,Alonso Zaragoza | Chicago IL,,,,
+CLERK-00-001,CLERK-00-001.txt,2026-11-12T12:10:27-06:00,account_card,LinkedIn,Anna Valencia,5.9K+,5900,followers,False,"Anna Valencia - City Clerk at City of Chicago, Office of the ...",,,,
+CLERK-00-001,CLERK-00-001.txt,2026-11-12T12:10:27-06:00,account_card,Facebook,Anna Valencia,5.5K+,5500,followers,False,Anna Valencia (@VoteAnnaValencia),VoteAnnaValencia,,,
+CLERK-00-001,CLERK-00-001.txt,2026-11-12T12:10:27-06:00,account_card,Instagram,voteannavalencia,1.5K+,1500,followers,True,Anna Valencia (@voteannavalencia),voteannavalencia,,,
+MAYOR-00-001,MAYOR-00-001.txt,2026-11-12T12:01:13-06:00,account_card,Facebook,Willie Wilson,89.1K+,89100,followers,False,Willie Wilson (@DrWillieWilson) - Chicago,DrWillieWilson,,,
+MAYOR-00-004,MAYOR-00-004.txt,2026-11-12T12:03:06-06:00,account_card,LinkedIn,Matthew Brewer,2.7K+,2700,followers,False,Matthew Brewer - Candidate for Mayor of Chicago,,,,
+MAYOR-00-004,MAYOR-00-004.txt,2026-11-12T12:03:06-06:00,account_card,Instagram,brewer4chicago,1.8K+,1800,followers,True,Matt Brewer (@brewer4chicago) • Instagram photos and ...,brewer4chicago,,,
+MAYOR-00-005,MAYOR-00-005.txt,2026-11-12T12:04:03-06:00,account_card,Facebook,Alexi Giannoulias,23K+,23000,followers,False,Alexi Giannoulias (@AlexiGiannoulias),AlexiGiannoulias,,,
+MAYOR-00-006,MAYOR-00-006.txt,2026-11-12T12:04:38-06:00,account_card,LinkedIn,Brandon Johnson,54.6K+,54600,followers,False,Brandon Johnson - Mayor at City of Chicago,,,,
+MAYOR-00-006,MAYOR-00-006.txt,2026-11-12T12:04:38-06:00,account_card,Instagram,brandon4chicago,46.3K+,46300,followers,True,Brandon Johnson (@brandon4chicago),brandon4chicago,,,
+MAYOR-00-007,MAYOR-00-007.txt,2026-11-12T12:05:06-06:00,account_card,LinkedIn,Susana Mendoza,1.4K+,1400,followers,False,Susana Mendoza - Candidate for Mayor of Chicago,,,,
+MAYOR-00-007,MAYOR-00-007.txt,2026-11-12T12:05:06-06:00,account_card,Facebook,Susana A. Mendoza,125.3K+,125300,followers,False,Susana A. Mendoza (@susanamendoza10),susanamendoza10,,,
+MAYOR-00-007,MAYOR-00-007.txt,2026-11-12T12:05:06-06:00,account_card,X,susanamendoza10,17.3K+,17300,followers,True,Susana A. Mendoza ☮️ (@susanamendoza10) ...,susanamendoza10,,,
+MAYOR-00-010,MAYOR-00-010.txt,2026-11-12T12:06:46-06:00,account_card,LinkedIn,John Kitover,510+,510,followers,False,John Kitover - Chicago Mayoral Candidate 🗳️ 🇺🇸 🗽 🦅 ...,,,,
+MAYOR-00-010,MAYOR-00-010.txt,2026-11-12T12:06:46-06:00,account_card,YouTube,🇺🇸 John Kitover Mayor Chicago 2027,930+,930,followers,False,🇺🇸 John Kitover Mayor Chicago 2027,,,,
+MAYOR-00-010,MAYOR-00-010.txt,2026-11-12T12:06:46-06:00,account_card,Instagram,johnkitover_,310+,310,followers,False,🇺🇲 John Kitover Chicago Mayoral Candidate 2027 ...,,,,
+MAYOR-00-011,MAYOR-00-011.txt,2026-11-12T12:07:21-06:00,account_card,Instagram,daniellecarterwalters,38.9K+,38900,followers,True,Where fitness meets politics. (@daniellecarterwalters),daniellecarterwalters,,,
+MAYOR-00-012,MAYOR-00-012.txt,2026-11-12T12:07:48-06:00,account_card,Facebook,Maria Pappas,13K+,13000,followers,False,Maria Pappas (@TMariaPappas),TMariaPappas,,,
+MAYOR-00-013,MAYOR-00-013.txt,2026-11-12T12:08:17-06:00,account_card,Facebook,Commissioner George A. Cardenas,6.3K+,6300,followers,False,Commissioner George A. Cardenas,,,,
+MAYOR-00-014,MAYOR-00-014.txt,2026-11-12T12:08:47-06:00,account_card,Instagram,joeforchicago,3K+,3000,followers,True,Joe Holberg (@joeforchicago),joeforchicago,,,
+MAYOR-00-014,MAYOR-00-014.txt,2026-11-12T12:08:47-06:00,account_card,LinkedIn,Joe Holberg,8.4K+,8400,followers,False,Joe Holberg - Democratic Candidate for Mayor of Chicago,,,,
+MAYOR-00-015,MAYOR-00-015.txt,2026-11-12T12:09:19-06:00,account_card,Instagram,zoemaformayor,720+,720,followers,True,Zoe Ma (@zoemaformayor),zoemaformayor,,,
+MAYOR-00-016,MAYOR-00-016.txt,2026-11-12T12:09:50-06:00,account_card,LinkedIn,"Jessica ""Jesse"" Maronto",690+,690,followers,False,"Jessica ""Jesse"" Maronto - Candidate Chicago Mayor 2027 ...",,,,
+MAYOR-00-016,MAYOR-00-016.txt,2026-11-12T12:09:50-06:00,account_card,Facebook,Jesse Maronto,40+,40,followers,False,Jesse Maronto,,,,
+TREAS-00-002,TREAS-00-002.txt,2026-11-12T12:11:31-06:00,account_card,LinkedIn,Melissa Conyears-Ervin,940+,940,followers,False,Melissa Conyears-Ervin - City Treasurer at City of Chicago,,,,
+TREAS-00-002,TREAS-00-002.txt,2026-11-12T12:11:31-06:00,account_card,Facebook,Chicago Treasurer Melissa Conyears-Ervin,7.8K+,7800,followers,False,Chicago Treasurer Melissa Conyears-Ervin,,,,
+TREAS-00-002,TREAS-00-002.txt,2026-11-12T12:11:31-06:00,account_card,X,ChiTreasurer,2.8K+,2800,followers,False,Treasurer Melissa Conyears-Ervin (@ChiTreasurer) ...,ChiTreasurer,,,

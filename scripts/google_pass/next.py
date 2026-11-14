@@ -2,12 +2,18 @@
 and a compact view of the earlier (websearch) row for comparison.
 Usage: python3 next.py [N]"""
 import csv, os, sys, re, urllib.parse
-REPO = "/Users/lleisman/Luke/github/chicagoindata/election_candidate_info-endorsements"
+# Repo root = two folders up from this file (moved from the endorsements worktree 2026-11-13).
+REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 CANDIDATES_CSV = f"{REPO}/data/candidates/candidates_cboe.csv"
 EARLIER_CSV = f"{REPO}/data/endorsements/candidate_campaign_sites.csv"
 OUTPUT_CSV = f"{REPO}/data/endorsements/candidate_campaign_sites_google.csv"
 # Offices in scope (per task instructions)
 OFFICE_CODES = ("MAYOR", "CLERK", "TREAS", "ALD")
+# Quote the office phrase? True until 2026-11-13 (102 candidates, through ALD-27-004). The quotes kept
+# only pages with the exact phrase, which dropped social profiles whose bio doesn't say it (user found
+# instagram.com/punkin_p and a LinkedIn profile for Raynetta Greenleaf in an unquoted search).
+# False from ALD-27-005 on (user, 2026-11-13): RAYNETTA GREENLEAF Chicago 17th ward alderman
+QUOTE_OFFICE_PHRASE = False
 # Office phrase appended to the query (per task instructions)
 OFFICE_PHRASE = {"MAYOR": "mayor", "CLERK": "city clerk", "TREAS": "city treasurer"}
 
@@ -25,9 +31,11 @@ def query_name(ballot_name):
 
 def build_query(row):
     if row["office_code"] == "ALD":
-        phrase = f'"{ordinal(int(row["district_number"]))} ward alderman"'
+        phrase = f'{ordinal(int(row["district_number"]))} ward alderman'
     else:
-        phrase = f'"{OFFICE_PHRASE[row["office_code"]]}"'
+        phrase = OFFICE_PHRASE[row["office_code"]]
+    if QUOTE_OFFICE_PHRASE:
+        phrase = f'"{phrase}"'
     return f'{query_name(row["ballot_name_raw"])} Chicago {phrase}'
 
 done = set()

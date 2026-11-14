@@ -49,7 +49,7 @@ PASS_FILE_URL_COLUMNS = {
     "other_site_urls": ("other", "other_site_note"),
 }
 # User file site_kind -> link kind.
-USER_SITE_KINDS = {"campaign": "campaign", "ward_office": "office"}
+USER_SITE_KINDS = {"campaign": "campaign", "ward_office": "office", "social": "social"}  # "social" added 2026-11-13
 
 # LINK_KIND_RULE "domain_first": a link on one of these domains gets the domain's kind
 # whatever column it was in (e.g. a Facebook page entered as a campaign site is "social").

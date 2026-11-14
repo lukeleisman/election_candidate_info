@@ -1,0 +1,2 @@
+candidate_id,platform,handle,flag,flagged_by,flagged_on,notes
+ALD-27-002,Facebook,mary.eason.79,May not be this candidate,luke,2026-11-13,"From a name-only Google search where the agent reported only same-named people (raw file ALD-27-002_2.txt). User: keep for now, but flag."

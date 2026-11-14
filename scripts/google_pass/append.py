@@ -1,12 +1,14 @@
 """Append one row (JSON object on stdin) to the Google-pass output CSV.
 Fills ballot_name_raw/office_code/ward from the candidate file and the fixed
 provenance fields; refuses duplicates."""
-import csv, json, os, sys
-REPO = "/Users/lleisman/Luke/github/chicagoindata/election_candidate_info-endorsements"
+import csv, datetime, json, os, sys
+# Repo root = two folders up from this file (moved from the endorsements worktree 2026-11-13).
+REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 CANDIDATES_CSV = f"{REPO}/data/candidates/candidates_cboe.csv"
 EARLIER_CSV = f"{REPO}/data/endorsements/candidate_campaign_sites.csv"
 OUTPUT_CSV = f"{REPO}/data/endorsements/candidate_campaign_sites_google.csv"
-TODAY = "2026-11-12"
+# Date stamped on each row (was hardcoded "2026-11-12" until 2026-11-13).
+TODAY = datetime.date.today().isoformat()
 FIXED_FIELDS = {"found_via": "google_chrome", "checked_on": TODAY,
                 "entered_by": f"claude_agent_{TODAY}", "review_status": "unreviewed"}
 ALLOWED_STATUS = {"found", "needs_confirmation", "ambiguous", "none_found"}

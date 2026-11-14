@@ -3,45 +3,74 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Chicago 2027 Candidate Money</title>
+<title>__PAGE_TITLE__</title>
 <!-- Template for scripts/build_dashboard.py. Edit here, then `make dashboard`;
-     dashboard/index.html is overwritten on every build. -->
+     dashboard/index.html is overwritten on every build. The page title and description placeholders are
+     filled from PAGE_TITLE / PAGE_DESCRIPTION in build_dashboard.py. -->
 <style>
-  /* Layout: one column; controls, race figures, cash bars, raised bars, candidate table, committee table. */
+  /* Layout: header; sticky bar with the pickers and section links; race figures; then one panel per
+     section (money chart, money table, social media, endorsements, committees, candidates). */
   :root {
-    --bg: #fbfbfa; --panel: #f1f2f4; --fg: #1d2129; --muted: #5d6573;
-    --line: #d9dce1; --accent: #2f6db5; --warn: #a2570b;
+    --bg: #f3f4f6; --surface: #ffffff; --panel: #f1f2f4; --fg: #1d2129; --muted: #5d6573;
+    --line: #dfe2e6; --accent: #2f6db5; --warn: #a2570b; --row-hover: #f6f8fb;
+    /* Money chart series (dataviz reference palette, categorical slots 1-2, light). */
+    --series-raised: #2a78d6; --series-cash: #eb6834;
+    --header-bg: #1f3a5f; --header-fg: #ffffff; --header-muted: #c9d6e8;
     --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     color-scheme: light;
   }
   @media (prefers-color-scheme: dark) {
-    :root { --bg: #15181d; --panel: #1e2229; --fg: #e7e9ee; --muted: #9aa2b1;
-            --line: #323843; --accent: #6ea4e8; --warn: #e0a15a; color-scheme: dark; }
+    :root { --bg: #111418; --surface: #1a1e24; --panel: #22272f; --fg: #e7e9ee; --muted: #9aa2b1;
+            --line: #323843; --accent: #6ea4e8; --warn: #e0a15a; --row-hover: #20252d;
+            --series-raised: #3987e5; --series-cash: #d95926;
+            --header-bg: #18263a; --header-fg: #f0f3f8; --header-muted: #a9b7cb; color-scheme: dark; }
   }
-  body { margin: 0; background: var(--bg); color: var(--fg); font: 14px/1.45 var(--font); }
-  .page { max-width: 1200px; margin: 0 auto; padding: 24px 16px 48px; display: flex; flex-direction: column; gap: 24px; }
-  h1 { font-size: 26px; font-weight: 600; margin: 0 0 4px; }
-  h2 { font-size: 17px; font-weight: 600; margin: 0 0 2px; }
-  .lede, .sub { color: var(--muted); margin: 0; max-width: 80ch; }
-  .sub { font-size: 12.5px; margin-bottom: 8px; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 14px/1.5 var(--font); }
+  a { color: var(--accent); }
+  .site-header { background: var(--header-bg); color: var(--header-fg); }
+  .site-header .inner { max-width: 1200px; margin: 0 auto; padding: 32px 16px 28px; }
+  h1 { font-size: 30px; font-weight: 650; letter-spacing: -0.01em; margin: 0 0 8px; }
+  .site-header .lede { color: var(--header-muted); margin: 0; max-width: 78ch; font-size: 15px; }
+  .toolbar { position: sticky; top: 0; z-index: 5; background: var(--surface); border-bottom: 1px solid var(--line);
+             box-shadow: 0 1px 3px rgba(0, 0, 0, .05); }
+  .toolbar .inner { max-width: 1200px; margin: 0 auto; padding: 10px 16px; display: flex; flex-wrap: wrap;
+                    align-items: flex-end; justify-content: space-between; gap: 12px 24px; }
+  .page-nav { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 13px; }
+  .page-nav a { color: var(--muted); text-decoration: none; }
+  .page-nav a:hover { color: var(--accent); }
+  .page { max-width: 1200px; margin: 0 auto; padding: 20px 16px 48px; display: flex; flex-direction: column; gap: 18px; }
+  .page > section, .page > details, .page > footer { background: var(--surface); border: 1px solid var(--line);
+             border-radius: 10px; padding: 18px 20px; scroll-margin-top: 80px; }
+  h2 { font-size: 18px; font-weight: 600; margin: 0 0 2px; }
+  .sub { color: var(--muted); margin: 0 0 12px; max-width: 85ch; font-size: 12.5px; }
   .controls { display: flex; flex-wrap: wrap; gap: 16px; }
   .controls label { display: flex; flex-direction: column; gap: 4px; font-size: 11.5px; color: var(--muted);
                     text-transform: uppercase; letter-spacing: .05em; }
   select { font: 14px var(--font); padding: 6px 8px; border: 1px solid var(--line); border-radius: 6px;
            background: var(--panel); color: var(--fg); min-width: 14rem; }
   select:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
-  .stats { display: flex; flex-wrap: wrap; gap: 32px; margin: 0; }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin: 0; }
+  .stats > div { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; }
   .stats dt { font-size: 12px; color: var(--muted); }
-  .stats dd { margin: 0; font-size: 22px; font-variant-numeric: tabular-nums; }
-  .bars { display: grid; grid-template-columns: max-content 1fr; gap: 6px 12px; align-items: center; }
-  .bar-name { white-space: nowrap; }
-  .bar-track { display: flex; align-items: center; gap: 8px; min-width: 0; }
-  .bar { height: 16px; background: var(--accent); border-radius: 2px; min-width: 1px; }
-  .bar-value { font-variant-numeric: tabular-nums; color: var(--muted); font-size: 12.5px; white-space: nowrap; }
-  .scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 6px; }
+  .stats dd { margin: 2px 0 0; font-size: 24px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  /* Money chart: per candidate a name and two thin bars (Raised, Cash) on one shared scale. */
+  .legend { display: flex; gap: 16px; font-size: 12.5px; color: var(--muted); margin: 0 0 10px; }
+  .legend span::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 2px;
+                         margin-right: 6px; vertical-align: -1px; background: var(--swatch); }
+  .bars { display: grid; grid-template-columns: max-content 1fr; gap: 10px 14px; align-items: center; }
+  .bar-name { white-space: nowrap; font-size: 13px; }
+  .bar-pair { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .bar-track { display: flex; align-items: center; gap: 8px; min-width: 0; padding: 1px 0; }
+  .bar { height: 10px; border-radius: 0 4px 4px 0; min-width: 1px; }
+  .bar.raised { background: var(--series-raised); }
+  .bar.cash { background: var(--series-cash); }
+  .bar-track:hover .bar { filter: brightness(1.12); }
+  .bar-value { font-variant-numeric: tabular-nums; color: var(--muted); font-size: 12px; white-space: nowrap; }
+  .scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; }
   table { border-collapse: collapse; width: 100%; font-size: 12.5px; font-variant-numeric: tabular-nums; }
-  th, td { padding: 6px 10px; border-bottom: 1px solid var(--line); text-align: right; vertical-align: top; }
+  th, td { padding: 7px 10px; border-bottom: 1px solid var(--line); text-align: right; vertical-align: top; }
   th { background: var(--panel); color: var(--muted); font-weight: 600; position: sticky; top: 0; max-width: 9em; vertical-align: bottom; }
+  tbody tr:hover td { background: var(--row-hover); }
   td.flags { min-width: 10em; max-width: 14em; text-align: left; }
   td.committees { max-width: 12em; text-align: left; }
   td.date { white-space: nowrap; }
@@ -52,7 +81,7 @@
   td.muted { color: var(--muted); }
   td.name { font-weight: 600; white-space: nowrap; text-align: left; }
   .flag { display: inline-block; padding: 0 7px; margin: 0 4px 2px 0; border: 1px solid var(--line);
-          border-radius: 4px; color: var(--muted); }
+          border-radius: 5px; color: var(--muted); font-size: 11.5px; }
   .flag.warn { border-color: var(--warn); color: var(--warn); }
   .report-link { display: block; font-weight: 400; font-size: 11.5px; color: var(--muted); }
   .report-link a { color: inherit; }
@@ -62,13 +91,17 @@
   a.name-link { color: inherit; text-decoration: none; border-bottom: 1px dotted var(--muted); }
   a.name-link:hover { color: var(--accent); }
   td a.number-link { color: inherit; }
+  /* Social table cells: one account per line. */
+  .account { display: block; white-space: nowrap; }
+  .account .count { font-weight: 600; margin-right: 6px; }
+  .account .muted-count { font-weight: 400; color: var(--muted); font-size: 11px; }
   .cards { display: flex; flex-direction: column; gap: 16px; }
-  .card { border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px; background: var(--bg);
-          display: flex; flex-direction: column; gap: 10px; scroll-margin-top: 12px; }
+  .card { border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; background: var(--surface);
+          display: flex; flex-direction: column; gap: 12px; scroll-margin-top: 80px; }
   .card.highlight { outline: 2px solid var(--accent); }
-  .card h3 { font-size: 16px; margin: 0; }
-  .card h4 { font-size: 13px; margin: 0 0 4px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
-  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px 24px; }
+  .card h3 { font-size: 17px; margin: 0; }
+  .card h4 { font-size: 12px; margin: 0 0 6px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .05em; }
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px 28px; }
   .card ul { margin: 0; padding-left: 1.1em; font-size: 13px; }
   .card table { font-size: 12.5px; }
   .card .empty { color: var(--muted); font-size: 13px; margin: 0; }
@@ -77,42 +110,50 @@
   tr.aside td { color: var(--muted); }
   .feedback ul { padding-left: 1.2em; margin: 8px 0 0; display: flex; flex-direction: column; gap: 4px; }
   details { color: var(--muted); font-size: 12.5px; }
-  details summary { cursor: pointer; color: var(--fg); }
+  details summary { cursor: pointer; color: var(--fg); font-weight: 600; }
   details ul { padding-left: 1.2em; max-width: 85ch; display: flex; flex-direction: column; gap: 4px; }
   code { font-size: 12px; }
+  @media (max-width: 600px) { h1 { font-size: 24px; } select { min-width: 0; width: 100%; }
+    .page > section, .page > details, .page > footer { padding: 14px; } }
 </style>
 </head>
 <body>
-<div class="page">
-  <header>
-    <h1>Chicago 2027 Candidate Money</h1>
-    <p class="lede">Campaign money for candidates on the Feb 23, 2027 ballot, from Illinois State Board of
-      Elections reports through <span id="reports-through"></span> (downloaded <span id="isbe-download"></span>).
-      Police District Council candidates are not included yet.</p>
-  </header>
-
-  <div class="controls">
-    <label for="race-select">Race <select id="race-select"></select></label>
-    <label for="window-select">Money window <select id="window-select"></select></label>
+<header class="site-header">
+  <div class="inner">
+    <h1>__PAGE_TITLE__</h1>
+    <p class="lede">__PAGE_DESCRIPTION__</p>
   </div>
+</header>
 
+<div class="toolbar">
+  <div class="inner">
+    <div class="controls">
+      <label for="race-select">Race <select id="race-select"></select></label>
+      <label for="window-select">Money window <select id="window-select"></select></label>
+    </div>
+    <nav class="page-nav" aria-label="Sections">
+      <a href="#section-money">Money</a><a href="#section-social">Social media</a>
+      <a href="#section-endorsements">Endorsements</a><a href="#section-committees">Committees</a>
+      <a href="#section-candidates">Candidates</a><a href="#section-sources">Sources</a>
+    </nav>
+  </div>
+</div>
+
+<div class="page">
   <dl class="stats">
     <div><dt>Candidates on the ballot</dt><dd id="stat-candidates">—</dd></div>
     <div><dt>With a matched committee</dt><dd id="stat-with-committee">—</dd></div>
     <div><dt>Cash on hand in the race</dt><dd id="stat-cash">—</dd></div>
   </dl>
 
-  <section>
-    <h2>Raised: <span id="raised-window-label"></span></h2>
-    <p class="sub">A candidate's own committees added together, for the money window picked above (loans and in-kind
-      not included). Shared slate committees are not added. Each chart has its own scale.</p>
-    <div class="bars" id="raised-bars"></div>
-  </section>
-
-  <section>
-    <h2>Cash on hand at the latest report</h2>
-    <p class="sub">Same committees as above.</p>
-    <div class="bars" id="cash-bars"></div>
+  <section id="section-money">
+    <h2>Raised and cash on hand</h2>
+    <p class="sub">Raised: <span id="raised-window-label"></span> (loans and in-kind not included). Cash: at the
+      latest report. A candidate's own committees added together; shared slate committees are not added. From
+      Illinois State Board of Elections reports through <span id="reports-through"></span> (downloaded
+      <span id="isbe-download"></span>). Ordered by <span id="money-chart-order"></span>; both bars use one scale.</p>
+    <div class="legend"><span style="--swatch: var(--series-raised)">Raised</span><span style="--swatch: var(--series-cash)">Cash on hand</span></div>
+    <div class="bars" id="money-bars"></div>
   </section>
 
   <section>
@@ -123,13 +164,23 @@
     <div class="scroll"><table id="candidate-table"><thead></thead><tbody></tbody></table></div>
   </section>
 
-  <section>
+  <section id="section-social">
+    <h2>Social media: follower estimates</h2>
+    <p class="sub">Accounts Google listed when we searched for each candidate, with Google's rounded follower counts
+      ("2.2K+" = at least 2,200) on the date searched. Not checked by hand: an account may be a campaign, office or
+      personal account, or someone else with the same name. Links are either ones we recorded or addresses built from the handle Google showed (hover to see which);
+      LinkedIn accounts show no handle, so they are not linked.
+      <span id="social-progress"></span></p>
+    <div class="scroll"><table id="social-table"><thead></thead><tbody></tbody></table></div>
+  </section>
+
+  <section id="section-endorsements">
     <h2>Endorsements</h2>
     <p class="sub" id="endorsements-note">Not collected yet. Endorsements will be listed here, each with a link to where it
       was announced.</p>
   </section>
 
-  <section>
+  <section id="section-committees">
     <h2>Committees behind the totals</h2>
     <p class="sub">Every committee linked to this race's candidates, one row each. "Added in" counts toward the
       candidate's total; "Slate, not added" is shared by 2+ candidates.</p>
@@ -145,9 +196,9 @@
     </table></div>
   </section>
 
-  <section>
+  <section id="section-candidates">
     <h2>Candidates</h2>
-    <p class="sub">Each candidate's links, money and top donors. Links come from web searches and are not all checked by
+    <p class="sub">Each candidate's links, social media, money and top donors. Links come from web searches and are not all checked by
       hand yet; tell us if one is wrong (Report a problem). <span class="incumbent-legend"></span></p>
     <div class="cards" id="candidate-cards"></div>
   </section>
@@ -178,7 +229,7 @@
     </ul>
   </details>
 
-  <section class="feedback">
+  <section class="feedback" id="section-sources">
     <h2>Sources</h2>
     <p class="sub">Each committee also links to its own pages in the tables above ("Look up").</p>
     <ul id="data-sources"></ul>
@@ -343,12 +394,14 @@ function candidateLink(row, children, className = "name-link") {
   return link;
 }
 
-function showCard(candidateId) {
+// smooth=false on page load / redraw: a smooth scroll started while the page is still laying out
+// stops part way (seen 2026-11-13), so links to a candidate opened at the wrong place.
+function showCard(candidateId, smooth = true) {
   document.querySelectorAll(".card.highlight").forEach((node) => node.classList.remove("highlight"));
   const card = document.getElementById("card-" + candidateId);
   if (!card) return;
   card.classList.add("highlight");
-  card.scrollIntoView({ behavior: "smooth", block: "start" });
+  card.scrollIntoView({ behavior: smooth ? "smooth" : "auto", block: "start" });
 }
 
 function externalLink(text, href, title) {
@@ -434,6 +487,7 @@ function drawCards() {
       element("div", { className: "card-grid" }, [
         section("Links", linksBlock(row)),
         section("Committees", [committeeList]),
+        section("Social media (followers)", socialBlock(row)),
         section("Raised: " + windowLabel, moneyBlock(row)),
         section("Endorsements", [element("p", { className: "empty", text: "Not collected yet." })]),
       ]),
@@ -451,34 +505,96 @@ function drawStats() {
   document.getElementById("stat-cash").textContent = show(race.cash_on_hand_total, "money");
 }
 
-// Bar order in each chart (added 2026-11-12). "own_value": each chart sorted by its own
-// number, largest first. Alternative "cash_order": the raised chart keeps the cash chart's
-// order so a name sits in the same row in both.
-const BAR_ORDER = "own_value";
-
-// One horizontal bar chart: a row per candidate (second filings left out), bar length
-// relative to the largest value in this race. Missing value -> text only.
-function drawBarChart(boxId, field, sortField) {
+// Money chart (user, 2026-11-13): Raised and Cash for each candidate on ONE shared dollar scale (the
+// largest of either figure in this race), ordered by MONEY_CHART_ORDER in scripts/build_dashboard.py.
+// Second filings left out. Missing value -> text only; negative cash -> no bar, value shown as reported.
+function drawMoneyChart() {
+  const raisedField = state.window + "_raised";
+  const orderField = DATA.money_chart_order === "cash" ? "cash_on_hand" : raisedField;
   const people = raceCandidates().filter((row) => !row.duplicate_filing_of)
-    .sort((a, b) => (toNumber(b[sortField]) ?? -1) - (toNumber(a[sortField]) ?? -1));
-  const largest = Math.max(1, ...people.map((row) => toNumber(row[field]) ?? 0));
-  const box = document.getElementById(boxId);
-  box.replaceChildren(...people.flatMap((row) => {
+    .sort((a, b) => (toNumber(b[orderField]) ?? -Infinity) - (toNumber(a[orderField]) ?? -Infinity));
+  const largest = Math.max(1, ...people.flatMap((row) => [toNumber(row[raisedField]) ?? 0, toNumber(row.cash_on_hand) ?? 0]));
+  const barRow = (row, field, className, label) => {
     const amount = toNumber(row[field]);
     const track = element("div", { className: "bar-track" });
-    if (amount !== null) track.append(element("div", { className: "bar", style: { width: (Math.max(amount, 0) / largest * 70) + "%" } }));
+    if (amount !== null) track.append(element("div", { className: "bar " + className, style: { width: (Math.max(amount, 0) / largest * 78) + "%" } }));
     track.append(element("span", { className: "bar-value", text: amount === null ? "no committee report" : moneyFormat.format(amount) }));
-    track.title = amount === null ? "" : row.ballot_name_raw + ": $" + amount.toLocaleString("en-US", { minimumFractionDigits: 2 });
-    return [element("div", { className: "bar-name" }, nameWithIncumbent(row)), track];
-  }));
+    track.title = row.ballot_name_raw + ", " + label + ": " + (amount === null ? "no committee report"
+      : "$" + amount.toLocaleString("en-US", { minimumFractionDigits: 2 }));
+    return track;
+  };
+  document.getElementById("money-bars").replaceChildren(...people.flatMap((row) => [
+    element("div", { className: "bar-name" }, [candidateLink(row, nameWithIncumbent(row))]),
+    element("div", { className: "bar-pair" }, [barRow(row, raisedField, "raised", "raised"), barRow(row, "cash_on_hand", "cash", "cash on hand")]),
+  ]));
+  document.getElementById("raised-window-label").textContent = DATA.windows.find((w) => w.key === state.window).label;
+  document.getElementById("money-chart-order").textContent = DATA.money_chart_order === "cash" ? "cash on hand" : "amount raised";
 }
 
-function drawBars() {
-  drawBarChart("cash-bars", "cash_on_hand", "cash_on_hand");
-  const raisedField = state.window + "_raised";
-  drawBarChart("raised-bars", raisedField, BAR_ORDER === "cash_order" ? "cash_on_hand" : raisedField);
-  document.getElementById("raised-window-label").textContent =
-    DATA.windows.find((w) => w.key === state.window).label;
+// ----- social media (data/endorsements/social_accounts_google.csv; settings SOCIAL_* in build_dashboard.py) -----
+function socialAccounts(candidateId) {
+  return DATA.social.filter((account) => account.candidate_id === candidateId);
+}
+// One account: "2.2K+ followers  handle", the handle linked when build_dashboard.py matched a URL.
+function accountLine(account, withPlatform) {
+  const label = account.url
+    ? externalLink(account.account_label, account.url, {
+        "built from the handle": "Address built from the handle Google showed; not opened or checked",
+        "address from Google's results": "Profile address from Google's results (a link, or the address line shown); not opened or checked",
+        "recorded link": "A link we recorded for this candidate" }[account.url_basis])
+    : account.account_label;
+  // Address-line accounts have no follower count ("no count" shown instead).
+  return element("span", { className: "account", title: "Shown by Google " + (account.retrieved || "").slice(0, 10) }, [
+    account.count_shown ? element("span", { className: "count", text: account.count_shown })
+      : element("span", { className: "count muted-count", text: "no count" }),
+    ...(withPlatform ? [account.platform + ": "] : []), label,
+    // Hand flag (data/endorsements/social_account_flags.csv), e.g. "May not be this candidate".
+    ...(account.flag ? [" ", element("span", { className: "flag warn", text: account.flag })] : []),
+    ...(account.found_as === "post_author" ? [" ", element("span", { className: "flag", text: "posts in results; checked by hand" })] : [])]);
+}
+function socialStatusText(candidateId) {
+  const searched = DATA.social_searched[candidateId];
+  return searched ? "No accounts shown in Google results (searched " + searched + ")." : "Not searched yet.";
+}
+
+// Race table: a row per candidate, a column per platform that appears in this race.
+function drawSocialTable() {
+  const rows = raceCandidates().filter((row) => !row.duplicate_filing_of);
+  const largestAccount = (row) => Math.max(-1, ...socialAccounts(row.candidate_id).map((a) => Number(a.count_floor)));
+  rows.sort(DATA.social_table_order === "largest"
+    ? (a, b) => largestAccount(b) - largestAccount(a) : (a, b) => a.candidate_id.localeCompare(b.candidate_id));
+  const present = new Set(rows.flatMap((row) => socialAccounts(row.candidate_id).map((a) => a.platform)));
+  const platforms = DATA.social_platform_order.filter((platform) => present.has(platform));
+  const table = document.getElementById("social-table");
+  table.tHead.replaceChildren(element("tr", {}, [element("th", { className: "left", text: "Candidate" }),
+    ...platforms.map((platform) => element("th", { className: "left", text: platform })),
+    element("th", { className: "left", text: "Searched" })]));
+  table.tBodies[0].replaceChildren(...rows.map((row) => {
+    const accounts = socialAccounts(row.candidate_id);
+    const searched = DATA.social_searched[row.candidate_id];
+    const nameCell = element("td", { className: "name" }, [candidateLink(row, nameWithIncumbent(row))]);
+    if (!accounts.length) {
+      const note = element("td", { className: "left muted", text: searched ? "None shown in Google results" : "Not searched yet" });
+      note.colSpan = Math.max(platforms.length, 1);
+      return element("tr", {}, [nameCell, note, element("td", { className: "left date", text: searched || "—" })]);
+    }
+    return element("tr", {}, [nameCell,
+      ...platforms.map((platform) => {
+        const cell = accounts.filter((a) => a.platform === platform).sort((a, b) => (Number(b.count_floor) || -1) - (Number(a.count_floor) || -1));
+        return element("td", { className: "left" }, cell.length ? cell.map((a) => accountLine(a, false)) : ["—"]);
+      }),
+      element("td", { className: "left date", text: searched || "—" })]);
+  }));
+  const searchedCount = rows.filter((row) => DATA.social_searched[row.candidate_id]).length;
+  document.getElementById("social-progress").textContent = "Searched so far: " + searchedCount + " of " + rows.length + " candidates in this race.";
+}
+
+// Candidate section block: every account for this candidate, largest first.
+function socialBlock(row) {
+  const accounts = socialAccounts(row.candidate_id).sort((a, b) => (Number(b.count_floor) || -1) - (Number(a.count_floor) || -1));
+  if (!accounts.length) return [element("p", { className: "empty", text: socialStatusText(row.candidate_id) })];
+  return [element("ul", {}, accounts.map((a) => element("li", {}, [accountLine(a, true)]))),
+    element("p", { className: "link-meta", text: "Google's rounded counts on the date searched; not checked by hand." })];
 }
 
 function candidateColumns() {
@@ -541,18 +657,28 @@ function drawCommitteeTable() {
 }
 
 function drawAll() {
-  writeHash(); drawStats(); drawBars(); drawCandidateTable(); drawCommitteeTable(); drawCards();
+  writeHash(); drawStats(); drawMoneyChart(); drawCandidateTable(); drawSocialTable(); drawCommitteeTable(); drawCards();
   document.querySelectorAll(".incumbent-legend").forEach((node) => {
     node.textContent = "(i) = holds this office now (" + DATA.incumbent_as_of + ").";
   });
-  if (state.candidate) showCard(state.candidate);
+  if (state.candidate) showCard(state.candidate, false);
 }
 
 // ----- set up -----
+// The page decides where to scroll (a #race/window/candidate link goes to that candidate); the
+// browser's own scroll restoration on reload would override it.
+history.scrollRestoration = "manual";
 document.getElementById("reports-through").textContent = DATA.reports_through;
 document.getElementById("isbe-download").textContent = DATA.isbe_download;
 drawFeedbackLinks();
 drawDataSources();
+// Section links scroll without touching the #race/window hash that holds the page state.
+document.querySelectorAll(".page-nav a").forEach((link) => {
+  link.onclick = (event) => {
+    event.preventDefault();
+    document.querySelector(link.getAttribute("href")).scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+});
 if (!DATA.sunshine_style_cutoff) document.getElementById("sunshine-style-header").remove();
 readHash();
 const raceSelect = document.getElementById("race-select");
