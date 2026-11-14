@@ -106,6 +106,9 @@ ADDRESS_PROFILE_URLS = {
 #      "Platform · label" (card_link_url); if that URL is a profile, it becomes profile_url.
 #   2. Profile links not already listed become rows with found_as = "result_link" (no count); post links
 #      go to the post-author review file. Same ADDRESS_LINE_RULES as address lines.
+# Facebook page URLs of the form facebook.com/p/<Name-ID>/ (seen 2026-11-13: /p/Gordilsfor33-61592512495242/)
+# are profiles: the "p" segment is dropped before ADDRESS_LINE_RULES, and "-" is allowed in that handle.
+FACEBOOK_PAGE_PREFIX_SEGMENTS = {"p"}
 LINKS_SECTION_MARKER = "--- Links (href | link text) ---"
 LINK_LINE_PATTERN = re.compile(r"^(?P<url>https?://\S+)(?P<dropped> \[query/fragment dropped\])? \| (?P<text>.*)$", re.MULTILINE)
 
@@ -124,6 +127,9 @@ def profile_from_url(url):
     segments = [segment for segment in parts.path.split("/") if segment]
     if not segments:
         return None, None
+    if domain == "facebook.com" and len(segments) == 2 and segments[0] in FACEBOOK_PAGE_PREFIX_SEGMENTS \
+            and re.fullmatch(r"[A-Za-z0-9.-]+", segments[1]):
+        return "Facebook", segments[1]
     return profile_from_address(domain, " › ".join(segments))
 
 
