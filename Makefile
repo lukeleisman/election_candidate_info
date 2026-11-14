@@ -5,7 +5,7 @@ PYTHON ?= conda run --no-capture-output -n election-candidate-info python
 # Newest CBOE filing report on disk (file names carry a timestamp, so sort = newest last).
 FILING_REPORT = $(shell ls data/raw/cboe/documents/*/"Candidate Filing Report_"*.pdf 2>/dev/null | sort | tail -1)
 
-.PHONY: all candidates fetch-cboe parse-candidates compare-lists ballot-status fetch-isbe committee-proposals isbe-review isbe-rule candidate-committee finance donor-mix display-tables fetch-ward-offices incumbents candidate-links social-accounts dashboard
+.PHONY: all candidates fetch-cboe parse-candidates compare-lists ballot-status fetch-isbe committee-proposals isbe-review isbe-rule candidate-committee finance donor-mix display-tables fetch-ward-offices incumbents candidate-links social-accounts fetch-endorsements endorsements dashboard
 
 all: candidates fetch-isbe committee-proposals isbe-review isbe-rule candidate-committee finance donor-mix display-tables incumbents candidate-links dashboard
 
@@ -78,3 +78,12 @@ social-accounts:
 
 dashboard: display-tables incumbents candidate-links
 	$(PYTHON) scripts/build_dashboard.py
+
+## Endorsements (PLAN.md §4). Not in `all`: fetching sends one request per approved registry row.
+# Snapshot every registry row with fetch_approved=yes; data/raw/endorsements/last_run.csv says what changed.
+fetch-endorsements:
+	$(PYTHON) scripts/fetch_endorsement_pages.py
+
+# Match endorsements_manual.csv rows to candidate_ids; build data/tables/endorsements_by_candidate.csv.
+endorsements:
+	$(PYTHON) scripts/match_endorsements.py

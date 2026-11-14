@@ -42,7 +42,7 @@
   .page > section, .page > details, .page > footer { background: var(--surface); border: 1px solid var(--line);
              border-radius: 10px; padding: 18px 20px; scroll-margin-top: 80px; }
   h2 { font-size: 18px; font-weight: 600; margin: 0 0 2px; }
-  .sub { color: var(--muted); margin: 0 0 12px; max-width: 85ch; font-size: 12.5px; }
+  .sub { color: var(--muted); margin: 0 0 12px; font-size: 12.5px; }  /* full box width (user, 2026-11-14; was 85ch) */
   .controls { display: flex; flex-wrap: wrap; gap: 16px; }
   .controls label { display: flex; flex-direction: column; gap: 4px; font-size: 11.5px; color: var(--muted);
                     text-transform: uppercase; letter-spacing: .05em; }
@@ -111,7 +111,9 @@
   .feedback ul { padding-left: 1.2em; margin: 8px 0 0; display: flex; flex-direction: column; gap: 4px; }
   details { color: var(--muted); font-size: 12.5px; }
   details summary { cursor: pointer; color: var(--fg); font-weight: 600; }
-  details ul { padding-left: 1.2em; max-width: 85ch; display: flex; flex-direction: column; gap: 4px; }
+  details ul { padding-left: 1.2em; display: flex; flex-direction: column; gap: 4px; }
+  /* Column descriptions sit inside each table's box, just above the table (user, 2026-11-14). */
+  details.columns { margin: 0 0 12px; }
   code { font-size: 12px; }
   @media (max-width: 600px) { h1 { font-size: 24px; } select { min-width: 0; width: 100%; }
     .page > section, .page > details, .page > footer { padding: 14px; } }
@@ -161,6 +163,29 @@
     <p class="sub">Money columns follow the window picked above, except cash on hand and $1,000+ gifts reported after the
       last quarterly. Donor columns count itemized gifts only. Click a column header to sort; click a name or a Raised
       figure for that candidate's details below. <span class="incumbent-legend"></span></p>
+    <details class="columns">
+      <summary>What the columns mean</summary>
+      <ul>
+      <li><b>Cash on hand</b>: funds available at the end of each committee's latest report, added across the
+        candidate's own committees. A committee whose latest report is older is flagged "cash not current".</li>
+      <li><b>Raised</b>: individual gifts (itemized and not), transfers from other committees and other receipts, on
+        reports wholly inside the window. Loans and in-kind gifts are separate. Transfers between a candidate's own
+        matched committees are not counted; transfers from their committees for other offices are (open question).</li>
+      <li><b>$1,000+ gifts after the last quarterly</b>: A-1 reports filed since; not in Raised yet.</li>
+      <li><b>Itemized donors</b>: distinct donors of itemized gifts (over $150), people and organizations, by last name +
+        first name + zip. Two other identity rules are in <code>data/tables/donor_mix.csv</code>.</li>
+      <li><b>Small gifts share</b>: individual gifts too small to itemize, as a share of all receipts (raised + loans + in-kind).</li>
+      <li><b>Top 10 donors' share</b>: dollars from the 10 largest itemized donors, as a share of Raised.</li>
+      <li><b>Median gift (people)</b>: median itemized gift from individuals.</li>
+      <li><b>From 606 zips</b>: share of itemized donor dollars from zip codes starting 606 (misses 60707, 60827).</li>
+      <li><b>Matched committee</b>: ballot candidate matched to a State Board of Elections candidate record, then every
+        committee the state links to that record is listed (as Illinois Sunshine does). "Name only" committees carry the
+        candidate's name but the state does not link them. No match can mean no committee yet, or one the matching missed.</li>
+      <li>A person who filed twice is listed twice; the second filing is marked and left out of the race figures.</li>
+    
+  </details>
+      </ul>
+    </details>
     <div class="scroll"><table id="candidate-table"><thead></thead><tbody></tbody></table></div>
   </section>
 
@@ -171,19 +196,51 @@
       personal account, or someone else with the same name. Links are either ones we recorded or addresses built from the handle Google showed (hover to see which);
       LinkedIn accounts show no handle, so they are not linked.
       <span id="social-progress"></span></p>
+    <details class="columns">
+      <summary>What the columns mean</summary>
+      <ul>
+      <li><b>Platform columns</b> (Facebook, Instagram, ...): each account Google listed, with Google's rounded follower count on the date searched. A flag next to an account is a note from our review.</li>
+      <li><b>Searched</b>: the date of the Google search for this candidate. "Not searched yet" means no search yet; "None shown" means the search found no accounts.</li>
+      </ul>
+    </details>
     <div class="scroll"><table id="social-table"><thead></thead><tbody></tbody></table></div>
   </section>
 
   <section id="section-endorsements">
     <h2>Endorsements</h2>
-    <p class="sub" id="endorsements-note">Not collected yet. Endorsements will be listed here, each with a link to where it
-      was announced.</p>
+    <p class="sub" id="endorsements-note">Endorsements announced by groups, officials and newspapers, each linked to where
+      it was announced. Collection has started with published lists, so most candidates have none listed yet.
+</p>
+    <details class="columns">
+      <summary>What the columns mean</summary>
+      <ul>
+      <li><b>Count</b>: endorsements listed for the candidate, including ones not yet checked.</li>
+      <li><b>Endorsed by</b>: the endorsing group or person, linked to where the endorsement was announced (hover for the date). Tags: "Not checked yet" = not reviewed by hand; "Name match not confirmed" = the name on the list differs from the ballot name; "Older list" / "Year unclear" = the page does not say it is for 2027.</li>
+      </ul>
+    </details>
+    <div class="scroll"><table id="endorsement-table"><thead><tr>
+      <th class="left">Candidate</th><th>Count</th><th class="left">Endorsed by</th>
+    </tr></thead><tbody></tbody></table></div>
   </section>
 
   <section id="section-committees">
     <h2>Committees behind the totals</h2>
     <p class="sub">Every committee linked to this race's candidates, one row each. "Added in" counts toward the
       candidate's total; "Slate, not added" is shared by 2+ candidates.</p>
+    <details class="columns">
+      <summary>What the columns mean</summary>
+      <ul>
+      <li><b>How found</b>: "State link" = the State Board of Elections links the committee to the candidate's record; "Name only" = the committee carries the candidate's name but the state does not link it.</li>
+      <li><b>Counted as</b>: "Added in" counts toward the candidate's total; "Slate, not added" is shared by 2+ candidates.</li>
+      <li><b>Cash</b> and <b>As of</b>: cash on hand at the end of the committee's latest report, and that report's end date.</li>
+      <li><b>Raised</b> columns: as in the money table, for this committee alone.</li>
+      <li><b>Sunshine-style total</b> (committee table): our attempt to match the "Funds Raised" figure on Illinois
+        Sunshine's race pages, which counts loans and in-kind gifts and starts at the committee's first report. It matched
+        Sunshine exactly for committees started in 2025-26 (checked Nov 12, 2026). For older committees Sunshine starts
+        at a date in 2023 we could not reproduce, so they show "not comparable".</li>
+      <li><b>Look up</b>: this committee's pages at the State Board of Elections and Illinois Sunshine.</li>
+      </ul>
+    </details>
     <div class="scroll"><table id="committee-table">
       <thead><tr>
         <th class="left">Candidate</th><th class="left">Committee</th><th>ISBE ID</th><th class="left">Type</th>
@@ -203,31 +260,6 @@
     <div class="cards" id="candidate-cards"></div>
   </section>
 
-  <details>
-    <summary>What the columns mean, and what is left out</summary>
-    <ul>
-      <li><b>Cash on hand</b>: funds available at the end of each committee's latest report, added across the
-        candidate's own committees. A committee whose latest report is older is flagged "cash not current".</li>
-      <li><b>Raised</b>: individual gifts (itemized and not), transfers from other committees and other receipts, on
-        reports wholly inside the window. Loans and in-kind gifts are separate. Transfers between a candidate's own
-        matched committees are not counted; transfers from their committees for other offices are (open question).</li>
-      <li><b>$1,000+ gifts after the last quarterly</b>: A-1 reports filed since; not in Raised yet.</li>
-      <li><b>Itemized donors</b>: distinct donors of itemized gifts (over $150), people and organizations, by last name +
-        first name + zip. Two other identity rules are in <code>data/tables/donor_mix.csv</code>.</li>
-      <li><b>Small gifts share</b>: individual gifts too small to itemize, as a share of all receipts (raised + loans + in-kind).</li>
-      <li><b>Top 10 donors' share</b>: dollars from the 10 largest itemized donors, as a share of Raised.</li>
-      <li><b>Median gift (people)</b>: median itemized gift from individuals.</li>
-      <li><b>From 606 zips</b>: share of itemized donor dollars from zip codes starting 606 (misses 60707, 60827).</li>
-      <li><b>Matched committee</b>: ballot candidate matched to a State Board of Elections candidate record, then every
-        committee the state links to that record is listed (as Illinois Sunshine does). "Name only" committees carry the
-        candidate's name but the state does not link them. No match can mean no committee yet, or one the matching missed.</li>
-      <li><b>Sunshine-style total</b> (committee table): our attempt to match the "Funds Raised" figure on Illinois
-        Sunshine's race pages, which counts loans and in-kind gifts and starts at the committee's first report. It matched
-        Sunshine exactly for committees started in 2025-26 (checked Nov 12, 2026). For older committees Sunshine starts
-        at a date in 2023 we could not reproduce, so they show "not comparable".</li>
-      <li>A person who filed twice is listed twice; the second filing is marked and left out of the race figures.</li>
-    </ul>
-  </details>
 
   <section class="feedback" id="section-sources">
     <h2>Sources</h2>
@@ -489,7 +521,7 @@ function drawCards() {
         section("Committees", [committeeList]),
         section("Social media (followers)", socialBlock(row)),
         section("Raised: " + windowLabel, moneyBlock(row)),
-        section("Endorsements", [element("p", { className: "empty", text: "Not collected yet." })]),
+        section("Endorsements", endorsementBlock(row)),
       ]),
       section("Top donors: " + windowLabel, donorsBlock(row, committees)),
     ]);
@@ -589,6 +621,49 @@ function drawSocialTable() {
   document.getElementById("social-progress").textContent = "Searched so far: " + searchedCount + " of " + rows.length + " candidates in this race.";
 }
 
+// ----- endorsements (data/endorsements/endorsements.csv; settings ENDORSEMENT_PAGE_* in build_dashboard.py) -----
+function endorsementsFor(candidateId) {
+  return DATA.endorsements.filter((e) => e.candidate_id === candidateId)
+    .sort((a, b) => (a.endorser_name || "").localeCompare(b.endorser_name || ""));
+}
+
+// Tags that say how far a row has been checked (see the section note).
+function endorsementTags(e) {
+  const tags = [];
+  if (e.review_status !== "reviewed") tags.push("Not checked yet");
+  if (e.match_status === "judgment_call") tags.push("Name match not confirmed");
+  if (e.cycle !== "2027") tags.push(e.cycle === "older" ? "Older list" : "Year unclear");
+  return tags.map((text) => element("span", { className: "flag warn", text }));
+}
+
+function endorsementLine(e, withType) {
+  const typeLabel = DATA.endorser_type_labels[e.endorser_type] || e.endorser_type;
+  const date = e.announced_on ? "announced " + e.announced_on : "seen " + e.seen_on;
+  return element("span", {}, [externalLink(e.endorser_name, e.url, date),
+    ...(withType ? [element("span", { className: "link-meta", text: " " + typeLabel + ", " + date + " " })] : [" "]),
+    ...endorsementTags(e)]);
+}
+
+function drawEndorsementTable() {
+  const rows = raceCandidates().filter((row) => !row.duplicate_filing_of)
+    .map((row) => ({ row, items: endorsementsFor(row.candidate_id) }))
+    .sort((a, b) => b.items.length - a.items.length || a.row.candidate_id.localeCompare(b.row.candidate_id));
+  document.getElementById("endorsement-table").tBodies[0].replaceChildren(...rows.map(({ row, items }) =>
+    element("tr", {}, [
+      element("td", { className: "name" }, [candidateLink(row, nameWithIncumbent(row))]),
+      element("td", { text: items.length || "—" }),
+      element("td", { className: "left" }, items.length
+        ? items.flatMap((e, index) => [index ? " · " : "", endorsementLine(e, false)])
+        : [element("span", { className: "muted", text: "None listed yet" })]),
+    ])));
+}
+
+function endorsementBlock(row) {
+  const items = endorsementsFor(row.candidate_id);
+  if (!items.length) return [element("p", { className: "empty", text: "None listed yet." })];
+  return [element("ul", {}, items.map((e) => element("li", {}, [endorsementLine(e, true)])))];
+}
+
 // Candidate section block: every account for this candidate, largest first.
 function socialBlock(row) {
   const accounts = socialAccounts(row.candidate_id).sort((a, b) => (Number(b.count_floor) || -1) - (Number(a.count_floor) || -1));
@@ -657,7 +732,7 @@ function drawCommitteeTable() {
 }
 
 function drawAll() {
-  writeHash(); drawStats(); drawMoneyChart(); drawCandidateTable(); drawSocialTable(); drawCommitteeTable(); drawCards();
+  writeHash(); drawStats(); drawMoneyChart(); drawCandidateTable(); drawSocialTable(); drawEndorsementTable(); drawCommitteeTable(); drawCards();
   document.querySelectorAll(".incumbent-legend").forEach((node) => {
     node.textContent = "(i) = holds this office now (" + DATA.incumbent_as_of + ").";
   });

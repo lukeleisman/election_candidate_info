@@ -15,6 +15,7 @@ Inputs:
   data/tables/top_donors.csv          scripts/build_donor_mix.py
   data/endorsements/social_accounts_google.csv     scripts/extract_social_from_google.py
   data/endorsements/candidate_campaign_sites_google.csv   which candidates the Google pass has searched
+  data/endorsements/endorsements.csv               scripts/match_endorsements.py
   scripts/dashboard_template.html        page layout, styles and drawing code
 Output:
   dashboard/index.html
@@ -50,6 +51,22 @@ GOOGLE_PASS_PATH = REPO_ROOT / "data" / "endorsements" / "candidate_campaign_sit
 SOCIAL_FLAGS_PATH = REPO_ROOT / "data" / "endorsements" / "social_account_flags.csv"
 # Hand-edited review of post authors (extract_social_from_google.POST_AUTHORS_REVIEW_FILE).
 POST_AUTHORS_REVIEW_PATH = REPO_ROOT / "data" / "endorsements" / "social_post_authors_review.csv"
+# Endorsement rows with their proposed candidate match (scripts/match_endorsements.py).
+ENDORSEMENTS_PATH = REPO_ROOT / "data" / "endorsements" / "endorsements.csv"
+# Which endorsement rows the page shows, by review_status. PLAN.md §4 says reviewed rows only.
+# Set 2026-11-14 to also show unreviewed rows, each tagged "Not checked yet", while the page is local
+# and review is starting. User 2026-11-14: keep showing unreviewed rows until the page is published; then
+# switch to ["reviewed"].
+ENDORSEMENT_PAGE_REVIEW_STATUSES = ["reviewed", "unreviewed"]
+# Which match statuses are shown. judgment_call rows are tagged "Name match not confirmed".
+ENDORSEMENT_PAGE_MATCH_STATUSES = ["accepted", "judgment_call"]
+# Endorser type labels on the page (keys = match_endorsements.ENDORSER_TYPES).
+ENDORSER_TYPE_LABELS = {"union": "Union", "advocacy_org": "Advocacy group", "political_org": "Political group",
+                        "party_or_ward_org": "Party / ward org", "elected_official": "Elected official",
+                        "former_official": "Former official", "newspaper": "Newspaper",
+                        "business_org": "Business group", "person": "Person"}
+ENDORSEMENT_PAGE_COLUMNS = ["candidate_id_proposed", "endorser_name", "endorser_type", "cycle", "url",
+                            "announced_on", "seen_on", "review_status", "match_status"]
 TEMPLATE_PATH = REPO_ROOT / "scripts" / "dashboard_template.html"
 OUTPUT_PATH = REPO_ROOT / "dashboard" / "index.html"
 
@@ -315,8 +332,14 @@ def main():
     # Candidates the Google pass has searched (date = checked_on): tells "none shown" from "not searched yet".
     google_pass = pd.read_csv(GOOGLE_PASS_PATH, dtype=str, keep_default_na=False)
     social_searched = dict(zip(google_pass["candidate_id"], google_pass["checked_on"]))
+    endorsements = pd.read_csv(ENDORSEMENTS_PATH, dtype=str, keep_default_na=False)
+    endorsements = endorsements[endorsements["review_status"].isin(ENDORSEMENT_PAGE_REVIEW_STATUSES)
+                                & endorsements["match_status"].isin(ENDORSEMENT_PAGE_MATCH_STATUSES)]
+    # candidate_id here = the proposed match (the input column of the same name is only the hand-given id).
+    endorsements = endorsements.drop(columns=["candidate_id"]).rename(columns={"candidate_id_proposed": "candidate_id"})
     shown_ids = set(candidates["candidate_id"])
-    for name, frame in [("incumbents", incumbents), ("links", links), ("top donors", top_donors), ("social", social)]:
+    for name, frame in [("incumbents", incumbents), ("links", links), ("top donors", top_donors), ("social", social),
+                        ("endorsements", endorsements)]:
         unknown = sorted(set(frame["candidate_id"]) - shown_ids)
         if unknown:
             print(f"NOTE: {name} rows for candidates not on the page (left out): {unknown}")
@@ -352,6 +375,8 @@ def main():
         "social_platform_order": SOCIAL_PLATFORM_ORDER,
         "social_table_order": SOCIAL_TABLE_ORDER,
         "money_chart_order": MONEY_CHART_ORDER,
+        "endorsements": records(endorsements[["candidate_id"] + ENDORSEMENT_PAGE_COLUMNS[1:]]),
+        "endorser_type_labels": ENDORSER_TYPE_LABELS,
         "races": records(races),
         "candidates": records(candidates),
         "committees": records(committees),

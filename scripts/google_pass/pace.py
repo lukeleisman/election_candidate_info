@@ -26,13 +26,14 @@ import time
 # ---------------------------------------------------------------------------
 # Pacing settings (chosen 2026-11-13; the user can change them). First values were 75-120 s and 25 an hour,
 # about half the rate that drew the CAPTCHA. 2026-11-13 (user): 63-81 s apart, 35 an hour (was 75-120 s, 25).
+# 2026-11-13 late (user): 39 an hour (was 35), so the last 39 candidates of the first pass fit in one hour.
 # ---------------------------------------------------------------------------
 # Minimum gap between two Google searches, plus a random extra of 0..JITTER seconds, so the gaps are
 # uneven rather than a fixed beat (63-81 s with these values).
 SECONDS_BETWEEN_GOOGLE_SEARCHES = 63
 JITTER_SECONDS = 18
 # No more than this many searches in any rolling 60 minutes.
-MAX_SEARCHES_PER_HOUR = 35
+MAX_SEARCHES_PER_HOUR = 39
 # After a CAPTCHA, refuse all searches for this long (INSTRUCTIONS.md said "a few hours").
 HOURS_PAUSE_AFTER_CAPTCHA = 6
 # One call never sleeps longer than this (agent shell commands time out at 10 min); exit 3 = call again.

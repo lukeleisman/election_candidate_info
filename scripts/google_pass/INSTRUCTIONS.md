@@ -61,7 +61,7 @@ document.querySelector('#rso').innerText (in slices if long) and say so in the r
 
 Pacing (2026-11-12): Google showed "unusual traffic" (CAPTCHA) after ~70 searches in ~90 min at
 5 s spacing. Since 2026-11-13 the spacing, hourly cap and post-CAPTCHA pause are settings in
-scripts/google_pass/pace.py (63-81 s apart, at most 35 an hour, 6 h pause; user 2026-11-13). Also:
+scripts/google_pass/pace.py (63-81 s apart, at most 39 an hour since late 2026-11-13 (was 35), 6 h pause; user). Also:
 - CANDIDATES_PER_CHUNK = 10
 - Type nothing into Google's search box and click nothing on Google: open the search URL from
   next.py directly. Open result sites with WebFetch, not by clicking Google links.
