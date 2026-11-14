@@ -42,6 +42,7 @@ MANUAL_COLUMNS = [
     "source_id",            # row in config/endorsement_sources.csv where it was seen
     "endorser_name",        # as written on the page
     "endorser_type",        # one of ENDORSER_TYPES (entered by hand; never guessed by code)
+    "endorsement_kind",     # one of ENDORSEMENT_KINDS (added 2026-11-14)
     "candidate_name_raw",   # as written on the page (may be blank on a candidate's own page)
     "office_raw",           # e.g. "Alderperson", "Mayor", "Ward 26", "Police District Council 19"
     "ward_raw",             # ward or police district number as written; blank for citywide offices
@@ -71,6 +72,13 @@ ENDORSER_TYPES = [
     "person",              # community members, business owners, anyone else
 ]
 
+# What the row records (user, 2026-11-14, on Giannoulias appearing with Ald. Gardiner: "not an official
+# endorsement ... but might be worth noting"). Shown on the page with a tag; not counted in the table.
+ENDORSEMENT_KINDS = [
+    "endorsement",              # the source says it endorses / backs the candidate
+    "support_not_endorsement",  # public support short of an endorsement (appearance, praise); noted only
+]
+
 CYCLE_VALUES = ["2027", "older", "unclear"]
 
 REVIEW_STATUSES = ["unreviewed", "reviewed", "rejected"]
@@ -81,6 +89,7 @@ TABLE_FILTERS = {
     "review_status": ["reviewed"],
     "cycle": ["2027"],
     "match_status": ["accepted"],
+    "endorsement_kind": ["endorsement"],
 }
 
 # office_raw text (lowercased, contains) -> CBOE office_code. First hit wins, in this order.
@@ -190,7 +199,8 @@ def main():
         if row["endorsement_row_id"] in seen_ids:
             problems.append(f"duplicate endorsement_row_id {row['endorsement_row_id']}")
         seen_ids.add(row["endorsement_row_id"])
-        for column, allowed in [("endorser_type", ENDORSER_TYPES), ("cycle", CYCLE_VALUES),
+        for column, allowed in [("endorser_type", ENDORSER_TYPES), ("endorsement_kind", ENDORSEMENT_KINDS),
+                                ("cycle", CYCLE_VALUES),
                                 ("review_status", REVIEW_STATUSES)]:
             if row[column] not in allowed:
                 problems.append(f"{row['endorsement_row_id']}: {column}='{row[column]}' not in {allowed}")

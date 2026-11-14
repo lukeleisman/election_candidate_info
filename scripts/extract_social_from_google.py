@@ -42,7 +42,8 @@ OUTPUT_FILE = REPO_ROOT / "data/endorsements/social_accounts_google.csv"
 # ..."), skipped by ADDRESS_LINE_RULES, listed for the user to verify. This script only ADDS new rows
 # (key: candidate_id + platform + handle); it never changes a row already there, so verdicts are kept.
 # verdict: blank = not reviewed; "candidate" = the candidate's own account (then shown on the page);
-# "not candidate" = someone else's.
+# "not candidate" = someone else's; "already listed" = a stale row whose account is already an account row (e.g.
+# handle "p" from facebook.com/p/<Name-ID>/ seen before FACEBOOK_PAGE_PREFIX_SEGMENTS existed). Only "candidate" is shown.
 POST_AUTHORS_REVIEW_FILE = REPO_ROOT / "data/endorsements/social_post_authors_review.csv"
 POST_AUTHORS_REVIEW_COLUMNS = ["candidate_id", "ballot_name", "platform", "handle", "verdict", "reviewer_notes",
                                "likely_profile_url", "address_line", "result_title", "snippet", "raw_file"]

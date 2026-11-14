@@ -65,7 +65,7 @@ ENDORSER_TYPE_LABELS = {"union": "Union", "advocacy_org": "Advocacy group", "pol
                         "party_or_ward_org": "Party / ward org", "elected_official": "Elected official",
                         "former_official": "Former official", "newspaper": "Newspaper",
                         "business_org": "Business group", "person": "Person"}
-ENDORSEMENT_PAGE_COLUMNS = ["candidate_id_proposed", "endorser_name", "endorser_type", "cycle", "url",
+ENDORSEMENT_PAGE_COLUMNS = ["candidate_id_proposed", "endorser_name", "endorser_type", "endorsement_kind", "cycle", "url",
                             "announced_on", "seen_on", "review_status", "match_status"]
 TEMPLATE_PATH = REPO_ROOT / "scripts" / "dashboard_template.html"
 OUTPUT_PATH = REPO_ROOT / "dashboard" / "index.html"

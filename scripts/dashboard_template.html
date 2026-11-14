@@ -214,7 +214,8 @@
     <details class="columns">
       <summary>What the columns mean</summary>
       <ul>
-      <li><b>Count</b>: endorsements listed for the candidate, including ones not yet checked.</li>
+      <li><b>Count</b>: endorsements listed for the candidate, including ones not yet checked. Public support that is
+        not an endorsement is listed (tagged "Support, not an endorsement") but not counted.</li>
       <li><b>Endorsed by</b>: the endorsing group or person, linked to where the endorsement was announced (hover for the date). Tags: "Not checked yet" = not reviewed by hand; "Name match not confirmed" = the name on the list differs from the ballot name; "Older list" / "Year unclear" = the page does not say it is for 2027.</li>
       </ul>
     </details>
@@ -630,6 +631,7 @@ function endorsementsFor(candidateId) {
 // Tags that say how far a row has been checked (see the section note).
 function endorsementTags(e) {
   const tags = [];
+  if (e.endorsement_kind === "support_not_endorsement") tags.push("Support, not an endorsement");
   if (e.review_status !== "reviewed") tags.push("Not checked yet");
   if (e.match_status === "judgment_call") tags.push("Name match not confirmed");
   if (e.cycle !== "2027") tags.push(e.cycle === "older" ? "Older list" : "Year unclear");
@@ -651,7 +653,7 @@ function drawEndorsementTable() {
   document.getElementById("endorsement-table").tBodies[0].replaceChildren(...rows.map(({ row, items }) =>
     element("tr", {}, [
       element("td", { className: "name" }, [candidateLink(row, nameWithIncumbent(row))]),
-      element("td", { text: items.length || "—" }),
+      element("td", { text: items.filter((e) => e.endorsement_kind === "endorsement").length || "—" }),
       element("td", { className: "left" }, items.length
         ? items.flatMap((e, index) => [index ? " · " : "", endorsementLine(e, false)])
         : [element("span", { className: "muted", text: "None listed yet" })]),

@@ -31,6 +31,8 @@ top of `scripts/match_endorsements.py`. Rules:
   say so in `notes`.
 - `endorser_type` is chosen by hand from `ENDORSER_TYPES`. Never guess it from the name: if unsure,
   pick the closest one and say why in `notes`.
+- `endorsement_kind`: `endorsement`, or `support_not_endorsement` for public support short of an endorsement
+  (an appearance, praise). The second kind is shown on the page with a tag but not counted.
 - `cycle`: `2027` only if the page says so (a 2027 heading, a post dated after the 2023 runoff about
   this race, "re-election in 2027"). Write the words in `cycle_evidence`. Old lists still on a site
   (e.g. "Alderman-Elect" titles from 2023) are `older`. If you can't tell, use `unclear`.
