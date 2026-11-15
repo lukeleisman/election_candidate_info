@@ -34,6 +34,8 @@ import pandas as pd
 
 # Platform order mirrors the parser's list (scripts/extract_social_from_google.py).
 from extract_social_from_google import PLATFORMS as SOCIAL_PLATFORM_ORDER
+# Profile-URL rules (which addresses are an account's profile, not a post), reused for recorded links.
+from extract_social_from_google import profile_from_url
 
 # ---------------------------------------------------------------------------
 # Configuration
@@ -290,6 +292,19 @@ SOCIAL_TITLE_HANDLE_ONLY_IF_TITLE_STARTS_WITH_LABEL = True
 # verdict in social_post_authors_review.csv equals this value; blank / other verdicts are left off.
 POST_AUTHOR_VERDICT_SHOWN = "candidate"
 SOCIAL_TABLE_ORDER = "largest"  # user, 2026-11-13: order by following
+# Recorded social links in the Social media table (user, 2026-11-15, option A of A/B/C; C = follower counts for
+# them, next session). Before this, the table showed only accounts Google listed, so candidates whose social links came
+# from their campaign site or from the user (Quigley, Quinlan, Gronkiewicz-Doran) showed "None shown in Google results".
+#   SOCIAL_ADD_RECORDED_LINKS  True: every link_kind "social" row of candidate_links.csv whose account is not already
+#       in the table is added as an account with no count (found_as "recorded_link", url_basis "recorded link").
+#   Same account = same candidate + platform + account key from the URL (social_url_account_key below), or the URL's key
+#       equals a Google account's handle-like label. Display-name labels (with spaces, e.g. most Facebook / LinkedIn
+#       boxes) can't be compared to a URL, so a recorded link may repeat such an account: those are listed in
+#       SOCIAL_RECORDED_LINKS_REVIEW_PATH with possible_repeat_of filled, for the user to check.
+#   Left out and printed: platforms not in SOCIAL_PLATFORM_ORDER (e.g. Meetup), and URLs that are not a profile page
+#       (a post, a 'share' link, LinkedIn /posts/...), by the extractor's ADDRESS_LINE_RULES (social_url_account_key).
+SOCIAL_ADD_RECORDED_LINKS = True
+SOCIAL_RECORDED_LINKS_REVIEW_PATH = TABLES_DIR / "social_recorded_links_added.csv"
 
 # Money chart (user, 2026-11-13: Raised and Cash on the same plot, ordered by Raised). One shared
 # dollar scale per race, two bars per candidate.
@@ -377,6 +392,99 @@ def records(frame):
     return frame.astype(object).where(frame.notna(), None).replace({"": None}).to_dict(orient="records")
 
 
+def social_url_account_key(url, platform):
+    """(account key, reason) for a recorded social link. The key is the lowercased handle, '' when the URL is not a
+    profile page (reason says why). Mirrors extract_social_from_google.profile_from_url (ADDRESS_LINE_RULES: posts,
+    'share' links, LinkedIn /posts/ etc. are not profiles), plus three URL forms those rules don't cover:
+      facebook.com/people/<Name>/<page number>/  -> the page number (a profile; Google's address lines skip 'people')
+      facebook.com/profile.php?id=<number>       -> the number (when the query was kept)
+      youtube.com/@name, /channel/<id>, /c/<name>, /user/<name>  (YouTube is not in ADDRESS_LINE_RULES)
+    facebook.com/p/<Name-number>/ goes through profile_from_url; its key is the trailing page number, so it matches
+    the people/ form of the same page."""
+    from urllib.parse import urlsplit
+    parts = urlsplit(url.strip())
+    segments = [segment for segment in parts.path.split("/") if segment]
+    if platform == "Facebook" and segments[:1] == ["people"] and re.fullmatch(r"\d{6,}", segments[-1]):
+        return segments[-1], ""
+    if platform == "Facebook" and segments[:1] == ["profile.php"]:
+        query_id = re.search(r"(?:^|&)id=(\d+)", parts.query)
+        return (query_id.group(1), "") if query_id else ("", "profile.php with no id")
+    # Accepted by the user 2026-11-15 (were left out by the extractor's rules; all seen in candidate_links.csv):
+    if platform == "LinkedIn" and segments[:1] == ["company"] and len(segments) >= 2:
+        return segments[1].lower(), ""                       # company pages (Harrison 9th, Joe For Chicago, Treasurer)
+    if platform == "X" and not segments and parts.fragment.startswith("!/"):
+        return parts.fragment[2:].strip("/").lower(), ""     # old twitter.com/#!/name form (Harris 8th)
+    if platform == "Facebook" and len(segments) == 1 and re.fullmatch(r"[A-Za-z0-9.-]+-\d{6,}", segments[0]):
+        return re.search(r"(\d{6,})$", segments[0]).group(1), ""   # old vanity Name-number form (Lee 11th)
+    if platform == "Facebook" and segments[:1] == ["share"] and len(segments) >= 2:
+        return "share/" + segments[1].lower(), ""            # share links: target account unknown until opened
+    if platform == "YouTube" and len(segments) == 3 and segments[0] == "channel" and segments[2] in ("videos", "featured", "about"):
+        return segments[1].lower(), ""                       # a channel tab (Harris 8th)
+    if platform == "YouTube":
+        if len(segments) == 1 and segments[0].startswith("@"):
+            return segments[0][1:].lower(), ""
+        if len(segments) == 2 and segments[0] in ("channel", "c", "user"):
+            return segments[1].lower(), ""
+        return "", "YouTube: not a channel address"
+    found_platform, handle_or_reason = profile_from_url(url.strip())
+    if found_platform is None:
+        return "", handle_or_reason or "not a social site"
+    handle = handle_or_reason.lstrip("@").lower()
+    page_number = re.search(r"-(\d{6,})$", handle) if found_platform == "Facebook" else None
+    return (page_number.group(1) if page_number else handle), ""
+
+
+def social_url_display_label(url, key):
+    """Label shown for an added recorded link: the handle as written in the URL (case kept); for a Facebook
+    people/<Name>/<number> page, the name part with dashes as spaces (the number alone means nothing to a reader)."""
+    from urllib.parse import urlsplit
+    segments = [segment for segment in urlsplit(url.strip()).path.split("/") if segment]
+    if key.startswith("share/"):
+        return "shared link (account not known)"
+    if segments[:1] == ["people"] and len(segments) >= 3:
+        return segments[1].replace("-", " ")
+    for segment in segments:
+        if segment.lstrip("@").lower() == key:
+            return segment.lstrip("@")
+        if segment.lower().endswith("-" + key):  # facebook.com/p/<Name-number>/
+            return segment[: -len(key) - 1].replace("-", " ")
+    return key
+
+
+def recorded_social_link_rows(social, links):
+    """Rows to add for SOCIAL_ADD_RECORDED_LINKS, and the review table (one row per recorded social link)."""
+    review_rows, new_rows = [], []
+    for link in links[links["link_kind"] == "social"].itertuples():
+        platform = link.platform
+        key, not_profile_reason = social_url_account_key(link.url, platform)
+        same_platform = social[(social["candidate_id"] == link.candidate_id) & (social["platform"] == platform)]
+        existing_keys = {social_url_account_key(url, platform)[0] for url in same_platform["url"] if url}
+        existing_keys |= {label.lstrip("@").lower() for label in same_platform["account_label"] if " " not in label}
+        existing_keys.discard("")
+        if platform not in SOCIAL_PLATFORM_ORDER:
+            decision = "left out: platform not shown"
+        elif not key:
+            decision = "left out: not a profile URL (" + not_profile_reason + ")"
+        elif key in existing_keys:
+            decision = "already in table"
+        else:
+            decision = "added"
+        # Google accounts on this platform that have no URL to compare (display-name label): possible repeats.
+        unlinked = same_platform.loc[same_platform["url"] == "", "account_label"].tolist()
+        review_rows.append({"candidate_id": link.candidate_id, "platform": platform, "url": link.url, "account_key": key,
+                            "found_by": link.found_by, "decision": decision,
+                            "possible_repeat_of": "; ".join(unlinked) if decision == "added" else ""})
+        if decision == "added":
+            new_rows.append({"candidate_id": link.candidate_id, "raw_file": "", "retrieved": "", "found_as": "recorded_link",
+                             "platform": platform, "account_label": social_url_display_label(link.url, key), "count_shown": "", "count_floor": "",
+                             "count_unit": "", "handle_in_recorded_links": "", "title_line": "", "title_handle": "",
+                             "url": link.url, "url_basis": "recorded link"})
+    review = pd.DataFrame(review_rows)
+    # Two recorded links for one account (e.g. two URL forms of one Facebook page) are added once.
+    added = pd.DataFrame(new_rows).drop_duplicates(["candidate_id", "platform", "account_label"]) if new_rows else pd.DataFrame()
+    return added, review
+
+
 def social_accounts(links):
     """Social rows for the page, with the settings above applied; prints what each one changed."""
     social = pd.read_csv(SOCIAL_ACCOUNTS_PATH, dtype=str, keep_default_na=False)
@@ -431,6 +539,16 @@ def social_accounts(links):
     print(f"social: of {len(social)} accounts ({(social['found_as'] == 'address_line').sum()} from address lines, no count): "
           f"{social['url_basis'].replace('', 'not linked').value_counts().to_dict()}")
     print("social: not linked, by platform:", social.loc[social["url"] == "", "platform"].value_counts().to_dict())
+    if SOCIAL_ADD_RECORDED_LINKS:
+        added, review = recorded_social_link_rows(social, links)
+        review.to_csv(SOCIAL_RECORDED_LINKS_REVIEW_PATH, index=False)
+        print(f"social: recorded social links {len(review)}: {review['decision'].value_counts().to_dict()}; "
+              f"added as accounts (one per account) {len(added)}; possible repeats to check "
+              f"{(review['possible_repeat_of'] != '').sum()} (wrote {SOCIAL_RECORDED_LINKS_REVIEW_PATH.relative_to(REPO_ROOT)})")
+        left_out = review[review["decision"].str.startswith("left out")]
+        if len(left_out):
+            print("social: left out:", left_out[["candidate_id", "url", "decision"]].values.tolist())
+        social = pd.concat([social, added], ignore_index=True).fillna("")
     # Hand flags, matched on candidate + platform + handle (label or title handle, any case).
     flags = pd.read_csv(SOCIAL_FLAGS_PATH, dtype=str, keep_default_na=False)
     flag_text = {(row.candidate_id, row.platform, row.handle.lower()): row.flag for row in flags.itertuples()}

@@ -247,19 +247,18 @@
 
   <section id="section-social">
     <h2>Social media: follower estimates</h2>
-    <!-- Text approved by the user 2026-11-15. -->
-    <p class="sub">Social media accounts that appeared in Google's results when we searched for each candidate, with
-      Google's rounded follower counts ("2.2K+" = at least 2,200) on the date searched. Most are not checked by hand: an
-      account may be a campaign, office or personal account, or someone else with the same name. Rows are ordered by
-      each candidate's largest single account. Links are a link we recorded, the profile address in Google's results,
-      or an address built from the handle Google showed (hover to see which). Accounts with none of these, mostly on
-      Facebook and LinkedIn, are not linked.
+    <!-- Text approved by the user 2026-11-15 (revised for recorded links the same day). -->
+    <p class="sub">Social media accounts from Google's results and from links we recorded (candidate websites,
+      readers). Follower counts are Google's rounded figures ("2.2K+" = at least 2,200) on the date searched; "no count"
+      means Google showed none. Most accounts are not checked by hand: one may be a campaign, office or personal account,
+      or someone else with the same name. Rows are ordered by each candidate's largest account. Hover a link to see where
+      it came from.
       <span id="social-progress"></span></p>
     <details class="columns">
       <summary>What the columns mean</summary>
       <ul>
-      <li><b>Platform columns</b> (Facebook, Instagram, ...): each account Google listed, with its rounded follower
-        count on the date searched, or "no count" when Google showed the account's address but no count. An account can
+      <li><b>Platform columns</b> (Facebook, Instagram, ...): each account, with Google's rounded follower count on the
+        date searched, or "no count". An account can
         appear twice if Google showed two different counts. Tags: "posts in results; checked by hand" = found posting in
         the results and confirmed by hand; any other tag is a note from our review (e.g. "May not be this candidate").</li>
       <li><b>Searched</b>: date of the latest Google search for this candidate (some were searched twice). "Not searched
@@ -745,7 +744,9 @@ function accountLine(account, withPlatform) {
     : account.account_label;
   // Address-line accounts have no follower count ("no count" shown instead).
   // Post-author rows (hand-checked) have no retrieval date: the hover uses the candidate's Searched date instead.
-  const accountHover = account.retrieved ? "Shown by Google " + account.retrieved.slice(0, 10)
+  // Recorded links (SOCIAL_ADD_RECORDED_LINKS) were not in Google's account boxes, so they have no count yet.
+  const accountHover = account.found_as === "recorded_link" ? "A link we recorded; no follower count yet"
+    : account.retrieved ? "Shown by Google " + account.retrieved.slice(0, 10)
     : "Found in Google's results searched " + (DATA.social_searched[account.candidate_id] || "(date unknown)");
   return element("span", { className: "account", title: accountHover }, [
     account.count_shown ? element("span", { className: "count", text: account.count_shown })
