@@ -159,7 +159,7 @@ TEMPLATE_TEXT_PLACEHOLDERS = {"__PAGE_TITLE__": PAGE_TITLE, "__PAGE_DESCRIPTION_
 #   FEEDBACK_FORM_URL          Google Form, general link (page footer). OPEN: the user creates the form.
 #   FEEDBACK_FORM_PREFILL_URL  the form's "Get pre-filled link" URL with the candidate answers
 #                              replaced by {candidate_id} and {candidate_name}; each candidate row
-#                              then gets a "Report a problem" link with those filled in.
+#                              then gets a REPORT_LINK_TEXT link (template; "Report Problem / Update") with those filled in.
 #   GITHUB_ISSUES_URL          for code bugs (repo public since 2026-11-14):
 #                              https://github.com/lukeleisman/election_candidate_info/issues
 #   CONTACT_EMAIL              general questions, comments, updates (page footer).

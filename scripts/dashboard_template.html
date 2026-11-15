@@ -341,7 +341,7 @@
     <!-- Text approved by the user 2026-11-15. -->
     <p class="sub">A section for each candidate, in candidate ID order: links, committees, social media, money raised,
       endorsements and top donors. Links come mostly from web searches, plus some sent to us, and are not all checked
-      by hand; tell us if one is wrong (Report a problem). The ID under each name is for the corrections form.
+      by hand; tell us if one is wrong (Report Problem / Update). The ID under each name is for the corrections form.
       <span class="incumbent-legend"></span></p>
     <div class="cards" id="candidate-cards"></div>
   </section>
@@ -409,7 +409,10 @@ function currentWindow() { return DATA.windows.find((w) => w.key === state.windo
 // false = show the number with no flag.
 const FLAG_NEGATIVE_CASH = true;
 
-// Small line under a candidate's name: the candidate ID, then a "Report a problem" link when
+// Link text (user, 2026-11-15; was "Report a problem"). Shown in the money, social media, endorsements and
+// committee tables and in each candidate's section.
+const REPORT_LINK_TEXT = "Report Problem / Update";
+// Small line under a candidate's name: the candidate ID, then a REPORT_LINK_TEXT link when
 // FEEDBACK_FORM_PREFILL_URL is set in scripts/build_dashboard.py (the form opens with this
 // candidate filled in). The ID is shown so people who reach the form another way can type it
 // (user, 2026-11-12, option A; the form's Candidate ID question points here).
@@ -421,7 +424,7 @@ function reportLink(row) {
   if (template) {
     const href = template.replace("{candidate_id}", encodeURIComponent(row.candidate_id))
       .replace("{candidate_name}", encodeURIComponent(row.ballot_name_raw));
-    const link = element("a", { text: "Report a problem" });
+    const link = element("a", { text: REPORT_LINK_TEXT });
     link.href = href; link.target = "_blank"; link.rel = "noopener";
     if (parts.length) parts.push(" · ");
     parts.push(link);
@@ -776,7 +779,7 @@ function drawSocialTable() {
   table.tBodies[0].replaceChildren(...rows.map((row) => {
     const accounts = socialAccounts(row.candidate_id);
     const searched = DATA.social_searched[row.candidate_id];
-    const nameCell = element("td", { className: "name" }, [candidateLink(row, nameWithIncumbent(row))]);
+    const nameCell = element("td", { className: "name" }, [candidateLink(row, nameWithIncumbent(row)), ...reportLink(row)]);
     if (!accounts.length) {
       const note = element("td", { className: "left muted", text: searched ? "None shown in Google results" : "Not searched yet" });
       note.colSpan = Math.max(platforms.length, 1);
@@ -833,7 +836,7 @@ function drawEndorsementTable() {
     .sort((a, b) => b.count - a.count || b.items.length - a.items.length || a.row.candidate_id.localeCompare(b.row.candidate_id));
   document.getElementById("endorsement-table").tBodies[0].replaceChildren(...rows.map(({ row, items, count }) =>
     element("tr", {}, [
-      element("td", { className: "name" }, [candidateLink(row, nameWithIncumbent(row))]),
+      element("td", { className: "name" }, [candidateLink(row, nameWithIncumbent(row)), ...reportLink(row)]),
       element("td", { text: count || "—" }),
       element("td", { className: "left" }, items.length
         ? items.flatMap((e, index) => [index ? " · " : "", endorsementLine(e, false)])
@@ -894,10 +897,11 @@ function drawCandidateTable() {
 
 function drawCommitteeTable() {
   const names = new Map(raceCandidates().map((row) => [row.candidate_id, row.ballot_name_raw]));
+  const candidatesById = new Map(raceCandidates().map((row) => [row.candidate_id, row]));
   const rows = DATA.committees.filter((row) => names.has(row.candidate_id));
   const text = (value) => LABELS[value] || value || "—";
   document.querySelector("#committee-table tbody").replaceChildren(...rows.map((row) => element("tr", {}, [
-    element("td", { className: "left", text: names.get(row.candidate_id) }),
+    element("td", { className: "left" }, [names.get(row.candidate_id), ...reportLink(candidatesById.get(row.candidate_id))]),
     element("td", { className: "left", text: row.committee_name }),
     element("td", { text: row.committee_id }),
     element("td", { className: "left", text: text(row.committee_type) }),
