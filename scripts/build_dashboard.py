@@ -138,7 +138,7 @@ REPORTS_THROUGH_SHORT = date_label(REPORTS_THROUGH_DATE, with_year=False)  # "Se
 # gifts under $1,000 are reported once a quarter. Illinois rule (10 ILCS 5/9-10): gifts of $1,000+ go on an A-1
 # within 5 business days (2 business days in the last 30 days before an election); smaller gifts and all
 # spending appear only on the quarterly D-2. Cash on hand stops at the last quarterly (REPORTS_THROUGH_LABEL).
-# Last sentence changed 2026-11-15 (Raised now adds later $1,000+ gifts for the "since" periods; user decision A).
+# Last sentence changed 2026-11-15 (Raised now adds later $1,000+ gifts for the "since" periods; user decision A); wording approved by the user 2026-11-15).
 PAGE_WARNING = ("IMPORTANT: the data on this page is NOT complete and likely contains errors. Gifts of $1,000 or "
                 "more are reported within days, but smaller gifts and all spending are reported only once a "
                 f"quarter. The latest quarterly reports run through {REPORTS_THROUGH_LABEL}, so Cash on hand is as "
