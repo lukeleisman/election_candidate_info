@@ -95,6 +95,8 @@
   #candidates-app .flag.warn { border-color: var(--warn); color: var(--warn); }
   #candidates-app .report-link { display: block; font-weight: 400; font-size: 11.5px; color: var(--muted); }
   #candidates-app .report-link a { color: inherit; }
+  #candidates-app .item-report { font-size: 11px; color: var(--muted); white-space: nowrap; }
+  #candidates-app .item-report a { color: inherit; }
   #candidates-app .source-links { display: block; font-size: 11.5px; color: var(--muted); white-space: nowrap; }
   #candidates-app .source-links a { color: inherit; }
   #candidates-app .incumbent { font-weight: 400; color: var(--muted); margin-left: 4px; cursor: help; }
@@ -432,6 +434,34 @@ function reportLink(row) {
   return parts.length ? [element("span", { className: "report-link" }, parts)] : [];
 }
 
+// Per-item links (user, 2026-11-15): after each link, social account and endorsement in a candidate's
+// section, small "Confirm" and "Wrong?" links open the corrections form with the candidate filled in AND the
+// "What's wrong or needs to be updated?" box filled with form_text ({item} = what it is, e.g. "Instagram
+// account", "Campaign site", "Endorsement by Chicago DSA"; {url} = its address). The visitor can edit the text
+// before sending. Off when FEEDBACK_FORM_ITEM_PREFILL_URL in scripts/build_dashboard.py is empty.
+// OPEN QUESTION (user): wording below is a first draft.
+const ITEM_REPORT_LINKS = [
+  { link_text: "Confirm", hover: "Tell us this is correct (opens a short form)",
+    form_text: "CONFIRMED: {item} {url} is correct for this candidate." },
+  { link_text: "Wrong?", hover: "Tell us this is wrong or out of date (opens a short form)",
+    form_text: "PROBLEM: {item} {url}\nWhat is wrong (and the correct link, if you know it): " },
+];
+// Which candidate-section blocks get the per-item links. The race tables are left out (too crowded).
+const ITEM_REPORT_PLACES = { links: true, social: true, endorsements: true };
+function itemReportLinks(row, itemLabel, url) {
+  const template = DATA.feedback.form_item_prefill_url;
+  if (!template) return [];
+  const links = ITEM_REPORT_LINKS.map((entry) => {
+    const itemText = entry.form_text.replace("{item}", itemLabel).replace("{url}", url || "");
+    const link = externalLink(entry.link_text, template
+      .replace("{candidate_id}", encodeURIComponent(row.candidate_id))
+      .replace("{candidate_name}", encodeURIComponent(row.ballot_name_raw))
+      .replace("{item_text}", encodeURIComponent(itemText)), entry.hover);
+    return link;
+  });
+  return [" ", element("span", { className: "item-report" }, links.flatMap((link, index) => [index ? " · " : "", link]))];
+}
+
 // Footer links; each is hidden when its setting in scripts/build_dashboard.py is empty.
 function drawFeedbackLinks() {
   const feedback = DATA.feedback;
@@ -541,7 +571,8 @@ function linksBlock(row) {
   return [element("ul", {}, links.map((link) => {
     const label = DATA.link_kind_labels[link.link_kind] + (link.platform ? " (" + link.platform + ")" : "");
     const shortUrl = link.url.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "");
-    return element("li", {}, [label + ": ", externalLink(shortUrl, link.url)]);
+    return element("li", {}, [label + ": ", externalLink(shortUrl, link.url),
+      ...(ITEM_REPORT_PLACES.links ? itemReportLinks(row, label, link.url) : [])]);
   }))];
 }
 
@@ -847,14 +878,17 @@ function drawEndorsementTable() {
 function endorsementBlock(row) {
   const items = endorsementsFor(row.candidate_id);
   if (!items.length) return [element("p", { className: "empty", text: "None listed yet." })];
-  return [element("ul", {}, items.map((e) => element("li", {}, [endorsementLine(e, true)])))];
+  return [element("ul", {}, items.map((e) => element("li", {}, [endorsementLine(e, true),
+    ...(ITEM_REPORT_PLACES.endorsements ? itemReportLinks(row, "Endorsement by " + e.endorser_name, e.url) : [])])))];
 }
 
 // Candidate section block: every account for this candidate, largest first.
 function socialBlock(row) {
   const accounts = socialAccounts(row.candidate_id).sort((a, b) => (Number(b.count_floor) || -1) - (Number(a.count_floor) || -1));
   if (!accounts.length) return [element("p", { className: "empty", text: socialStatusText(row.candidate_id) })];
-  return [element("ul", {}, accounts.map((a) => element("li", {}, [accountLine(a, true)]))),
+  // Accounts with no address (Google showed only a name) send the name shown instead of a link.
+  return [element("ul", {}, accounts.map((a) => element("li", {}, [accountLine(a, true),
+      ...(ITEM_REPORT_PLACES.social ? itemReportLinks(row, a.platform + " account" + (a.url ? "" : ' "' + a.account_label + '"'), a.url) : [])]))),
     element("p", { className: "link-meta", text: "Google's rounded counts on the date searched; most not checked by hand." })];
 }
 

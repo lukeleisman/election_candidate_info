@@ -169,6 +169,12 @@ TEMPLATE_TEXT_PLACEHOLDERS = {"__PAGE_TITLE__": PAGE_TITLE, "__PAGE_DESCRIPTION_
 FEEDBACK_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSd3QGQVBxoQNP20o6yWiZtQ87yh5JHZWzD92jF7Q4YxAWOtyw/viewform"
 FEEDBACK_FORM_PREFILL_URL = ("https://docs.google.com/forms/d/e/1FAIpQLSd3QGQVBxoQNP20o6yWiZtQ87yh5JHZWzD92jF7Q4YxAWOtyw/viewform?usp=pp_url"
                              "&entry.975812737={candidate_id}&entry.2031813816={candidate_name}")
+# Per-item links ("Confirm" / "Wrong?" after each link, social account and endorsement in a candidate's
+# section; user, 2026-11-15: no new form questions, fill the existing "What's wrong or needs to be updated?"
+# box instead). Same as FEEDBACK_FORM_PREFILL_URL plus that box, entry.1172266679 (read from the public form
+# page 2026-11-15). The text put in the box is set in scripts/dashboard_template.html (ITEM_REPORT_LINKS).
+# An empty string hides the per-item links.
+FEEDBACK_FORM_ITEM_PREFILL_URL = FEEDBACK_FORM_PREFILL_URL + "&entry.1172266679={item_text}"
 # Set 2026-11-14 when the repo went public (user OK).
 GITHUB_ISSUES_URL = "https://github.com/lukeleisman/election_candidate_info/issues"
 CONTACT_EMAIL = "hello@lukeleisman.com"
@@ -723,6 +729,7 @@ def main():
         "candidate_list_status_note": CANDIDATE_LIST_STATUS_NOTE,
         "isbe_download": isbe_download_label(),
         "feedback": {"form_url": FEEDBACK_FORM_URL, "form_prefill_url": FEEDBACK_FORM_PREFILL_URL,
+                     "form_item_prefill_url": FEEDBACK_FORM_ITEM_PREFILL_URL,
                      "github_issues_url": GITHUB_ISSUES_URL, "contact_email": CONTACT_EMAIL},
         "committee_source_links": [{"label": label, "url": url, "description": description}
                                    for label, url, description in COMMITTEE_SOURCE_LINKS],
