@@ -67,6 +67,12 @@ ENDORSER_TYPE_LABELS = {"union": "Union", "advocacy_org": "Advocacy group", "pol
                         "party_or_ward_org": "Party / ward org", "elected_official": "Elected official",
                         "former_official": "Former official", "newspaper": "Newspaper",
                         "business_org": "Business group", "person": "Person"}
+# Count shown for a candidate (Summary and Endorsements table). User, 2026-11-15 (option a): True = each endorser
+# counted once per candidate, even when the same endorsement was entered from two pages (seen: ONE People's Campaign
+# for ALD-48-001, from its own list and from the candidate's site). Both rows are still listed with their links.
+# Same endorser = same endorser_name after trimming and ignoring case (no other name matching).
+# False = every endorsement row counts.
+ENDORSEMENT_COUNT_EACH_ENDORSER_ONCE = True
 ENDORSEMENT_PAGE_COLUMNS = ["candidate_id_proposed", "endorser_name", "endorser_type", "endorsement_kind", "cycle", "url",
                             "announced_on", "seen_on", "review_status", "match_status"]
 TEMPLATE_PATH = REPO_ROOT / "scripts" / "dashboard_template.html"
@@ -215,15 +221,21 @@ COMMITTEE_SOURCE_LINKS = [
      "Illinois Sunshine (Reform for Illinois): the same state data, with donor and spending detail"),
 ]
 
-# Page-level sources listed in the "Sources" section: (name, URL, what we take from it).
+# Page-level sources listed in the "Sources" section: (name, URL or "" for plain text, what we take from it).
+# Wording by the user's style, 2026-11-15 ("Name: what it gives").
 DATA_SOURCES = [
-    ("Chicago Board of Election Commissioners: candidates", "https://chicagoelections.gov/getting-ballot/candidates",
-     "who filed to be on the ballot (scripts/fetch_cboe.py)"),
-    ("Illinois State Board of Elections: campaign disclosure data files",
-     "https://www.elections.il.gov/CampaignDisclosureDataFiles/",
-     "committees, reports and receipts behind every money figure (scripts/fetch_isbe.py)"),
+    ("Chicago Board of Election Commissioners", "https://chicagoelections.gov/getting-ballot/candidates",
+     "candidates who filed to be on the ballot"),
+    ("Illinois State Board of Elections", "https://www.elections.il.gov/CampaignDisclosureDataFiles/",
+     "campaign disclosure data files, including committees, reports and receipts"),
     ("Illinois Sunshine", "https://illinoissunshine.org/",
-     "not used for the numbers; the same state data in a friendlier site, linked per committee"),
+     "the same state data, linked for each committee and used to check our totals"),
+    ("Google search results", "", "candidate websites, social media accounts and follower counts"),
+    ("Endorser lists and candidate websites", "", "endorsements"),
+    ("City of Chicago Ward Offices data", "https://data.cityofchicago.org/Facilities-Geographic-Boundaries/Ward-Offices/htai-wnw4",
+     "current aldermen; the Mayor's, Clerk's and Treasurer's websites for those offices"),
+    ("Readers", "", "links and corrections sent to us"),
+    ("GitHub", "https://github.com/lukeleisman/election_candidate_info", "the code that builds this page"),
 ]
 
 # Sunshine-style total column in the committee table (user, 2026-11-12, option 1;
@@ -598,6 +610,8 @@ def main():
                                    for label, url, description in COMMITTEE_SOURCE_LINKS],
         "data_sources": [{"name": name, "url": url, "use": use} for name, url, use in DATA_SOURCES],
         "sunshine_style_cutoff": SUNSHINE_STYLE_SHOWN_IF_FIRST_REPORT_ON_OR_AFTER,
+        "sunshine_style_cutoff_label": (date_label(SUNSHINE_STYLE_SHOWN_IF_FIRST_REPORT_ON_OR_AFTER)
+                                        if SUNSHINE_STYLE_SHOWN_IF_FIRST_REPORT_ON_OR_AFTER else ""),
         "default_race": DEFAULT_RACE_KEY,
         "windows": [{"key": key, "label": label, "summary_raised_field": summary_raised_field(key),
                      "adds_a1_gifts": key in WINDOWS_PLUS_A1_GIFTS} for key, label in WINDOWS],
@@ -617,6 +631,7 @@ def main():
                     "order": SUMMARY_TABLE_ORDER},
         "endorsements": records(endorsements[["candidate_id"] + ENDORSEMENT_PAGE_COLUMNS[1:]]),
         "endorser_type_labels": ENDORSER_TYPE_LABELS,
+        "endorsement_count_each_endorser_once": ENDORSEMENT_COUNT_EACH_ENDORSER_ONCE,
         "races": records(races),
         "candidates": records(candidates),
         "committees": records(committees),

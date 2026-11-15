@@ -150,6 +150,8 @@ A1_DOCUMENT_TYPE = "A-1"
 # 17290) Sunshine starts at some date in spring 2023 that we could not reproduce, so their figure
 # here (all history) will be higher than Sunshine's. Holberg 40876: ours is $11,650 higher than
 # Sunshine, unexplained. sunshine_style_first_report_begin is written so the start is visible.
+# OPEN QUESTION (user, 2026-11-15): needs more specific investigation; the page calls it "a work in progress".
+# An earlier agent looked for Sunshine's current code and (the user believes) couldn't find it; worth another look.
 # Document types: Quarterly only, as in Sunshine's 2018 code (eads/illinois-sunshine etl.py,
 # ContestedRaces_getFundsRaisedTotal); every matched committee had only quarterlies.
 SUNSHINE_STYLE_DOCUMENT_TYPES = {"Quarterly"}

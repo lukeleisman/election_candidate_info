@@ -229,7 +229,7 @@
         after the latest quarterly report. The Summary and the chart add them to Raised for the "since" periods.</li>
       <li><b>Loans</b> and <b>In-kind</b>: loans received and gifts of goods or services, in the period.</li>
       <li><b>Donors</b>: distinct donors of itemized gifts (over $150), people and organizations, by last name + first
-        name + zip. Two other identity rules are in <code>data/tables/donor_mix.csv</code>.</li>
+        name + zip.</li>  <!-- user, 2026-11-15: no mention of the other identity rules (they stay in donor_mix.csv) -->
       <li><b>Small gifts</b>: individual gifts too small to itemize, as a share of all receipts (raised + loans + in-kind).</li>
       <li><b>Top 10 share</b>: dollars from the 10 largest itemized donors, as a share of Raised through
         <span class="reports-through-short"></span>.</li>
@@ -247,16 +247,23 @@
 
   <section id="section-social">
     <h2>Social media: follower estimates</h2>
-    <p class="sub">Accounts Google listed when we searched for each candidate, with Google's rounded follower counts
-      ("2.2K+" = at least 2,200) on the date searched. Not checked by hand: an account may be a campaign, office or
-      personal account, or someone else with the same name. Links are either ones we recorded or addresses built from the handle Google showed (hover to see which);
-      LinkedIn accounts show no handle, so they are not linked.
+    <!-- Text approved by the user 2026-11-15. -->
+    <p class="sub">Social media accounts that appeared in Google's results when we searched for each candidate, with
+      Google's rounded follower counts ("2.2K+" = at least 2,200) on the date searched. Most are not checked by hand: an
+      account may be a campaign, office or personal account, or someone else with the same name. Rows are ordered by
+      each candidate's largest single account. Links are a link we recorded, the profile address in Google's results,
+      or an address built from the handle Google showed (hover to see which). Accounts with none of these, mostly on
+      Facebook and LinkedIn, are not linked.
       <span id="social-progress"></span></p>
     <details class="columns">
       <summary>What the columns mean</summary>
       <ul>
-      <li><b>Platform columns</b> (Facebook, Instagram, ...): each account Google listed, with Google's rounded follower count on the date searched. A flag next to an account is a note from our review.</li>
-      <li><b>Searched</b>: the date of the Google search for this candidate. "Not searched yet" means no search yet; "None shown" means the search found no accounts.</li>
+      <li><b>Platform columns</b> (Facebook, Instagram, ...): each account Google listed, with its rounded follower
+        count on the date searched, or "no count" when Google showed the account's address but no count. An account can
+        appear twice if Google showed two different counts. Tags: "posts in results; checked by hand" = found posting in
+        the results and confirmed by hand; any other tag is a note from our review (e.g. "May not be this candidate").</li>
+      <li><b>Searched</b>: date of the latest Google search for this candidate (some were searched twice). "Not searched
+        yet" = no search yet; "None shown in Google results" = the search found no accounts.</li>
       </ul>
     </details>
     <div class="scroll"><table id="social-table"><thead></thead><tbody></tbody></table></div>
@@ -264,15 +271,23 @@
 
   <section id="section-endorsements">
     <h2>Endorsements</h2>
-    <p class="sub" id="endorsements-note">Endorsements announced by groups, officials and newspapers, each linked to where
-      it was announced. Collection has started with published lists, so most candidates have none listed yet.
-</p>
+    <!-- Text approved by the user 2026-11-15. -->
+    <p class="sub" id="endorsements-note">Endorsements of each candidate, from endorsers' published lists and from
+      candidates' own endorsement pages, each linked to the page where we saw it. Nearly all are not checked by hand
+      yet. This is the most incomplete section: most candidates have none listed yet, and more will be added. Rows are
+      ordered by Count.</p>
     <details class="columns">
       <summary>What the columns mean</summary>
       <ul>
-      <li><b>Count</b>: endorsements listed for the candidate, including ones not yet checked. Public support that is
-        not an endorsement is listed (tagged "Support, not an endorsement") but not counted.</li>
-      <li><b>Endorsed by</b>: the endorsing group or person, linked to where the endorsement was announced (hover for the date). Tags: "Not checked yet" = not reviewed by hand; "Name match not confirmed" = the name on the list differs from the ballot name; "Older list" / "Year unclear" = the page does not say it is for 2027.</li>
+      <li><b>Count</b>: endorsements listed for the candidate, counting each endorser once. Includes rows not checked
+        yet, rows whose name match is not confirmed, and rows whose year is unclear. Public support that is not an
+        endorsement is listed (tagged "Support, not an endorsement") but not counted.</li>
+      <li><b>Endorsed by</b>: the endorsing group or person, linked to the page where we saw it: the endorser's own
+        announcement or the candidate's endorsement page. Hover for the date: when it was announced if the page says,
+        otherwise when we saw it.</li>
+      <li><b>Tags</b>: "Not checked yet" = not reviewed by hand; "Name match not confirmed" = the name on the list
+        differs from the ballot name; "Year unclear" = the page doesn't say it is for the 2027 election; "Older list" =
+        the page is for an earlier election.</li>
       </ul>
     </details>
     <div class="scroll"><table id="endorsement-table"><thead><tr>
@@ -282,19 +297,31 @@
 
   <section id="section-committees">
     <h2>Committees behind the totals</h2>
-    <p class="sub">Every committee linked to this race's candidates, one row each. "Added in" counts toward the
-      candidate's total; "Slate, not added" is shared by 2+ candidates.</p>
+    <!-- Text approved by the user 2026-11-15. -->
+    <p class="sub">Every committee linked to this race's candidates, one row per candidate and committee, in candidate ID
+      order. "Added in" committees are added into the candidate's totals; "Slate, not added" committees are linked to 2
+      or more candidates on the ballot (in any race), so their money isn't added to anyone.</p>
     <details class="columns">
       <summary>What the columns mean</summary>
       <ul>
-      <li><b>How found</b>: "State link" = the State Board of Elections links the committee to the candidate's record; "Name only" = the committee carries the candidate's name but the state does not link it.</li>
-      <li><b>Counted as</b>: "Added in" counts toward the candidate's total; "Slate, not added" is shared by 2+ candidates.</li>
-      <li><b>Cash</b> and <b>As of</b>: cash on hand at the end of the committee's latest report, and that report's end date.</li>
-      <li><b>Raised</b> columns: as in the money table, for this committee alone.</li>
-      <li><b>Sunshine-style total</b> (committee table): our attempt to match the "Funds Raised" figure on Illinois
-        Sunshine's race pages, which counts loans and in-kind gifts and starts at the committee's first report. It matched
-        Sunshine exactly for committees started in 2025-26 (checked Nov 12, 2026). For older committees Sunshine starts
-        at a date in 2023 we could not reproduce, so they show "not comparable".</li>
+      <li><b>How found</b>: "State link" = the State Board of Elections links the committee to the candidate's record;
+        "Name only" = the committee carries the candidate's name but the state does not link it; "Added by hand" = added
+        from evidence we recorded.</li>
+      <li><b>Status</b>: "Active", or "Final" = the committee filed its final report and is closed. Closed committees are
+        still added into the candidate's totals.</li>
+      <li><b>Cash</b> and <b>As of</b>: funds available at the end of the committee's latest report, and that report's end
+        date. "—" = no report filed yet. An As of date before the last quarterly (<span class="reports-through"></span>)
+        means the committee hasn't filed since (shown as "Cash not current" in the money table).</li>
+      <li><b>Raised</b> columns: raised in each period on reports through <span class="reports-through"></span>, for this
+        committee alone, figured as in the money table (no loans, in-kind, or transfers between the candidate's own
+        committees). $1,000+ gifts reported after <span class="reports-through"></span> are not included.</li>
+      <li><b>Sunshine-style total</b>: an attempt to match the "Funds Raised" figure on Illinois Sunshine's mayoral race
+        page: all quarterly receipts including loans and in-kind, from the committee's first report, plus all A-1
+        receipts after the last quarterly; transfers between own committees are not taken out. Still a work in progress.
+        It matched Sunshine exactly for 6 of 7 mayoral committees we checked (the seventh is higher by an amount we can't
+        explain); aldermanic committees were not checked. It's shown only for committees whose first report began on or
+        after <span class="sunshine-style-cutoff"></span>; for older ones Sunshine starts at a date we couldn't
+        reproduce, so they show "not comparable".</li>
       <li><b>Look up</b>: this committee's pages at the State Board of Elections and Illinois Sunshine.</li>
       </ul>
     </details>
@@ -303,7 +330,7 @@
         <th class="left">Candidate</th><th class="left">Committee</th><th>ISBE ID</th><th class="left">Type</th>
         <th>Status</th><th class="left">How found</th><th class="left">Counted as</th><th>Cash</th>
         <th>As of</th><!-- one "Raised" header per money window, added by the script (committeeWindowHeaders) -->
-        <th id="sunshine-style-header" title="Built to match the 'Funds Raised' figure on Illinois Sunshine's race pages: all receipts including loans and in-kind, from the committee's first report, plus $1,000+ gifts reported after the latest quarterly report. Shown only for newer committees (see notes below).">Sunshine-style total</th>
+        <th id="sunshine-style-header" title="Work in progress: built to match the 'Funds Raised' figure on Illinois Sunshine's mayoral race page: all quarterly receipts including loans and in-kind, from the committee's first report, plus all A-1 receipts after the last quarterly. Shown only for newer committees (see What the columns mean).">Sunshine-style total</th>
         <th class="left" title="This committee's pages at the State Board of Elections and Illinois Sunshine">Look up</th>
       </tr></thead>
       <tbody></tbody>
@@ -312,15 +339,17 @@
 
   <section id="section-candidates">
     <h2>Candidates</h2>
-    <p class="sub">Each candidate's links, social media, money and top donors. Links come from web searches and are not all checked by
-      hand yet; tell us if one is wrong (Report a problem). <span class="incumbent-legend"></span></p>
+    <!-- Text approved by the user 2026-11-15. -->
+    <p class="sub">A section for each candidate, in candidate ID order: links, committees, social media, money raised,
+      endorsements and top donors. Links come mostly from web searches, plus some sent to us, and are not all checked
+      by hand; tell us if one is wrong (Report a problem). The ID under each name is for the corrections form.
+      <span class="incumbent-legend"></span></p>
     <div class="cards" id="candidate-cards"></div>
   </section>
 
 
   <section class="feedback" id="section-sources">
     <h2>Sources</h2>
-    <p class="sub">Each committee also links to its own pages in the tables above ("Look up").</p>
     <ul id="data-sources"></ul>
   </section>
 
@@ -462,13 +491,10 @@ function sunshineStyleCell(row) {
   return element("td", { text: show(row.sunshine_style_total, "money"), title: "From the first report, beginning " + firstReport });
 }
 
-// "Sources" section (DATA_SOURCES in scripts/build_dashboard.py).
+// "Sources" section (DATA_SOURCES in scripts/build_dashboard.py). A source with no URL is plain text.
 function drawDataSources() {
-  document.getElementById("data-sources").replaceChildren(...DATA.data_sources.map((source) => {
-    const link = element("a", { text: source.name });
-    link.href = source.url; link.target = "_blank"; link.rel = "noopener";
-    return element("li", {}, [link, ": " + source.use]);
-  }));
+  document.getElementById("data-sources").replaceChildren(...DATA.data_sources.map((source) =>
+    element("li", {}, [source.url ? externalLink(source.name, source.url) : source.name, ": " + source.use])));
 }
 
 // ----- incumbents, names and candidate sections -----
@@ -505,26 +531,45 @@ function externalLink(text, href, title) {
 }
 
 // Links block: one line per link, grouped in the order of build_candidate_links.LINK_KIND_ORDER.
+// User, 2026-11-15: no "found by ..." text after the link. found_by / source_statuses stay in DATA.links
+// (and data/tables/candidate_links.csv); they are just not shown.
 function linksBlock(row) {
   const links = DATA.links.filter((link) => link.candidate_id === row.candidate_id);
   if (!links.length) return [element("p", { className: "empty", text: "None found yet." })];
   return [element("ul", {}, links.map((link) => {
     const label = DATA.link_kind_labels[link.link_kind] + (link.platform ? " (" + link.platform + ")" : "");
     const shortUrl = link.url.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "");
-    return element("li", {}, [label + ": ", externalLink(shortUrl, link.url),
-      element("span", { className: "link-meta", text: "  found by " + link.found_by.replaceAll("_", " "),
-        title: "Status in each source: " + link.source_statuses })]);
+    return element("li", {}, [label + ": ", externalLink(shortUrl, link.url)]);
   }))];
 }
 
 // What Raised is made of in the picked window (columns <window>_mix_* in display_candidates.csv,
 // copied from donor_mix.csv). Loans and in-kind are shown below the total, not added.
+// Text when the period has no Raised figure (user, 2026-11-15: split like the money chart; was one text,
+// "No committee report in this window", for every case):
+//   no_committee        committees_added = 0.
+//   no_report           a committee matched, but no report covers the period.
+//   no_report_a1_gifts  a "since" period (adds_a1_gifts) with no quarterly report but $1,000+ gifts reported after
+//                       the last quarterly: those gifts are shown below this text (e.g. ALD-23-001, $1,000).
+const CANDIDATE_MONEY_EMPTY_TEXT = {
+  no_committee: "No committee found.",
+  no_report: "No report in this period.",
+  no_report_a1_gifts: "No quarterly report in this period.",
+};
 function moneyBlock(row) {
   const w = state.window;
-  if (toNumber(row[w + "_raised"]) === null)
-    return [element("p", { className: "empty", text: "No committee report in this window." })];
   const line = (label, value, className = "") => element("tr", { className }, [
     element("td", { className: "left", text: label }), element("td", { text: show(value, "money") })]);
+  if (Number(row.committees_added) === 0)
+    return [element("p", { className: "empty", text: CANDIDATE_MONEY_EMPTY_TEXT.no_committee })];
+  if (toNumber(row[w + "_raised"]) === null) {
+    if (currentWindow().adds_a1_gifts && (toNumber(row.a1_gifts_since_last_report) ?? 0) > 0)
+      return [element("p", { className: "empty", text: CANDIDATE_MONEY_EMPTY_TEXT.no_report_a1_gifts }),
+        element("table", {}, [element("tbody", {}, [
+          line("$1,000+ gifts reported after " + DATA.reports_through, row.a1_gifts_since_last_report),
+          line("Raised, including those", row[currentWindow().summary_raised_field], "total")])])];
+    return [element("p", { className: "empty", text: CANDIDATE_MONEY_EMPTY_TEXT.no_report })];
+  }
   return [element("table", {}, [element("tbody", {}, [
     line("Itemized gifts from people and organizations", row[w + "_mix_individual_itemized"]),
     line("Small gifts (not itemized)", row[w + "_mix_individual_not_itemized"]),
@@ -552,7 +597,7 @@ function donorsBlock(row, committees) {
         ...committees.flatMap((committee, index) => [index ? " · " : "",
           externalLink(committee.committee_name, sunshine.url.replace("{committee_id}", committee.committee_id))])])]
     : [];
-  if (!donors.length) return [element("p", { className: "empty", text: "No itemized donors in this window." }), ...fullList];
+  if (!donors.length) return [element("p", { className: "empty", text: "No itemized donors in this period." }), ...fullList];
   const TYPE_LABELS = { person: "Person", organization: "Organization", committee_transfer: "Committee", other_receipt: "Other" };
   const work = (d) => [d.occupation, d.employer].filter(Boolean).join(", ");
   return [element("table", {}, [
@@ -565,8 +610,10 @@ function donorsBlock(row, committees) {
       element("td", { className: "left", text: work(d) }),
       element("td", { text: show(d.total, "money") }), element("td", { text: d.receipts }),
     ]))),
-  ]), element("p", { className: "link-meta", text: "Itemized gifts only, grouped by last name + first name + zip " +
-    "(the same donors as the Top 10 share column)." }), ...fullList];
+  ]), element("p", { className: "link-meta", text: "Itemized receipts on reports through " + DATA.reports_through +
+    ", grouped by last name + first name + zip: gifts from people and organizations, transfers from other committees " +
+    "(Type \"Committee\"), and other receipts. These are the same donors as the Top 10 share column. Transfers " +
+    "between the candidate's own committees are left out." }), ...fullList];  // text approved by the user 2026-11-15
 }
 
 function drawCards() {
@@ -577,7 +624,7 @@ function drawCards() {
     const committeeList = committees.length
       ? element("ul", {}, committees.map((c) => element("li", {}, [c.committee_name + " (" + c.committee_id + "): ",
           element("span", { className: "source-links" }, sourceLinks(c.committee_id))])))
-      : element("p", { className: "empty", text: "No committee matched." });
+      : element("p", { className: "empty", text: "No committee found." });
     const section = (title, children) => element("div", {}, [element("h4", { text: title }), ...children]);
     const card = element("article", { className: "card" }, [
       element("h3", {}, nameWithIncumbent(row)),
@@ -604,7 +651,7 @@ function summaryWebsite(row) {
     const link = DATA.links.find((l) => l.candidate_id === row.candidate_id && l.link_kind === kind);
     if (link) {
       const shortUrl = link.url.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "");
-      return [externalLink(shortUrl, link.url, DATA.link_kind_labels[kind] + " (found by " + link.found_by.replaceAll("_", " ") + ")"),
+      return [externalLink(shortUrl, link.url, DATA.link_kind_labels[kind]),  // no "found by" (user, 2026-11-15)
         ...(kind === "campaign" ? [] : [element("span", { className: "link-meta", text: " " + DATA.link_kind_labels[kind].toLowerCase() })])];
     }
   }
@@ -624,14 +671,13 @@ function drawSummaryTable() {
   const rows = raceCandidates().filter((row) => !row.duplicate_filing_of);
   if (orderField) rows.sort((a, b) => (toNumber(b[orderField]) ?? -Infinity) - (toNumber(a[orderField]) ?? -Infinity));
   const race = DATA.races.find((r) => r.race_key === state.race);
-  const endorsementCount = (row) => endorsementsFor(row.candidate_id).filter((e) => e.endorsement_kind === "endorsement").length;
   document.getElementById("summary-table").tBodies[0].replaceChildren(...rows.map((row) => element("tr", {}, [
     element("td", { className: "name" }, [candidateLink(row, nameWithIncumbent(row))]),
     element("td", { className: "left" }, summaryWebsite(row)),
     element("td", { text: show(row.cash_on_hand, "money") }),
     element("td", { text: show(row[raisedField], "money") }),
     element("td", { className: "left" }, summaryLargestAccount(row)),
-    element("td", { text: endorsementCount(row) || "—" }),
+    element("td", { text: endorsementCount(row.candidate_id) || "—" }),
   ])), element("tr", { className: "total" }, [
     element("td", { className: "left", text: "Race total (" + rows.length + " candidates)" }), element("td", {}),
     element("td", { text: show(race.cash_on_hand_total, "money") }),
@@ -646,24 +692,39 @@ function drawSummaryTable() {
 // Money chart (user, 2026-11-13): Raised and Cash for each candidate on ONE shared dollar scale (the
 // largest of either figure in this race), ordered by MONEY_CHART_ORDER in scripts/build_dashboard.py.
 // Second filings left out. Missing value -> text only; negative cash -> no bar, value shown as reported.
+// Text for a missing value (user, 2026-11-15: tell "no committee" apart from "no report"; was one text,
+// "no committee report", for both):
+//   no_committee    committees_added = 0: no committee matched to the candidate (raised and cash both blank).
+//   raised_no_report  a committee matched, but no report covers the picked period (blank <window> raised).
+//   cash_no_report    a committee matched, but it has no quarterly report yet (blank cash_on_hand).
+// OPEN QUESTION (user): wording of cash_no_report; the user's request named only the first two.
+const MONEY_CHART_MISSING_TEXT = {
+  no_committee: "no committee found",
+  raised_no_report: "no report in this period",
+  cash_no_report: "no quarterly report yet",
+};
 function drawMoneyChart() {
   const raisedField = currentWindow().summary_raised_field;  // same as the Summary table
   const orderField = DATA.money_chart_order === "cash" ? "cash_on_hand" : raisedField;
   const people = raceCandidates().filter((row) => !row.duplicate_filing_of)
     .sort((a, b) => (toNumber(b[orderField]) ?? -Infinity) - (toNumber(a[orderField]) ?? -Infinity));
   const largest = Math.max(1, ...people.flatMap((row) => [toNumber(row[raisedField]) ?? 0, toNumber(row.cash_on_hand) ?? 0]));
-  const barRow = (row, field, className, label) => {
+  // noReportKey: which MONEY_CHART_MISSING_TEXT entry applies when a committee matched but the figure is blank.
+  const barRow = (row, field, className, label, noReportKey) => {
     const amount = toNumber(row[field]);
+    const missingText = Number(row.committees_added) === 0
+      ? MONEY_CHART_MISSING_TEXT.no_committee : MONEY_CHART_MISSING_TEXT[noReportKey];
     const track = element("div", { className: "bar-track" });
     if (amount !== null) track.append(element("div", { className: "bar " + className, style: { width: (Math.max(amount, 0) / largest * 78) + "%" } }));
-    track.append(element("span", { className: "bar-value", text: amount === null ? "no committee report" : moneyFormat.format(amount) }));
-    track.title = row.ballot_name_raw + ", " + label + ": " + (amount === null ? "no committee report"
+    track.append(element("span", { className: "bar-value", text: amount === null ? missingText : moneyFormat.format(amount) }));
+    track.title = row.ballot_name_raw + ", " + label + ": " + (amount === null ? missingText
       : "$" + amount.toLocaleString("en-US", { minimumFractionDigits: 2 }));
     return track;
   };
   document.getElementById("money-bars").replaceChildren(...people.flatMap((row) => [
     element("div", { className: "bar-name" }, [candidateLink(row, nameWithIncumbent(row))]),
-    element("div", { className: "bar-pair" }, [barRow(row, raisedField, "raised", "raised"), barRow(row, "cash_on_hand", "cash", "cash on hand")]),
+    element("div", { className: "bar-pair" }, [barRow(row, raisedField, "raised", "raised", "raised_no_report"),
+      barRow(row, "cash_on_hand", "cash", "cash on hand", "cash_no_report")]),
   ]));
   document.getElementById("raised-window-label").textContent = currentWindow().label
     + (currentWindow().adds_a1_gifts ? ", including $1,000+ gifts reported after " + DATA.reports_through : "");
@@ -683,7 +744,10 @@ function accountLine(account, withPlatform) {
         "recorded link": "A link we recorded for this candidate" }[account.url_basis])
     : account.account_label;
   // Address-line accounts have no follower count ("no count" shown instead).
-  return element("span", { className: "account", title: "Shown by Google " + (account.retrieved || "").slice(0, 10) }, [
+  // Post-author rows (hand-checked) have no retrieval date: the hover uses the candidate's Searched date instead.
+  const accountHover = account.retrieved ? "Shown by Google " + account.retrieved.slice(0, 10)
+    : "Found in Google's results searched " + (DATA.social_searched[account.candidate_id] || "(date unknown)");
+  return element("span", { className: "account", title: accountHover }, [
     account.count_shown ? element("span", { className: "count", text: account.count_shown })
       : element("span", { className: "count muted-count", text: "no count" }),
     ...(withPlatform ? [account.platform + ": "] : []), label,
@@ -734,6 +798,15 @@ function endorsementsFor(candidateId) {
     .sort((a, b) => (a.endorser_name || "").localeCompare(b.endorser_name || ""));
 }
 
+// Count for the Summary and the Endorsements table: rows with endorsement_kind "endorsement" (support is listed,
+// not counted). With DATA.endorsement_count_each_endorser_once (ENDORSEMENT_COUNT_EACH_ENDORSER_ONCE in
+// build_dashboard.py), an endorser listed twice for one candidate counts once (name trimmed, any case).
+function endorsementCount(candidateId) {
+  const endorsements = endorsementsFor(candidateId).filter((e) => e.endorsement_kind === "endorsement");
+  if (!DATA.endorsement_count_each_endorser_once) return endorsements.length;
+  return new Set(endorsements.map((e) => (e.endorser_name || "").trim().toLowerCase())).size;
+}
+
 // Tags that say how far a row has been checked (see the section note).
 function endorsementTags(e) {
   const tags = [];
@@ -754,12 +827,13 @@ function endorsementLine(e, withType) {
 
 function drawEndorsementTable() {
   const rows = raceCandidates().filter((row) => !row.duplicate_filing_of)
-    .map((row) => ({ row, items: endorsementsFor(row.candidate_id) }))
-    .sort((a, b) => b.items.length - a.items.length || a.row.candidate_id.localeCompare(b.row.candidate_id));
-  document.getElementById("endorsement-table").tBodies[0].replaceChildren(...rows.map(({ row, items }) =>
+    .map((row) => ({ row, items: endorsementsFor(row.candidate_id), count: endorsementCount(row.candidate_id) }))
+    // Order (user, 2026-11-15): by Count, then by items listed (support included), then candidate ID.
+    .sort((a, b) => b.count - a.count || b.items.length - a.items.length || a.row.candidate_id.localeCompare(b.row.candidate_id));
+  document.getElementById("endorsement-table").tBodies[0].replaceChildren(...rows.map(({ row, items, count }) =>
     element("tr", {}, [
       element("td", { className: "name" }, [candidateLink(row, nameWithIncumbent(row))]),
-      element("td", { text: items.filter((e) => e.endorsement_kind === "endorsement").length || "—" }),
+      element("td", { text: count || "—" }),
       element("td", { className: "left" }, items.length
         ? items.flatMap((e, index) => [index ? " · " : "", endorsementLine(e, false)])
         : [element("span", { className: "muted", text: "None listed yet" })]),
@@ -777,7 +851,7 @@ function socialBlock(row) {
   const accounts = socialAccounts(row.candidate_id).sort((a, b) => (Number(b.count_floor) || -1) - (Number(a.count_floor) || -1));
   if (!accounts.length) return [element("p", { className: "empty", text: socialStatusText(row.candidate_id) })];
   return [element("ul", {}, accounts.map((a) => element("li", {}, [accountLine(a, true)]))),
-    element("p", { className: "link-meta", text: "Google's rounded counts on the date searched; not checked by hand." })];
+    element("p", { className: "link-meta", text: "Google's rounded counts on the date searched; most not checked by hand." })];
 }
 
 function candidateColumns() {
@@ -855,6 +929,7 @@ fillText(".reports-through", DATA.reports_through);
 fillText(".reports-through-short", DATA.reports_through_short);
 fillText(".candidate-list-checked", DATA.candidate_list_checked);
 fillText(".candidate-list-status-note", DATA.candidate_list_status_note);
+fillText(".sunshine-style-cutoff", DATA.sunshine_style_cutoff_label);
 // Committee table: a "Raised" header per money window, before the "As of" column's neighbor (Sunshine-style).
 const committeeAsOfHeader = [...document.querySelectorAll("#committee-table thead th")].find((th) => th.textContent === "As of");
 committeeAsOfHeader.after(...DATA.windows.map((w) => element("th", { text: "Raised " + w.label.replace(" (latest quarter)", "").replace(/^Since/, "since"),
