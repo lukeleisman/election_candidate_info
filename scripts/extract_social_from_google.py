@@ -1,7 +1,8 @@
 """Pull social media accounts and follower counts out of saved Google results pages.
 
 Input:
-  data/raw/google_search/<candidate_id>.txt (and <candidate_id>_2.txt): Google results page text,
+  data/raw/google_search/<candidate_id>.txt (and <candidate_id>_2.txt; social rerun <candidate_id>_s.txt and
+      <candidate_id>_s2.txt, added 2026-11-14): Google results page text,
       saved by the Google pass agents (first lines "query:", "url:", "retrieved:").
   data/endorsements/candidate_campaign_sites_google.csv: to mark accounts that the candidate's
       own campaign site links to (other_site_urls / notes of that row).
@@ -36,7 +37,11 @@ from pathlib import Path
 # ---------------------------------------------------------------------------
 REPO_ROOT = Path(__file__).resolve().parent.parent
 RAW_DIRECTORY = REPO_ROOT / "data/raw/google_search"
-GOOGLE_SITES_FILE = REPO_ROOT / "data/endorsements/candidate_campaign_sites_google.csv"
+# Every Google-pass output (scripts/google_pass/passes.py); URLs recorded in any of them count.
+GOOGLE_SITES_FILES = [REPO_ROOT / "data/endorsements/candidate_campaign_sites_google.csv",
+                      REPO_ROOT / "data/endorsements/candidate_campaign_sites_google_social_rerun.csv"]
+# Raw file name -> candidate_id: drop the search suffix ("_2" second search, "_s" / "_s2" social rerun).
+RAW_FILE_SUFFIX_PATTERN = re.compile(r"_s?\d*$")
 OUTPUT_FILE = REPO_ROOT / "data/endorsements/social_accounts_google.csv"
 # Hand-edited review file (user, 2026-11-13): accounts seen only as the AUTHOR of a post ("account › posts ›
 # ..."), skipped by ADDRESS_LINE_RULES, listed for the user to verify. This script only ADDS new rows
@@ -200,17 +205,19 @@ def update_post_authors_review(post_authors):
 
 def main():
     recorded_urls = {}
-    if GOOGLE_SITES_FILE.exists():
-        with open(GOOGLE_SITES_FILE, newline="") as sites_file:
+    for sites_path in GOOGLE_SITES_FILES:
+        if not sites_path.exists():
+            continue
+        with open(sites_path, newline="") as sites_file:
             for row in csv.DictReader(sites_file):
-                recorded_urls[row["candidate_id"]] = " ".join(
+                recorded_urls[row["candidate_id"]] = recorded_urls.get(row["candidate_id"], "") + " " + " ".join(
                     row.get(column, "") for column in ("other_site_urls", "notes", "campaign_site_note")).lower()
 
     output_rows = []
     skipped_address_lines = []
     post_authors = []
     for raw_path in sorted(RAW_DIRECTORY.glob("*.txt")):
-        candidate_id = re.sub(r"_\d+$", "", raw_path.stem)
+        candidate_id = RAW_FILE_SUFFIX_PATTERN.sub("", raw_path.stem)
         full_text = raw_path.read_text(errors="replace")
         # Page text and links section are parsed separately.
         text, _, links_text = full_text.partition(LINKS_SECTION_MARKER)

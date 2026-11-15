@@ -1,18 +1,23 @@
 """Append one row (JSON object on stdin) to the Google-pass output CSV.
 Fills ballot_name_raw/office_code/ward from the candidate file and the fixed
-provenance fields; refuses duplicates."""
+provenance fields; refuses duplicates.
+Usage: ... | python3 append.py [--pass first|social_rerun]   (passes defined in passes.py)"""
 import csv, datetime, json, os, sys
+from passes import PASSES, pass_from_argv
+PASS_NAME, _ = pass_from_argv(sys.argv)
+PASS = PASSES[PASS_NAME]
 # Repo root = two folders up from this file (moved from the endorsements worktree 2026-11-13).
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 CANDIDATES_CSV = f"{REPO}/data/candidates/candidates_cboe.csv"
+# Column list always comes from the websearch-pass file (same columns in every pass), plus the pass's extras.
 EARLIER_CSV = f"{REPO}/data/endorsements/candidate_campaign_sites.csv"
-OUTPUT_CSV = f"{REPO}/data/endorsements/candidate_campaign_sites_google.csv"
+OUTPUT_CSV = PASS["output_csv"]
 # Date stamped on each row (was hardcoded "2026-11-12" until 2026-11-13).
 TODAY = datetime.date.today().isoformat()
 FIXED_FIELDS = {"found_via": "google_chrome", "checked_on": TODAY,
                 "entered_by": f"claude_agent_{TODAY}", "review_status": "unreviewed"}
 ALLOWED_STATUS = {"found", "needs_confirmation", "ambiguous", "none_found"}
-columns = next(csv.reader(open(EARLIER_CSV)))
+columns = next(csv.reader(open(EARLIER_CSV))) + PASS["extra_columns"]
 entries = json.load(sys.stdin)
 if isinstance(entries, dict):
     entries = [entries]
@@ -46,7 +51,10 @@ import datetime, glob
 RAW_DIR = f"{REPO}/data/raw/google_search"
 now = datetime.datetime.now().astimezone().isoformat(timespec="seconds")
 for entry in entries:
-    for path in glob.glob(f"{RAW_DIR}/{entry['candidate_id']}*.txt"):
+    # This pass's raw files only: first pass <id>.txt / <id>_2.txt; social_rerun <id>_s.txt / <id>_s2.txt.
+    suffix = PASS["raw_suffix"]
+    paths = glob.glob(f"{RAW_DIR}/{entry['candidate_id']}{suffix}.txt") + glob.glob(f"{RAW_DIR}/{entry['candidate_id']}{suffix or '_'}2.txt")
+    for path in paths:
         text = open(path).read()
         if "retrieved: __NOW__" in text:
             open(path, "w").write(text.replace("retrieved: __NOW__", f"retrieved: {now}", 1))

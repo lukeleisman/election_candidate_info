@@ -1,12 +1,16 @@
 """Print the next N candidates not yet in the Google-pass output, with the query URL
-and a compact view of the earlier (websearch) row for comparison.
-Usage: python3 next.py [N]"""
+and a compact view of the earlier row for comparison (first pass: the websearch row;
+social_rerun: the first Google row).
+Usage: python3 next.py [N] [--pass first|social_rerun]   (passes defined in passes.py)"""
 import csv, os, sys, re, urllib.parse
+from passes import PASSES, pass_from_argv
+PASS_NAME, ARGS = pass_from_argv(sys.argv)
+PASS = PASSES[PASS_NAME]
 # Repo root = two folders up from this file (moved from the endorsements worktree 2026-11-13).
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 CANDIDATES_CSV = f"{REPO}/data/candidates/candidates_cboe.csv"
-EARLIER_CSV = f"{REPO}/data/endorsements/candidate_campaign_sites.csv"
-OUTPUT_CSV = f"{REPO}/data/endorsements/candidate_campaign_sites_google.csv"
+EARLIER_CSV = PASS["earlier_csv"]
+OUTPUT_CSV = PASS["output_csv"]
 # Offices in scope (per task instructions)
 OFFICE_CODES = ("MAYOR", "CLERK", "TREAS", "ALD")
 # Quote the office phrase? True until 2026-11-13 (102 candidates, through ALD-27-004). The quotes kept
@@ -42,10 +46,16 @@ done = set()
 if os.path.exists(OUTPUT_CSV):
     done = {r["candidate_id"] for r in csv.DictReader(open(OUTPUT_CSV))}
 earlier = {r["candidate_id"]: r for r in csv.DictReader(open(EARLIER_CSV))}
-count = int(sys.argv[1]) if len(sys.argv) > 1 else 3
+count = int(ARGS[1]) if len(ARGS) > 1 else 3
 candidates = [r for r in csv.DictReader(open(CANDIDATES_CSV)) if r["office_code"] in OFFICE_CODES]
+# A pass may stop at a given candidate (candidates_cboe.csv order), e.g. social_rerun = the first 102.
+if PASS["last_candidate_id"]:
+    ids = [r["candidate_id"] for r in candidates]
+    candidates = candidates[:ids.index(PASS["last_candidate_id"]) + 1]
 pending = [r for r in candidates if r["candidate_id"] not in done]
-print(f"done {len(done)} / {len(candidates)}; pending {len(pending)}")
+print(f"pass {PASS_NAME}: done {len(done)} / {len(candidates)}; pending {len(pending)}")
+suffix = PASS["raw_suffix"]
+print(f"raw files: data/raw/google_search/<id>{suffix}.txt (second search <id>{suffix or '_'}2.txt)")
 for row in pending[:count]:
     query = build_query(row)
     old = earlier.get(row["candidate_id"], {})
@@ -53,4 +63,4 @@ for row in pending[:count]:
     print(row["candidate_id"], "|", row["ballot_name_raw"])
     print("query:", query)
     print("url: https://www.google.com/search?q=" + urllib.parse.quote_plus(query))
-    print("earlier:", {k: old.get(k) for k in ("status", "campaign_site_url", "ward_office_url", "other_site_urls", "notes") if old.get(k)})
+    print("earlier:", {k: old.get(k) for k in ("status", "campaign_site_url", "ward_office_url", "other_site_urls", "endorsements_seen_raw", "notes") if old.get(k)})

@@ -37,6 +37,9 @@ OUTPUT_PATH = REPO_ROOT / "data" / "tables" / "candidate_links.csv"
 SOURCE_ORDER = [
     ("user", ENDORSEMENTS_DIR / "campaign_sites_user_provided.csv", "user_file"),
     ("google", ENDORSEMENTS_DIR / "candidate_campaign_sites_google.csv", "pass_file"),
+    # Social-media rerun of the first 102 (2026-11-14; scripts/google_pass/passes.py). Listed after the first
+    # Google round. OPEN QUESTION (user): this order only sets listing order; change if you want it first.
+    ("google_social_rerun", ENDORSEMENTS_DIR / "candidate_campaign_sites_google_social_rerun.csv", "pass_file"),
     ("first_pass", ENDORSEMENTS_DIR / "candidate_campaign_sites.csv", "pass_file"),
 ]
 
@@ -147,6 +150,9 @@ def main():
     leftovers = []
     raw = []
     for source, path, file_kind in SOURCE_ORDER:
+        if not path.exists():  # e.g. the social rerun before its first chunk
+            print(f"{source}: no file yet ({path.relative_to(REPO_ROOT)})")
+            continue
         rows = source_rows(source, path, file_kind, leftovers)
         print(f"{source}: {len(rows)} links from {path.relative_to(REPO_ROOT)}")
         raw += rows

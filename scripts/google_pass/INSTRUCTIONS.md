@@ -67,3 +67,24 @@ scripts/google_pass/pace.py (63-81 s apart, at most 39 an hour since late 2026-1
   next.py directly. Open result sites with WebFetch, not by clicking Google links.
 - Don't open "More results" / page 2, images, maps or news tabs.
 - Never try to get around a CAPTCHA (no solving, no new profile, no other network).
+
+## Social rerun pass (`--pass social_rerun`, started 2026-11-14)
+The first 102 candidates (through ALD-27-004) were first searched with the office phrase in quotes, which
+hid social profiles. This pass searches them again, unquoted, with the Links section. Everything above
+applies, with these differences:
+- `python3 scripts/google_pass/next.py N --pass social_rerun` lists the chunk; "earlier" there is the
+  FIRST GOOGLE ROUND's row (compare with it in notes, e.g. "new: instagram.com/x; first round had none").
+- Raw files: `data/raw/google_search/<candidate_id>_s.txt` (second search `<candidate_id>_s2.txt`).
+  Never overwrite `<id>.txt` / `<id>_2.txt` (first round).
+- Append with `... | python3 scripts/google_pass/append.py --pass social_rerun` (writes
+  data/endorsements/candidate_campaign_sites_google_social_rerun.csv).
+- Record every URL again in this row (sites, fundraising, ALL social accounts seen in the results or on the
+  loaded site), even if the first round had it: the row should stand alone.
+- Extra column `endorsement_leads_from_results`: endorsements that result snippets or titles mention
+  ("endorsed by X", "X endorses ...") but that you did NOT read on a loaded page. "; " between items, each
+  "endorser | who is endorsed if not this candidate | where seen (result title or display URL)". Leads
+  only (Google's text can be stale or wrong); nothing is entered as an endorsement from them.
+  Endorsements read on a loaded page still go in endorsements_seen_raw / endorsements_seen_url.
+- Known limit of the Links step: URLs lose their query string (e.g. facebook.com/profile.php?id=...
+  becomes "facebook.com/profile.php [query/fragment dropped]"). Do not try to work around it; if such an
+  account matters, note the result title in notes.
