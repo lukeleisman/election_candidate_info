@@ -6,11 +6,17 @@
 <title>__PAGE_TITLE__</title>
 <!-- Template for scripts/build_dashboard.py. Edit here, then `make dashboard`;
      dashboard/index.html is overwritten on every build. The page title and description placeholders are
-     filled from PAGE_TITLE / PAGE_DESCRIPTION in build_dashboard.py. -->
+     filled from PAGE_TITLE / PAGE_DESCRIPTION / PAGE_WARNING in build_dashboard.py.
+     The same CSS, markup and script also go into docs/dashboard/app.js (the website build): see the
+     APP_*_BEGIN / APP_*_END markers and EMBED_* in build_dashboard.py. -->
 <style>
-  /* Layout: header; sticky bar with the pickers and section links; race figures; then one panel per
-     section (money chart, money table, social media, endorsements, committees, candidates). */
-  :root {
+  /* APP_CSS_BEGIN. From here to the end marker is the dashboard's own CSS, copied into the embedded build
+     (docs/dashboard/app.js) by scripts/build_dashboard.py. Every selector is scoped to #candidates-app so it
+     can't restyle a host page. */
+
+  /* Layout: header; sticky bar with the pickers and section links; then one panel per section
+     (summary, money chart, money table, social media, endorsements, committees, candidates). */
+  #candidates-app {
     --bg: #f3f4f6; --surface: #ffffff; --panel: #f1f2f4; --fg: #1d2129; --muted: #5d6573;
     --line: #dfe2e6; --accent: #2f6db5; --warn: #a2570b; --row-hover: #f6f8fb;
     /* Money chart series (dataviz reference palette, categorical slots 1-2, light). */
@@ -19,111 +25,125 @@
     --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     color-scheme: light;
   }
+  /* APP_DARK_BEGIN: dark colors; left out of app.js when EMBED_DARK_MODE is False (build_dashboard.py). */
   @media (prefers-color-scheme: dark) {
-    :root { --bg: #111418; --surface: #1a1e24; --panel: #22272f; --fg: #e7e9ee; --muted: #9aa2b1;
+    #candidates-app { --bg: #111418; --surface: #1a1e24; --panel: #22272f; --fg: #e7e9ee; --muted: #9aa2b1;
             --line: #323843; --accent: #6ea4e8; --warn: #e0a15a; --row-hover: #20252d;
             --series-raised: #3987e5; --series-cash: #d95926;
             --header-bg: #18263a; --header-fg: #f0f3f8; --header-muted: #a9b7cb; color-scheme: dark; }
   }
-  body { margin: 0; background: var(--bg); color: var(--fg); font: 14px/1.5 var(--font); }
-  a { color: var(--accent); }
-  .site-header { background: var(--header-bg); color: var(--header-fg); }
-  .site-header .inner { max-width: 1200px; margin: 0 auto; padding: 32px 16px 28px; }
-  h1 { font-size: 30px; font-weight: 650; letter-spacing: -0.01em; margin: 0 0 8px; }
-  .site-header .lede { color: var(--header-muted); margin: 0; max-width: 78ch; font-size: 15px; }
-  .toolbar { position: sticky; top: 0; z-index: 5; background: var(--surface); border-bottom: 1px solid var(--line);
+  /* APP_DARK_END */
+  #candidates-app { margin: 0; background: var(--bg); color: var(--fg); font: 14px/1.5 var(--font); }
+  /* Shield from the host page's CSS (lukeleisman.com sets body 18px, h1-h3 font/line-height/weight and
+     * { box-sizing: border-box }). These restate the browser defaults the standalone page has always had. */
+  #candidates-app, #candidates-app *, #candidates-app *::before, #candidates-app *::after { box-sizing: content-box; }
+  #candidates-app h1, #candidates-app h2, #candidates-app h3, #candidates-app h4 { font-family: var(--font); line-height: 1.5; font-weight: 700; }
+  #candidates-app a { color: var(--accent); }
+  #candidates-app .app-header { background: var(--header-bg); color: var(--header-fg); }
+  #candidates-app .app-header .inner { max-width: 1200px; margin: 0 auto; padding: 32px 16px 28px; }
+  #candidates-app h1 { font-size: 30px; font-weight: 650; letter-spacing: -0.01em; margin: 0 0 8px; }
+  #candidates-app .app-header .lede { color: var(--header-muted); margin: 0; font-size: 15px; }  /* full width (user, 2026-11-14; was 78ch) */
+  #candidates-app .app-header .warning { margin: 12px 0 0; padding: 10px 14px; border-left: 3px solid #e8a33d;
+                          background: rgba(232, 163, 61, .14); color: var(--header-fg); font-size: 14px; border-radius: 4px; }
+  #candidates-app .toolbar { position: sticky; top: 0; z-index: 5; background: var(--surface); border-bottom: 1px solid var(--line);
              box-shadow: 0 1px 3px rgba(0, 0, 0, .05); }
-  .toolbar .inner { max-width: 1200px; margin: 0 auto; padding: 10px 16px; display: flex; flex-wrap: wrap;
+  #candidates-app .toolbar .inner { max-width: 1200px; margin: 0 auto; padding: 10px 16px; display: flex; flex-wrap: wrap;
                     align-items: flex-end; justify-content: space-between; gap: 12px 24px; }
-  .page-nav { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 13px; }
-  .page-nav a { color: var(--muted); text-decoration: none; }
-  .page-nav a:hover { color: var(--accent); }
-  .page { max-width: 1200px; margin: 0 auto; padding: 20px 16px 48px; display: flex; flex-direction: column; gap: 18px; }
-  .page > section, .page > details, .page > footer { background: var(--surface); border: 1px solid var(--line);
+  #candidates-app .page-nav { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 13px; }
+  #candidates-app .page-nav a { color: var(--muted); text-decoration: none; }
+  #candidates-app .page-nav a:hover { color: var(--accent); }
+  #candidates-app .page { max-width: 1200px; margin: 0 auto; padding: 20px 16px 48px; display: flex; flex-direction: column; gap: 18px; }
+  #candidates-app .page > section, #candidates-app .page > details, #candidates-app .page > footer { background: var(--surface); border: 1px solid var(--line);
              border-radius: 10px; padding: 18px 20px; scroll-margin-top: 80px; }
-  h2 { font-size: 18px; font-weight: 600; margin: 0 0 2px; }
-  .sub { color: var(--muted); margin: 0 0 12px; font-size: 12.5px; }  /* full box width (user, 2026-11-14; was 85ch) */
-  .controls { display: flex; flex-wrap: wrap; gap: 16px; }
-  .controls label { display: flex; flex-direction: column; gap: 4px; font-size: 11.5px; color: var(--muted);
+  #candidates-app h2 { font-size: 18px; font-weight: 600; margin: 0 0 2px; }
+  #candidates-app .sub { color: var(--muted); margin: 0 0 12px; font-size: 12.5px; }  /* full box width (user, 2026-11-14; was 85ch) */
+  #candidates-app .controls { display: flex; flex-wrap: wrap; gap: 16px; }
+  #candidates-app .controls label { display: flex; flex-direction: column; gap: 4px; font-size: 11.5px; color: var(--muted);
                     text-transform: uppercase; letter-spacing: .05em; }
-  select { font: 14px var(--font); padding: 6px 8px; border: 1px solid var(--line); border-radius: 6px;
+  #candidates-app select { font: 14px var(--font); padding: 6px 8px; border: 1px solid var(--line); border-radius: 6px;
            background: var(--panel); color: var(--fg); min-width: 14rem; }
-  select:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
-  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin: 0; }
-  .stats > div { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; }
-  .stats dt { font-size: 12px; color: var(--muted); }
-  .stats dd { margin: 2px 0 0; font-size: 24px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  #candidates-app select:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
   /* Money chart: per candidate a name and two thin bars (Raised, Cash) on one shared scale. */
-  .legend { display: flex; gap: 16px; font-size: 12.5px; color: var(--muted); margin: 0 0 10px; }
-  .legend span::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 2px;
+  #candidates-app .legend { display: flex; gap: 16px; font-size: 12.5px; color: var(--muted); margin: 0 0 10px; }
+  #candidates-app .legend span::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 2px;
                          margin-right: 6px; vertical-align: -1px; background: var(--swatch); }
-  .bars { display: grid; grid-template-columns: max-content 1fr; gap: 10px 14px; align-items: center; }
-  .bar-name { white-space: nowrap; font-size: 13px; }
-  .bar-pair { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-  .bar-track { display: flex; align-items: center; gap: 8px; min-width: 0; padding: 1px 0; }
-  .bar { height: 10px; border-radius: 0 4px 4px 0; min-width: 1px; }
-  .bar.raised { background: var(--series-raised); }
-  .bar.cash { background: var(--series-cash); }
-  .bar-track:hover .bar { filter: brightness(1.12); }
-  .bar-value { font-variant-numeric: tabular-nums; color: var(--muted); font-size: 12px; white-space: nowrap; }
-  .scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; }
-  table { border-collapse: collapse; width: 100%; font-size: 12.5px; font-variant-numeric: tabular-nums; }
-  th, td { padding: 7px 10px; border-bottom: 1px solid var(--line); text-align: right; vertical-align: top; }
-  th { background: var(--panel); color: var(--muted); font-weight: 600; position: sticky; top: 0; max-width: 9em; vertical-align: bottom; }
-  tbody tr:hover td { background: var(--row-hover); }
-  td.flags { min-width: 10em; max-width: 14em; text-align: left; }
-  td.committees { max-width: 12em; text-align: left; }
-  td.date { white-space: nowrap; }
-  th[data-sort] { cursor: pointer; }
-  th[data-sort]:hover { color: var(--fg); }
-  tr:last-child td { border-bottom: 0; }
-  .left { text-align: left; }
-  td.muted { color: var(--muted); }
-  td.name { font-weight: 600; white-space: nowrap; text-align: left; }
-  .flag { display: inline-block; padding: 0 7px; margin: 0 4px 2px 0; border: 1px solid var(--line);
+  #candidates-app .bars { display: grid; grid-template-columns: max-content 1fr; gap: 10px 14px; align-items: center; }
+  #candidates-app .bar-name { white-space: nowrap; font-size: 13px; }
+  #candidates-app .bar-pair { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  #candidates-app .bar-track { display: flex; align-items: center; gap: 8px; min-width: 0; padding: 1px 0; }
+  #candidates-app .bar { height: 10px; border-radius: 0 4px 4px 0; min-width: 1px; }
+  #candidates-app .bar.raised { background: var(--series-raised); }
+  #candidates-app .bar.cash { background: var(--series-cash); }
+  #candidates-app .bar-track:hover .bar { filter: brightness(1.12); }
+  #candidates-app .bar-value { font-variant-numeric: tabular-nums; color: var(--muted); font-size: 12px; white-space: nowrap; }
+  #candidates-app .scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; }
+  #candidates-app table { border-collapse: collapse; width: 100%; font-size: 12.5px; font-variant-numeric: tabular-nums; }
+  #candidates-app th, #candidates-app td { padding: 7px 10px; border-bottom: 1px solid var(--line); text-align: right; vertical-align: top; }
+  #candidates-app th { background: var(--panel); color: var(--muted); font-weight: 600; position: sticky; top: 0; max-width: 9em; vertical-align: bottom; }
+  #candidates-app tbody tr:hover td { background: var(--row-hover); }
+  #candidates-app td.flags { min-width: 10em; max-width: 14em; text-align: left; }
+  #candidates-app td.committees { max-width: 12em; text-align: left; }
+  #candidates-app td.date { white-space: nowrap; }
+  #candidates-app th[data-sort] { cursor: pointer; }
+  #candidates-app th[data-sort]:hover { color: var(--fg); }
+  #candidates-app tr:last-child td { border-bottom: 0; }
+  #candidates-app .left { text-align: left; }
+  #candidates-app td.muted { color: var(--muted); }
+  #candidates-app td.name { font-weight: 600; white-space: nowrap; text-align: left; }
+  #candidates-app .flag { display: inline-block; padding: 0 7px; margin: 0 4px 2px 0; border: 1px solid var(--line);
           border-radius: 5px; color: var(--muted); font-size: 11.5px; }
-  .flag.warn { border-color: var(--warn); color: var(--warn); }
-  .report-link { display: block; font-weight: 400; font-size: 11.5px; color: var(--muted); }
-  .report-link a { color: inherit; }
-  .source-links { display: block; font-size: 11.5px; color: var(--muted); white-space: nowrap; }
-  .source-links a { color: inherit; }
-  .incumbent { font-weight: 400; color: var(--muted); margin-left: 4px; cursor: help; }
-  a.name-link { color: inherit; text-decoration: none; border-bottom: 1px dotted var(--muted); }
-  a.name-link:hover { color: var(--accent); }
-  td a.number-link { color: inherit; }
+  #candidates-app .flag.warn { border-color: var(--warn); color: var(--warn); }
+  #candidates-app .report-link { display: block; font-weight: 400; font-size: 11.5px; color: var(--muted); }
+  #candidates-app .report-link a { color: inherit; }
+  #candidates-app .source-links { display: block; font-size: 11.5px; color: var(--muted); white-space: nowrap; }
+  #candidates-app .source-links a { color: inherit; }
+  #candidates-app .incumbent { font-weight: 400; color: var(--muted); margin-left: 4px; cursor: help; }
+  #candidates-app a.name-link { color: inherit; text-decoration: none; border-bottom: 1px dotted var(--muted); }
+  #candidates-app a.name-link:hover { color: var(--accent); }
+  #candidates-app td a.number-link { color: inherit; }
   /* Social table cells: one account per line. */
-  .account { display: block; white-space: nowrap; }
-  .account .count { font-weight: 600; margin-right: 6px; }
-  .account .muted-count { font-weight: 400; color: var(--muted); font-size: 11px; }
-  .cards { display: flex; flex-direction: column; gap: 16px; }
-  .card { border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; background: var(--surface);
+  #candidates-app .account { display: block; white-space: nowrap; }
+  #candidates-app .account .count { font-weight: 600; margin-right: 6px; }
+  #candidates-app .account .muted-count { font-weight: 400; color: var(--muted); font-size: 11px; }
+  #candidates-app .cards { display: flex; flex-direction: column; gap: 16px; }
+  #candidates-app .card { border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; background: var(--surface);
           display: flex; flex-direction: column; gap: 12px; scroll-margin-top: 80px; }
-  .card.highlight { outline: 2px solid var(--accent); }
-  .card h3 { font-size: 17px; margin: 0; }
-  .card h4 { font-size: 12px; margin: 0 0 6px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .05em; }
-  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px 28px; }
-  .card ul { margin: 0; padding-left: 1.1em; font-size: 13px; }
-  .card table { font-size: 12.5px; }
-  .card .empty { color: var(--muted); font-size: 13px; margin: 0; }
-  .link-meta { color: var(--muted); font-size: 11.5px; }
-  tr.total td { font-weight: 600; border-top: 1px solid var(--muted); }
-  tr.aside td { color: var(--muted); }
-  .feedback ul { padding-left: 1.2em; margin: 8px 0 0; display: flex; flex-direction: column; gap: 4px; }
-  details { color: var(--muted); font-size: 12.5px; }
-  details summary { cursor: pointer; color: var(--fg); font-weight: 600; }
-  details ul { padding-left: 1.2em; display: flex; flex-direction: column; gap: 4px; }
+  #candidates-app .card.highlight { outline: 2px solid var(--accent); }
+  #candidates-app .card h3 { font-size: 17px; margin: 0; }
+  #candidates-app .card h4 { font-size: 12px; margin: 0 0 6px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .05em; }
+  /* min(300px, 100%): on a phone narrower than 300px + padding, one column fills the card instead of overflowing. */
+  #candidates-app .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 16px 28px; }
+  /* Blocks inside a candidate section (e.g. the 7-column top donors table) scroll sideways on their own on a phone,
+     instead of widening the whole page (seen 2026-11-14: 578px wide in a 500px window). */
+  #candidates-app .card > div, #candidates-app .card-grid > div { min-width: 0; overflow-x: auto; }
+  #candidates-app .card ul { margin: 0; padding-left: 1.1em; font-size: 13px; }
+  #candidates-app .card table { font-size: 12.5px; }
+  #candidates-app .card .empty { color: var(--muted); font-size: 13px; margin: 0; }
+  #candidates-app .link-meta { color: var(--muted); font-size: 11.5px; }
+  #candidates-app tr.total td { font-weight: 600; border-top: 1px solid var(--muted); }
+  #candidates-app tr.aside td { color: var(--muted); }
+  #candidates-app .feedback ul { padding-left: 1.2em; margin: 8px 0 0; display: flex; flex-direction: column; gap: 4px; }
+  #candidates-app details { color: var(--muted); font-size: 12.5px; }
+  #candidates-app details summary { cursor: pointer; color: var(--fg); font-weight: 600; }
+  #candidates-app details ul { padding-left: 1.2em; display: flex; flex-direction: column; gap: 4px; }
   /* Column descriptions sit inside each table's box, just above the table (user, 2026-11-14). */
-  details.columns { margin: 0 0 12px; }
-  code { font-size: 12px; }
-  @media (max-width: 600px) { h1 { font-size: 24px; } select { min-width: 0; width: 100%; }
-    .page > section, .page > details, .page > footer { padding: 14px; } }
+  #candidates-app details.columns { margin: 0 0 12px; }
+  #candidates-app code { font-size: 12px; }
+  @media (max-width: 600px) { #candidates-app h1 { font-size: 24px; } #candidates-app select { min-width: 0; width: 100%; }
+    #candidates-app .page > section, #candidates-app .page > details, #candidates-app .page > footer { padding: 14px; } }
+  /* APP_CSS_END */
 </style>
+<!-- Standalone page only (not in app.js): no body margin; the dashboard fills the window. -->
+<style>body { margin: 0; } #candidates-app { min-height: 100vh; }</style>
 </head>
 <body>
-<header class="site-header">
+<div id="candidates-app">
+<!-- APP_MARKUP_BEGIN. From here to the end marker is copied into app.js (build_dashboard.py). -->
+<header class="app-header">
   <div class="inner">
     <h1>__PAGE_TITLE__</h1>
     <p class="lede">__PAGE_DESCRIPTION__</p>
+    <p class="warning">__PAGE_WARNING__</p>
   </div>
 </header>
 
@@ -134,7 +154,7 @@
       <label for="window-select">Money window <select id="window-select"></select></label>
     </div>
     <nav class="page-nav" aria-label="Sections">
-      <a href="#section-money">Money</a><a href="#section-social">Social media</a>
+      <a href="#section-summary">Summary</a><a href="#section-money">Money</a><a href="#section-social">Social media</a>
       <a href="#section-endorsements">Endorsements</a><a href="#section-committees">Committees</a>
       <a href="#section-candidates">Candidates</a><a href="#section-sources">Sources</a>
     </nav>
@@ -142,11 +162,16 @@
 </div>
 
 <div class="page">
-  <dl class="stats">
-    <div><dt>Candidates on the ballot</dt><dd id="stat-candidates">—</dd></div>
-    <div><dt>With a matched committee</dt><dd id="stat-with-committee">—</dd></div>
-    <div><dt>Cash on hand in the race</dt><dd id="stat-cash">—</dd></div>
-  </dl>
+  <section id="section-summary">
+    <h2>Summary</h2>
+    <p class="sub">One line per candidate; details in the sections below. Raised: <span class="summary-window-label"></span>.
+      Cash: at the latest quarterly report. Following: the single largest account Google listed (rounded, not
+      checked by hand). Endorsements: as listed in the Endorsements section, including ones not checked yet.
+      <span class="incumbent-legend"></span></p>
+    <div class="scroll"><table id="summary-table"><thead><tr>
+      <th class="left">Candidate</th><th class="left">Website</th><th>Cash</th><th>Raised</th>
+      <th class="left">Largest following</th><th>Endorsements</th></tr></thead><tbody></tbody></table></div>
+  </section>
 
   <section id="section-money">
     <h2>Raised and cash on hand</h2>
@@ -274,9 +299,13 @@
     <ul id="feedback-links"></ul>
   </footer>
 </div>
+<!-- APP_MARKUP_END -->
+</div>
 
 <script>
 const DATA = /*DASHBOARD_DATA*/null;
+// APP_SCRIPT_BEGIN. From here to the end marker is copied into app.js, where DATA arrives by fetch
+// instead of the line above (build_dashboard.py).
 
 // ----- formatting -----
 const moneyFormat = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
@@ -531,11 +560,50 @@ function drawCards() {
   }));
 }
 
-function drawStats() {
+// Summary table (user, 2026-11-14; replaced the three stat boxes). Settings: SUMMARY_* in build_dashboard.py.
+// Website: first link of the first kind in DATA.summary.website_link_kinds (campaign, then office).
+function summaryWebsite(row) {
+  for (const kind of DATA.summary.website_link_kinds) {
+    const link = DATA.links.find((l) => l.candidate_id === row.candidate_id && l.link_kind === kind);
+    if (link) {
+      const shortUrl = link.url.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "");
+      return [externalLink(shortUrl, link.url, DATA.link_kind_labels[kind] + " (found by " + link.found_by.replaceAll("_", " ") + ")"),
+        ...(kind === "campaign" ? [] : [element("span", { className: "link-meta", text: " " + DATA.link_kind_labels[kind].toLowerCase() })])];
+    }
+  }
+  return ["—"];
+}
+// Largest following: the one account with the largest count floor (no adding across accounts).
+function summaryLargestAccount(row) {
+  const counted = socialAccounts(row.candidate_id).filter((a) => toNumber(a.count_floor) !== null
+    && !(DATA.summary.skip_flagged_accounts && a.flag));
+  if (!counted.length) return [element("span", { className: "muted", text: DATA.social_searched[row.candidate_id] ? "None shown" : "Not searched yet" })];
+  const largest = counted.reduce((best, a) => (Number(a.count_floor) > Number(best.count_floor) ? a : best));
+  return [accountLine(largest, true)];
+}
+function drawSummaryTable() {
+  const raisedField = state.window + "_raised";
+  const orderField = { raised: raisedField, cash: "cash_on_hand" }[DATA.summary.order];
+  const rows = raceCandidates().filter((row) => !row.duplicate_filing_of);
+  if (orderField) rows.sort((a, b) => (toNumber(b[orderField]) ?? -Infinity) - (toNumber(a[orderField]) ?? -Infinity));
   const race = DATA.races.find((r) => r.race_key === state.race);
-  document.getElementById("stat-candidates").textContent = show(race.candidates, "count");
-  document.getElementById("stat-with-committee").textContent = show(race.with_committee, "count");
-  document.getElementById("stat-cash").textContent = show(race.cash_on_hand_total, "money");
+  const endorsementCount = (row) => endorsementsFor(row.candidate_id).filter((e) => e.endorsement_kind === "endorsement").length;
+  document.getElementById("summary-table").tBodies[0].replaceChildren(...rows.map((row) => element("tr", {}, [
+    element("td", { className: "name" }, [candidateLink(row, nameWithIncumbent(row))]),
+    element("td", { className: "left" }, summaryWebsite(row)),
+    element("td", { text: show(row.cash_on_hand, "money") }),
+    element("td", { text: show(row[raisedField], "money") }),
+    element("td", { className: "left" }, summaryLargestAccount(row)),
+    element("td", { text: endorsementCount(row) || "—" }),
+  ])), element("tr", { className: "total" }, [
+    element("td", { className: "left", text: "Race total (" + rows.length + " candidates)" }), element("td", {}),
+    element("td", { text: show(race.cash_on_hand_total, "money") }),
+    element("td", { text: show(race[state.window + "_raised_total"], "money") }),
+    element("td", {}), element("td", {}),
+  ]));
+  document.querySelectorAll(".summary-window-label").forEach((node) => {
+    node.textContent = DATA.windows.find((w) => w.key === state.window).label;
+  });
 }
 
 // Money chart (user, 2026-11-13): Raised and Cash for each candidate on ONE shared dollar scale (the
@@ -734,7 +802,7 @@ function drawCommitteeTable() {
 }
 
 function drawAll() {
-  writeHash(); drawStats(); drawMoneyChart(); drawCandidateTable(); drawSocialTable(); drawEndorsementTable(); drawCommitteeTable(); drawCards();
+  writeHash(); drawSummaryTable(); drawMoneyChart(); drawCandidateTable(); drawSocialTable(); drawEndorsementTable(); drawCommitteeTable(); drawCards();
   document.querySelectorAll(".incumbent-legend").forEach((node) => {
     node.textContent = "(i) = holds this office now (" + DATA.incumbent_as_of + ").";
   });
@@ -768,6 +836,7 @@ raceSelect.onchange = () => { state.race = raceSelect.value; state.candidate = n
 windowSelect.onchange = () => { state.window = windowSelect.value; drawAll(); };
 window.addEventListener("hashchange", () => { readHash(); raceSelect.value = state.race; windowSelect.value = state.window; drawAll(); });
 drawAll();
+// APP_SCRIPT_END
 </script>
 </body>
 </html>

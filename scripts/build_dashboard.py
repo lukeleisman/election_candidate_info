@@ -18,7 +18,9 @@ Inputs:
   data/endorsements/endorsements.csv               scripts/match_endorsements.py
   scripts/dashboard_template.html        page layout, styles and drawing code
 Output:
-  dashboard/index.html
+  dashboard/index.html               local page, data embedded
+  docs/dashboard/app.js, docs/data/dashboard.json, docs/index.html   embedded build for the website
+                                     (EMBED_* settings below)
 
 Usage:
   python scripts/build_dashboard.py
@@ -45,7 +47,8 @@ INCUMBENTS_PATH = TABLES_DIR / "incumbents.csv"
 LINKS_PATH = TABLES_DIR / "candidate_links.csv"
 TOP_DONORS_PATH = TABLES_DIR / "top_donors.csv"
 SOCIAL_ACCOUNTS_PATH = REPO_ROOT / "data" / "endorsements" / "social_accounts_google.csv"
-GOOGLE_PASS_PATH = REPO_ROOT / "data" / "endorsements" / "candidate_campaign_sites_google.csv"
+GOOGLE_PASS_PATHS = [REPO_ROOT / "data" / "endorsements" / "candidate_campaign_sites_google.csv",
+                     REPO_ROOT / "data" / "endorsements" / "candidate_campaign_sites_google_social_rerun.csv"]
 # Hand-edited (user, 2026-11-13): flags on single accounts, shown next to the account on the page
 # (e.g. "May not be this candidate"; later "Verified"). Key: candidate_id + platform + handle (any case).
 SOCIAL_FLAGS_PATH = REPO_ROOT / "data" / "endorsements" / "social_account_flags.csv"
@@ -54,9 +57,8 @@ POST_AUTHORS_REVIEW_PATH = REPO_ROOT / "data" / "endorsements" / "social_post_au
 # Endorsement rows with their proposed candidate match (scripts/match_endorsements.py).
 ENDORSEMENTS_PATH = REPO_ROOT / "data" / "endorsements" / "endorsements.csv"
 # Which endorsement rows the page shows, by review_status. PLAN.md §4 says reviewed rows only.
-# Set 2026-11-14 to also show unreviewed rows, each tagged "Not checked yet", while the page is local
-# and review is starting. User 2026-11-14: keep showing unreviewed rows until the page is published; then
-# switch to ["reviewed"].
+# Set 2026-11-14 to also show unreviewed rows, each tagged "Not checked yet". User 2026-11-14: keep showing
+# them after publishing too (see EMBED_ENDORSEMENT_PAGE_REVIEW_STATUSES for the website build).
 ENDORSEMENT_PAGE_REVIEW_STATUSES = ["reviewed", "unreviewed"]
 # Which match statuses are shown. judgment_call rows are tagged "Name match not confirmed".
 ENDORSEMENT_PAGE_MATCH_STATUSES = ["accepted", "judgment_call"]
@@ -73,6 +75,41 @@ OUTPUT_PATH = REPO_ROOT / "dashboard" / "index.html"
 # Placeholder in the template that the data JSON replaces.
 DATA_PLACEHOLDER = "/*DASHBOARD_DATA*/null"
 
+# ---- Embedded build for lukeleisman.com (added 2026-11-14) ----
+# Same pattern as chicago_council/docs/dashboard/app.js: GitHub Pages serves docs/ from main, and the website
+# page is an empty <div id="candidates-app"></div> plus <script src=".../dashboard/app.js">. app.js injects the
+# template's CSS (already scoped to #candidates-app), puts the template's markup in the div, fetches the data
+# JSON from ../data/ next to its own URL, then runs the template's script. All three pieces are cut from
+# dashboard_template.html between the APP_*_BEGIN / APP_*_END markers, so the local page and the website
+# page are always the same code.
+#   WRITE_EMBED_BUILD   False skips docs/ (local page only).
+#   EMBED_DIR           served by GitHub Pages (repo setting: branch main, folder /docs).
+#   EMBED_CONTAINER_ID  must match the div on the website page and the CSS scope in the template.
+#   EMBED_DATA_FILE     one JSON file = the same DATA object the local page embeds (~1.3 MB, most of it top
+#                       donors; Pages serves it gzipped). Split per race later if load time is a problem.
+#   EMBED_TEST_PAGE     docs/index.html, a bare page that loads app.js the way the website will (local check:
+#                       `cd docs && python3 -m http.server 8766`; not 8765, which is the user's own server).
+WRITE_EMBED_BUILD = True
+EMBED_DIR = REPO_ROOT / "docs"
+EMBED_APP_PATH = EMBED_DIR / "dashboard" / "app.js"
+EMBED_DATA_FILE = "dashboard.json"
+EMBED_DATA_PATH = EMBED_DIR / "data" / EMBED_DATA_FILE
+EMBED_TEST_PAGE_PATH = EMBED_DIR / "index.html"
+EMBED_CONTAINER_ID = "candidates-app"
+# Endorsement rows shown on the PUBLISHED (embedded) page, by review_status. User, 2026-11-14 (later the same
+# day, replacing "reviewed only once published"): show all endorsements on the website too, with unreviewed rows
+# tagged "Not checked yet" (the tag comes from endorsementTags() in the template). ["reviewed"] = reviewed only.
+EMBED_ENDORSEMENT_PAGE_REVIEW_STATUSES = ["reviewed", "unreviewed"]
+# Template markers that bound each piece copied into app.js (each must appear exactly once).
+APP_CSS_MARKERS = ("/* APP_CSS_BEGIN", "/* APP_CSS_END */")
+APP_MARKUP_MARKERS = ("<!-- APP_MARKUP_BEGIN", "<!-- APP_MARKUP_END -->")
+APP_SCRIPT_MARKERS = ("// APP_SCRIPT_BEGIN", "// APP_SCRIPT_END")
+# Dark mode on the website (user, 2026-11-14: light only, because lukeleisman.com has no dark mode, so a dark
+# dashboard would be a dark block in a light page). False = the dark-colors block (between the APP_DARK markers
+# in the template) is left out of app.js. The local page still follows the system setting.
+EMBED_DARK_MODE = False
+APP_DARK_MARKERS = ("/* APP_DARK_BEGIN", "/* APP_DARK_END */")
+
 # Page title and the sentence under it (user, 2026-11-13: general, not money-only). Placed into the
 # template's __PAGE_TITLE__ / __PAGE_DESCRIPTION__. Money-specific dates moved to the money section.
 PAGE_TITLE = "Chicago 2027 Candidate Information"
@@ -81,11 +118,21 @@ PAGE_DESCRIPTION = ("This page exists to assist in evaluating races in Chicago's
                     "election (mayor, clerk, treasurer and the 50 aldermanic races). It collects information "
                     "like funds raised, endorsements, social media following and web presence for filed "
                     "candidates in each race.")
-TEMPLATE_TEXT_PLACEHOLDERS = {"__PAGE_TITLE__": PAGE_TITLE, "__PAGE_DESCRIPTION__": PAGE_DESCRIPTION}
-
 # Dates printed on the page. REPORTS_THROUGH_LABEL: UPDATE with each new quarterly
 # (REPORTS_THROUGH_DATE in build_finance_tables.py).
 REPORTS_THROUGH_LABEL = "Sep 30, 2026"
+
+# Warning under the description (user, 2026-11-14; user's draft, reworded for accuracy). The user's draft said
+# gifts under $1,000 are reported once a quarter. Illinois rule (10 ILCS 5/9-10): gifts of $1,000+ go on an A-1
+# within 5 business days (2 business days in the last 30 days before an election); smaller gifts and all
+# spending appear only on the quarterly D-2. So Raised and Cash on hand stop at the last quarterly
+# (REPORTS_THROUGH_LABEL); later $1,000+ gifts are the separate "$1K+ gifts after" column, not in Raised.
+PAGE_WARNING = ("IMPORTANT: the data on this page is NOT complete and likely contains errors. Gifts of $1,000 or "
+                "more are reported within days, but smaller gifts and all spending are reported only once a "
+                f"quarter. The latest quarterly reports run through {REPORTS_THROUGH_LABEL}, so Raised and Cash on "
+                "hand are as of that date (newer $1,000+ gifts are listed separately).")
+TEMPLATE_TEXT_PLACEHOLDERS = {"__PAGE_TITLE__": PAGE_TITLE, "__PAGE_DESCRIPTION__": PAGE_DESCRIPTION,
+                              "__PAGE_WARNING__": PAGE_WARNING}
 
 # Ways for visitors to report errors or send updates (user, 2026-11-12). An empty string hides
 # that link on the page.
@@ -93,7 +140,7 @@ REPORTS_THROUGH_LABEL = "Sep 30, 2026"
 #   FEEDBACK_FORM_PREFILL_URL  the form's "Get pre-filled link" URL with the candidate answers
 #                              replaced by {candidate_id} and {candidate_name}; each candidate row
 #                              then gets a "Report a problem" link with those filled in.
-#   GITHUB_ISSUES_URL          for code bugs, once the repo is public (it is private on 2026-11-12):
+#   GITHUB_ISSUES_URL          for code bugs (repo public since 2026-11-14):
 #                              https://github.com/lukeleisman/election_candidate_info/issues
 #   CONTACT_EMAIL              general questions, comments, updates (page footer).
 # Form "Corrections and Updates to Chicago Elections Dashboard" (user, 2026-11-12). Pre-fill IDs
@@ -102,7 +149,8 @@ REPORTS_THROUGH_LABEL = "Sep 30, 2026"
 FEEDBACK_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSd3QGQVBxoQNP20o6yWiZtQ87yh5JHZWzD92jF7Q4YxAWOtyw/viewform"
 FEEDBACK_FORM_PREFILL_URL = ("https://docs.google.com/forms/d/e/1FAIpQLSd3QGQVBxoQNP20o6yWiZtQ87yh5JHZWzD92jF7Q4YxAWOtyw/viewform?usp=pp_url"
                              "&entry.975812737={candidate_id}&entry.2031813816={candidate_name}")
-GITHUB_ISSUES_URL = ""
+# Set 2026-11-14 when the repo went public (user OK).
+GITHUB_ISSUES_URL = "https://github.com/lukeleisman/election_candidate_info/issues"
 CONTACT_EMAIL = "hello@lukeleisman.com"
 
 # Download date (changed 2026-11-12 from a hand-typed label): the newest retrieved_at of
@@ -227,9 +275,28 @@ CANDIDATE_COLUMNS = [
     ("{window}_chicago_by_zip_share", "Chicago zips", "Share of itemized dollars from 606xx zip codes", "pct"),
 ]
 
+# Summary table at the top of the page (user, 2026-11-14; replaces the three stat boxes). One row per
+# candidate (second filings left out, as in the other race tables), then a race total row.
+#   Website: SUMMARY_WEBSITE_LINK_KINDS tried in order; the first link of the first kind found is shown
+#       (candidate_links.csv order: source user > google > google_social_rerun > first pass). "office" is
+#       labeled as an office site. (user: campaign, else office)
+#   Cash / Raised: cash_on_hand and <window>_raised from display_candidates.csv; Raised follows the window picker.
+#   Largest following: the single account with the largest Google follower floor (user: "just do the largest
+#       single account"; not a sum). Accounts with a hand flag (social_account_flags.csv) are skipped when
+#       SUMMARY_SKIP_FLAGGED_ACCOUNTS is True; accounts with no count are never picked.
+#   Endorsements: number of rows with endorsement_kind "endorsement" shown on the page; the same count as the
+#       Endorsements table (so it includes rows not checked yet and name matches not confirmed, per
+#       ENDORSEMENT_PAGE_REVIEW_STATUSES / ENDORSEMENT_PAGE_MATCH_STATUSES).
+#   SUMMARY_TABLE_ORDER "raised" (by Raised in the window, like the money chart) or "cash" or "ballot".
+#   Total row: cash = cash_on_hand_total (below); raised = <window>_raised_total, both over the same people.
+SUMMARY_WEBSITE_LINK_KINDS = ["campaign", "office"]
+SUMMARY_SKIP_FLAGGED_ACCOUNTS = True
+SUMMARY_TABLE_ORDER = "raised"
+
 # Per-race figures over candidates in the race, second filings by one person left out
 # (duplicate_filing_of non-blank). "with_committee" = committees_added > 0.
-RACE_STATS = ["candidates", "with_committee", "cash_on_hand_total"]
+# Plus <window>_raised_total for each window (summary table total row; added 2026-11-14).
+RACE_STATS = ["candidates", "with_committee", "cash_on_hand_total"] + [f"{key}_raised_total" for key, _ in WINDOWS]
 
 # ---------------------------------------------------------------------------
 
@@ -311,6 +378,99 @@ def social_accounts(links):
                    "handle_in_recorded_links", "url", "url_basis", "flag", "retrieved"]]
 
 
+def between_markers(text, markers):
+    """The text between a BEGIN marker's line end and the END marker (each must occur exactly once)."""
+    begin, end = markers
+    for marker in markers:
+        if text.count(marker) != 1:
+            raise SystemExit(f"{TEMPLATE_PATH.name}: marker {marker!r} found {text.count(marker)} times (need 1)")
+    after_begin = text.split(begin, 1)[1]
+    # Drop the rest of the BEGIN marker's line (its explanatory comment, which may run on to the next lines
+    # for the CSS marker; that comment ends with "*/").
+    if begin.startswith("/*"):
+        after_begin = after_begin.split("*/", 1)[1]
+    elif begin.startswith("<!--"):
+        after_begin = after_begin.split("-->", 1)[1]
+    else:
+        after_begin = after_begin.split("\n", 1)[1]
+        # The script marker's comment continues on "//" lines.
+        while after_begin.startswith("//"):
+            after_begin = after_begin.split("\n", 1)[1]
+    return after_begin.split(end, 1)[0]
+
+
+def write_embed_build(template, data):
+    """docs/dashboard/app.js + docs/data/<EMBED_DATA_FILE> + docs/index.html (see EMBED_* settings)."""
+    css = between_markers(template, APP_CSS_MARKERS)
+    if not EMBED_DARK_MODE:
+        dark_begin, dark_end = APP_DARK_MARKERS
+        dark_block = dark_begin + css.split(dark_begin, 1)[1].split(dark_end, 1)[0] + dark_end
+        css = css.replace(dark_block, "/* dark mode left out: EMBED_DARK_MODE = False in build_dashboard.py */")
+        print("app.js: dark mode left out (EMBED_DARK_MODE = False)")
+    markup = between_markers(template, APP_MARKUP_MARKERS)
+    script = between_markers(template, APP_SCRIPT_MARKERS)
+    app = f"""/* Chicago 2027 candidate dashboard, embeddable build. GENERATED by scripts/build_dashboard.py from
+ * scripts/dashboard_template.html: do not edit here; edit the template and run `make dashboard`.
+ *
+ * Embed on any page:
+ *   <div id="{EMBED_CONTAINER_ID}"></div>
+ *   <script src="https://<user>.github.io/<repo>/dashboard/app.js"></script>
+ * The script injects its CSS (scoped to #{EMBED_CONTAINER_ID}), draws the page markup into the div, then
+ * fetches ../data/{EMBED_DATA_FILE} next to its own URL and draws the data.
+ */
+(function () {{
+  'use strict';
+  // Settings written by build_dashboard.py (EMBED_CONTAINER_ID, EMBED_DATA_FILE).
+  const CONTAINER_ID = {json.dumps(EMBED_CONTAINER_ID)};
+  const SCRIPT_URL = document.currentScript ? document.currentScript.src : window.location.href;
+  const DATA_URL = new URL('../data/' + {json.dumps(EMBED_DATA_FILE)}, SCRIPT_URL).href;
+  // Template pieces (between the APP_CSS / APP_MARKUP markers in dashboard_template.html).
+  const CSS = {json.dumps(css, ensure_ascii=False)};
+  const MARKUP = {json.dumps(markup, ensure_ascii=False)};
+
+  const container = document.getElementById(CONTAINER_ID);
+  if (!container) {{ console.error('candidate dashboard: no element with id ' + CONTAINER_ID); return; }}
+  const style = document.createElement('style');
+  style.textContent = CSS;
+  document.head.append(style);
+  container.innerHTML = MARKUP;
+
+  fetch(DATA_URL)
+    .then((response) => {{ if (!response.ok) throw new Error(response.status + ' ' + DATA_URL); return response.json(); }})
+    .then(startDashboard)
+    .catch((error) => {{
+      console.error('candidate dashboard:', error);
+      container.prepend(Object.assign(document.createElement('p'), {{ textContent: 'The dashboard did not load (' + error.message + '). Please reload the page.' }}));
+    }});
+
+  // The template's script (between the APP_SCRIPT markers), unchanged; DATA is the fetched JSON.
+  function startDashboard(DATA) {{
+{script}  }}
+}})();
+"""
+    test_page = f"""<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{PAGE_TITLE}</title>
+<style>body {{ margin: 0; }}</style>
+</head>
+<body>
+<!-- GENERATED by scripts/build_dashboard.py. Local test page for the embedded build: the same two lines the
+     website page uses (see the header of dashboard/app.js). -->
+<div id="{EMBED_CONTAINER_ID}"></div>
+<script src="dashboard/app.js"></script>
+</body>
+</html>
+"""
+    for path, text in [(EMBED_APP_PATH, app), (EMBED_DATA_PATH, json.dumps(data, ensure_ascii=False)),
+                       (EMBED_TEST_PAGE_PATH, test_page)]:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(text)
+        print(f"wrote {path.relative_to(REPO_ROOT)} ({path.stat().st_size:,} bytes)")
+
+
 def main():
     candidates = pd.read_csv(CANDIDATES_PATH, dtype=str, keep_default_na=False)
     committees = pd.read_csv(COMMITTEES_PATH, dtype=str, keep_default_na=False)
@@ -320,6 +480,8 @@ def main():
         candidates=("candidate_id", "size"),
         with_committee=("committees_added", lambda values: int((values.astype(int) > 0).sum())),
         cash_on_hand_total=("cash_on_hand", lambda values: pd.to_numeric(values, errors="coerce").fillna(0).sum()),
+        **{f"{key}_raised_total": (f"{key}_raised", lambda values: pd.to_numeric(values, errors="coerce").fillna(0).sum())
+           for key, _ in WINDOWS},
     ).reset_index()
     races = candidates.drop_duplicates("race_key")[["race_key", "race_label", "race_order"]]
     races = races.assign(race_order=races["race_order"].astype(int)).sort_values("race_order")
@@ -330,13 +492,19 @@ def main():
     top_donors = pd.read_csv(TOP_DONORS_PATH, dtype=str, keep_default_na=False)
     social = social_accounts(links)
     # Candidates the Google pass has searched (date = checked_on): tells "none shown" from "not searched yet".
-    google_pass = pd.read_csv(GOOGLE_PASS_PATH, dtype=str, keep_default_na=False)
-    social_searched = dict(zip(google_pass["candidate_id"], google_pass["checked_on"]))
-    endorsements = pd.read_csv(ENDORSEMENTS_PATH, dtype=str, keep_default_na=False)
-    endorsements = endorsements[endorsements["review_status"].isin(ENDORSEMENT_PAGE_REVIEW_STATUSES)
-                                & endorsements["match_status"].isin(ENDORSEMENT_PAGE_MATCH_STATUSES)]
+    # With the social rerun (2026-11-14) a candidate can have two searches; the latest date is shown.
+    google_pass = pd.concat([pd.read_csv(path, dtype=str, keep_default_na=False)
+                             for path in GOOGLE_PASS_PATHS if path.exists()])
+    social_searched = google_pass.groupby("candidate_id")["checked_on"].max().to_dict()
+    all_endorsements = pd.read_csv(ENDORSEMENTS_PATH, dtype=str, keep_default_na=False)
+    all_endorsements = all_endorsements[all_endorsements["match_status"].isin(ENDORSEMENT_PAGE_MATCH_STATUSES)]
     # candidate_id here = the proposed match (the input column of the same name is only the hand-given id).
-    endorsements = endorsements.drop(columns=["candidate_id"]).rename(columns={"candidate_id_proposed": "candidate_id"})
+    all_endorsements = all_endorsements.drop(columns=["candidate_id"]).rename(columns={"candidate_id_proposed": "candidate_id"})
+    # Local page vs published page differ only in which review statuses are shown (settings above).
+    endorsements = all_endorsements[all_endorsements["review_status"].isin(ENDORSEMENT_PAGE_REVIEW_STATUSES)]
+    embed_endorsements = all_endorsements[all_endorsements["review_status"].isin(EMBED_ENDORSEMENT_PAGE_REVIEW_STATUSES)]
+    print(f"endorsements shown: local page {len(endorsements)} rows (review_status {ENDORSEMENT_PAGE_REVIEW_STATUSES}); "
+          f"published page {len(embed_endorsements)} rows ({EMBED_ENDORSEMENT_PAGE_REVIEW_STATUSES})")
     shown_ids = set(candidates["candidate_id"])
     for name, frame in [("incumbents", incumbents), ("links", links), ("top donors", top_donors), ("social", social),
                         ("endorsements", endorsements)]:
@@ -375,6 +543,8 @@ def main():
         "social_platform_order": SOCIAL_PLATFORM_ORDER,
         "social_table_order": SOCIAL_TABLE_ORDER,
         "money_chart_order": MONEY_CHART_ORDER,
+        "summary": {"website_link_kinds": SUMMARY_WEBSITE_LINK_KINDS, "skip_flagged_accounts": SUMMARY_SKIP_FLAGGED_ACCOUNTS,
+                    "order": SUMMARY_TABLE_ORDER},
         "endorsements": records(endorsements[["candidate_id"] + ENDORSEMENT_PAGE_COLUMNS[1:]]),
         "endorser_type_labels": ENDORSER_TYPE_LABELS,
         "races": records(races),
@@ -391,6 +561,9 @@ def main():
     page = template.replace(DATA_PLACEHOLDER, json.dumps(data, ensure_ascii=False).replace("</", "<\\/"))
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT_PATH.write_text(page)
+    if WRITE_EMBED_BUILD:
+        embed_data = {**data, "endorsements": records(embed_endorsements[["candidate_id"] + ENDORSEMENT_PAGE_COLUMNS[1:]])}
+        write_embed_build(template, embed_data)
 
     print(f"{len(races)} races, {len(candidates)} candidate rows, {len(committees)} committee rows")
     print("per-race figures (check against display_candidates.csv):")

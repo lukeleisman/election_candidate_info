@@ -7,3 +7,6 @@ __pycache__/
 
 # Donor-level rows (names, addresses) — not published by default (PLAN.md §3)
 /data/private/
+
+# Agent handoff notes: local only (user, 2026-11-14)
+/HANDOFF.md
