@@ -66,11 +66,27 @@ REPORTS_THROUGH_DATE = "2026-09-30"
 #                     closest to the Chicago Reporter convention (since swearing-in)
 #   since_2026_01_01  Jan 1 of the year before the election (Block Club 2023 convention)
 #   latest_quarter    the newest quarter (Sun-Times convention)
+def quarter_start(last_day):
+    """First day of the quarter that ends on last_day ("2026-09-30" -> "2026-07-01")."""
+    year, month, _ = last_day.split("-")
+    return f"{year}-{int(month) - 2:02d}-01"
+
+
+# latest_quarter follows REPORTS_THROUGH_DATE (changed 2026-11-15 from a typed "2026-07-01", so a new
+# quarterly needs only the one setting above).
 MONEY_WINDOWS = {
     "since_2023_07_01": ("2023-07-01", REPORTS_THROUGH_DATE),
     "since_2026_01_01": ("2026-01-01", REPORTS_THROUGH_DATE),
-    "latest_quarter": ("2026-07-01", REPORTS_THROUGH_DATE),
+    "latest_quarter": (quarter_start(REPORTS_THROUGH_DATE), REPORTS_THROUGH_DATE),
 }
+
+# Raised PLUS the $1,000+ A-1 gifts reported after REPORTS_THROUGH_DATE (user, 2026-11-15: big gifts dominate
+# the money, so the "since" windows should count them). Written as <window>_raised_plus_a1_gifts for these
+# windows only = <window>_raised + a1_gifts_since_last_report (gifts, transfers and other receipts; no loans,
+# no in-kind, no transfers between the candidate's own committees: same rule as Raised).
+# latest_quarter is left out on purpose: it is one quarter that ends on REPORTS_THROUGH_DATE.
+# Cash on hand is NOT changed (user, 2026-11-15): spending after REPORTS_THROUGH_DATE isn't reported yet.
+WINDOWS_PLUS_A1_GIFTS = ["since_2023_07_01", "since_2026_01_01"]
 
 # A report counts toward a window only if its whole period is inside the window.
 # Reports that cross a window edge are not split; they are counted in the
@@ -367,13 +383,17 @@ def main():
     candidates = rows.drop_duplicates("candidate_id").set_index("candidate_id")[
         ["office_code", "district_number", "ballot_name_raw"]]
     summary = candidates.join(summary).reset_index()
+    # Raised + A-1 gifts after the last quarterly (WINDOWS_PLUS_A1_GIFTS). Blank only when both are blank.
+    for window in WINDOWS_PLUS_A1_GIFTS:
+        summary[f"{window}_raised_plus_a1_gifts"] = summary[[f"{window}_raised", "a1_gifts_since_last_report"]].sum(
+            axis=1, min_count=1)
     window_order = [f"{window}_{suffix}" for window in MONEY_WINDOWS for suffix in
                     ["raised", "individual_not_itemized", "own_committee_transfers_in", "transfers_in",
                      "loans", "in_kind", "reports", "reports_crossing_edge", "raised_before_own_transfers"]]
     a1_order = ["a1_gifts_since_last_report", "a1_gift_rows", "a1_loans_since_last_report",
                 "a1_in_kind_since_last_report", "a1_own_committee_transfers_in"]
     summary = summary[["candidate_id", "office_code", "district_number", "ballot_name_raw", "cash_on_hand",
-                       *window_order, *a1_order, "committees_summed", "committees_with_no_d2_report",
+                       *window_order, *a1_order, *[f"{window}_raised_plus_a1_gifts" for window in WINDOWS_PLUS_A1_GIFTS], "committees_summed", "committees_with_no_d2_report",
                        "committees_cash_not_current", "slate_committees_not_added"]]
     summary.to_csv(SUMMARY_OUTPUT_PATH, index=False)
 

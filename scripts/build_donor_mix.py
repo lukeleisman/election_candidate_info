@@ -126,8 +126,11 @@ TOP_DONOR_NAME_SPELLING = "from_largest_receipt"
 # fewer gifts and would pull the figure around.
 GIFT_STATISTIC_DONOR_TYPES = ["person"]
 
-# Geography of itemized donor dollars — two Chicago rules side by side (neither chosen):
-#   city field says CHICAGO, or zip starts with one of these prefixes.
+# Geography of itemized donor dollars. Three Chicago rules, all written to donor_mix.csv:
+#   chicago_by_city          the City field says CHICAGO
+#   chicago_by_zip           the zip starts with one of CHICAGO_ZIP_PREFIXES
+#   chicago_by_city_or_zip   either one (user, 2026-11-15: "a Chicago address or zip code"; the one shown on
+#                            the page, see build_display_tables.DONOR_MIX_COLUMNS)
 # OPEN QUESTION: 606xx misses a few Chicago zips (60707, 60827 are partly Chicago) and
 # includes none outside; the City field is free text typed by the committee.
 CHICAGO_CITY_NAMES = {"CHICAGO"}
@@ -305,9 +308,11 @@ def receipt_metrics(window_receipts, raised_by_candidate):
         row["mean_gift"] = gifts.mean() if len(gifts) else None
         row["chicago_by_city_dollars"] = donors.loc[donors["in_chicago_by_city"], "amount"].sum()
         row["chicago_by_zip_dollars"] = donors.loc[donors["in_chicago_by_zip"], "amount"].sum()
+        row["chicago_by_city_or_zip_dollars"] = donors.loc[
+            donors["in_chicago_by_city"] | donors["in_chicago_by_zip"], "amount"].sum()
         row["out_of_state_dollars"] = donors.loc[donors["out_of_state"], "amount"].sum()
         row["state_blank_dollars"] = donors.loc[donors["State"].str.strip() == "", "amount"].sum()
-        for column in ["chicago_by_city", "chicago_by_zip", "out_of_state"]:
+        for column in ["chicago_by_city", "chicago_by_zip", "chicago_by_city_or_zip", "out_of_state"]:
             row[f"{column}_share"] = share(row[f"{column}_dollars"], donor_dollars)
         loans = receipts[receipts["donor_type"] == "loan"]
         row["loan_rows"] = len(loans)

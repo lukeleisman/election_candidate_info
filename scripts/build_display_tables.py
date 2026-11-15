@@ -53,7 +53,8 @@ DONOR_MIX_COLUMNS = {
     "not_itemized_individual_pct": "individual_not_itemized_pct",
     "top10_share_of_raised": "top10_share_of_raised__last_first_zip",
     "median_gift": "median_gift",
-    "chicago_by_zip_share": "chicago_by_zip_share",
+    # Chicago share shown on the page (user, 2026-11-15): City says CHICAGO or zip starts 606 (was zip only).
+    "chicago_share": "chicago_by_city_or_zip_share",
     # What Raised is made of (D-2 lines, own-committee transfers already out of transfers_in),
     # for the candidate section's breakdown (added 2026-11-12). mix_raised should equal
     # <window>_raised from finance_summary.csv; build_dashboard.py prints any difference.
@@ -68,6 +69,9 @@ DONOR_MIX_COLUMNS = {
 
 # Per-window finance figures shown, copied from finance_summary.csv as <window>_<name>.
 FINANCE_WINDOW_COLUMNS = ["raised", "loans", "in_kind"]
+# Raised + $1,000+ A-1 gifts after the last quarterly, copied as <window>_raised_plus_a1_gifts for the windows
+# that have it (build_finance_tables.WINDOWS_PLUS_A1_GIFTS; user, 2026-11-15). Other windows get a blank column.
+from build_finance_tables import WINDOWS_PLUS_A1_GIFTS
 
 # ---------------------------------------------------------------------------
 
@@ -111,6 +115,8 @@ def main():
     for window in WINDOWS:
         for name in FINANCE_WINDOW_COLUMNS:
             output[f"{window}_{name}"] = output["candidate_id"].map(summary[f"{window}_{name}"]).fillna("")
+        output[f"{window}_raised_plus_a1_gifts"] = (output["candidate_id"].map(
+            summary[f"{window}_raised_plus_a1_gifts"]).fillna("") if window in WINDOWS_PLUS_A1_GIFTS else "")
         mix = donor_mix[donor_mix["window"] == window].set_index("candidate_id")
         for name, source_column in DONOR_MIX_COLUMNS.items():
             output[f"{window}_{name}"] = output["candidate_id"].map(mix[source_column]).fillna("")

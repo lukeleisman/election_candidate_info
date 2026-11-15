@@ -118,19 +118,31 @@ PAGE_DESCRIPTION = ("This page exists to assist in evaluating races in Chicago's
                     "election (mayor, clerk, treasurer and the 50 aldermanic races). It collects information "
                     "like funds raised, endorsements, social media following and web presence for filed "
                     "candidates in each race.")
-# Dates printed on the page. REPORTS_THROUGH_LABEL: UPDATE with each new quarterly
-# (REPORTS_THROUGH_DATE in build_finance_tables.py).
-REPORTS_THROUGH_LABEL = "Sep 30, 2026"
+# ---- Dates on the page: none typed here (user, 2026-11-15: they must update by themselves) ----
+# Quarterly date: REPORTS_THROUGH_DATE in build_finance_tables.py, the one setting to change after each quarterly.
+# Every label below (warning, window names, column headers, notes) is built from it.
+from datetime import date as _date
+from build_finance_tables import MONEY_WINDOWS, REPORTS_THROUGH_DATE, WINDOWS_PLUS_A1_GIFTS
+
+
+def date_label(iso_day, with_year=True):
+    """'2026-09-30' -> 'Sep 30, 2026' (or 'Sep 30')."""
+    day = _date.fromisoformat(iso_day[:10])
+    return f"{day:%b} {day.day}" + (f", {day.year}" if with_year else "")
+
+
+REPORTS_THROUGH_LABEL = date_label(REPORTS_THROUGH_DATE)               # "Sep 30, 2026"
+REPORTS_THROUGH_SHORT = date_label(REPORTS_THROUGH_DATE, with_year=False)  # "Sep 30" (column headers)
 
 # Warning under the description (user, 2026-11-14; user's draft, reworded for accuracy). The user's draft said
 # gifts under $1,000 are reported once a quarter. Illinois rule (10 ILCS 5/9-10): gifts of $1,000+ go on an A-1
 # within 5 business days (2 business days in the last 30 days before an election); smaller gifts and all
-# spending appear only on the quarterly D-2. So Raised and Cash on hand stop at the last quarterly
-# (REPORTS_THROUGH_LABEL); later $1,000+ gifts are the separate "$1K+ gifts after" column, not in Raised.
+# spending appear only on the quarterly D-2. Cash on hand stops at the last quarterly (REPORTS_THROUGH_LABEL).
+# Last sentence changed 2026-11-15 (Raised now adds later $1,000+ gifts for the "since" periods; user decision A).
 PAGE_WARNING = ("IMPORTANT: the data on this page is NOT complete and likely contains errors. Gifts of $1,000 or "
                 "more are reported within days, but smaller gifts and all spending are reported only once a "
-                f"quarter. The latest quarterly reports run through {REPORTS_THROUGH_LABEL}, so Raised and Cash on "
-                "hand are as of that date (newer $1,000+ gifts are listed separately).")
+                f"quarter. The latest quarterly reports run through {REPORTS_THROUGH_LABEL}, so Cash on hand is as "
+                "of that date, and after it Raised counts only the $1,000+ gifts.")
 TEMPLATE_TEXT_PLACEHOLDERS = {"__PAGE_TITLE__": PAGE_TITLE, "__PAGE_DESCRIPTION__": PAGE_DESCRIPTION,
                               "__PAGE_WARNING__": PAGE_WARNING}
 
@@ -158,6 +170,30 @@ CONTACT_EMAIL = "hello@lukeleisman.com"
 # file the money figures come from; the other ISBE files may have other dates.
 ISBE_MANIFEST_PATH = Path(__file__).resolve().parent.parent / "data" / "raw" / "isbe" / "manifest.json"
 ISBE_DOWNLOAD_DATE_FILE = "Receipts.txt"
+
+
+# Candidate list date (user, 2026-11-15: show when it was last checked, and keep it current). Read from the data:
+# the Board of Elections PDF named in candidates_cboe.csv (source_pdf) and that PDF's download time in the
+# fetch manifest (scripts/fetch_cboe.py). Re-fetching the list (make candidates) updates it.
+CBOE_CANDIDATES_PATH = REPO_ROOT / "data" / "candidates" / "candidates_cboe.csv"
+CBOE_MANIFEST_PATH = REPO_ROOT / "data" / "raw" / "cboe" / "manifest.json"
+# Text after the date in the Summary note. NOT a date, but it goes stale: UPDATE when the Electoral Board has
+# ruled on the petition objections (or when ballot_status.csv is on the page).
+CANDIDATE_LIST_STATUS_NOTE = ("Objections to nominating petitions are still being decided, so some candidates may "
+                              "not make the ballot.")
+
+
+def candidate_list_checked_label():
+    """'Oct 27, 2026': when the PDF the candidate table was parsed from was downloaded."""
+    source_pdfs = set(pd.read_csv(CBOE_CANDIDATES_PATH, dtype=str, keep_default_na=False)["source_pdf"])
+    if len(source_pdfs) != 1:
+        raise SystemExit(f"candidates_cboe.csv names {len(source_pdfs)} source PDFs (expected 1): {source_pdfs}")
+    pdf_name = source_pdfs.pop()
+    downloads = [row["retrieved_at"] for row in json.loads(CBOE_MANIFEST_PATH.read_text())
+                 if row.get("local_path", "").endswith("/" + pdf_name)]
+    if not downloads:
+        raise SystemExit(f"{pdf_name} is not in {CBOE_MANIFEST_PATH}")
+    return date_label(max(downloads))
 
 
 def isbe_download_label():
@@ -252,27 +288,43 @@ MONEY_CHART_ORDER = "raised"
 # Race shown when the page opens.
 DEFAULT_RACE_KEY = "ALD-01"
 
-# Money windows (build_finance_tables.MONEY_WINDOWS), in picker order; first is the default.
-WINDOWS = [
-    ("since_2026_01_01", "Since Jan 1, 2026"),
-    ("latest_quarter", "Jul 1 – Sep 30, 2026 (latest quarter)"),
-    ("since_2023_07_01", "Since Jul 1, 2023"),
-]
+# Money windows (build_finance_tables.MONEY_WINDOWS), in picker order; first is the default. Labels are built from
+# the window dates (changed 2026-11-15 from typed labels): "Since Jan 1, 2026"; the latest quarter as
+# "Jul 1 – Sep 30, 2026 (latest quarter)".
+WINDOW_PICKER_ORDER = ["since_2026_01_01", "latest_quarter", "since_2023_07_01"]
+
+
+def window_label(key):
+    first_day, last_day = MONEY_WINDOWS[key]
+    if key == "latest_quarter":
+        return f"{date_label(first_day, with_year=False)} – {date_label(last_day)} (latest quarter)"
+    return f"Since {date_label(first_day)}"
+
+
+WINDOWS = [(key, window_label(key)) for key in WINDOW_PICKER_ORDER]
+# Second filings by the same person (data/candidates/duplicate_filings.csv; Scott ward 24, Nugent ward 39).
+# User, 2026-11-15: hide them everywhere. False = left out of the page data entirely.
+SHOW_SECOND_FILINGS = False
 
 # Candidate table columns: (CSV column, "{window}" filled from the picker; short header shown in
 # the table; full description shown as the header's tooltip; format). Headers shortened and
 # allowed to wrap 2026-11-12 (user: table too wide).
+# User, 2026-11-15: this table splits Raised into "Raised through <last quarterly>" and "$1K+ after <it>"; the
+# Summary and the chart add the two for the "since" periods (WINDOWS_PLUS_A1_GIFTS).
+# Chicago column (user, 2026-11-15): "From Chicago", City says Chicago OR zip starts 606 (was zip only).
 CANDIDATE_COLUMNS = [
-    ("cash_on_hand", "Cash", "Cash on hand at the latest report", "money"),
-    ("{window}_raised", "Raised", "Raised in the money window (all incoming cash; no loans or in-kind)", "money"),
-    ("a1_gifts_since_last_report", "$1K+ gifts after Sep 30", "$1,000+ gifts reported on A-1s after the Sep 30 quarterly", "money"),
+    ("cash_on_hand", "Cash", f"Cash on hand at the latest quarterly report ({REPORTS_THROUGH_LABEL})", "money"),
+    ("{window}_raised", f"Raised through {REPORTS_THROUGH_SHORT}",
+     f"Raised in the period, on reports through {REPORTS_THROUGH_LABEL} (no loans or in-kind)", "money"),
+    ("a1_gifts_since_last_report", f"$1K+ after {REPORTS_THROUGH_SHORT}",
+     f"$1,000+ gifts reported on A-1s after the {REPORTS_THROUGH_LABEL} quarterly", "money"),
     ("{window}_loans", "Loans", "Loans received in the money window", "money"),
     ("{window}_in_kind", "In-kind", "In-kind gifts in the money window", "money"),
     ("{window}_unique_donors", "Donors", "Unique itemized donors (last name + first name + zip)", "count"),
     ("{window}_not_itemized_individual_pct", "Small gifts", "Gifts too small to itemize, as a share of all receipts", "pct"),
     ("{window}_top10_share_of_raised", "Top 10 share", "Share of raised from the 10 largest donors", "pct"),
     ("{window}_median_gift", "Median gift", "Median itemized gift from people", "money"),
-    ("{window}_chicago_by_zip_share", "Chicago zips", "Share of itemized dollars from 606xx zip codes", "pct"),
+    ("{window}_chicago_share", "From Chicago", "Share of itemized dollars from donors with a Chicago address or 606xx zip", "pct"),
 ]
 
 # Summary table at the top of the page (user, 2026-11-14; replaces the three stat boxes). One row per
@@ -280,7 +332,8 @@ CANDIDATE_COLUMNS = [
 #   Website: SUMMARY_WEBSITE_LINK_KINDS tried in order; the first link of the first kind found is shown
 #       (candidate_links.csv order: source user > google > google_social_rerun > first pass). "office" is
 #       labeled as an office site. (user: campaign, else office)
-#   Cash / Raised: cash_on_hand and <window>_raised from display_candidates.csv; Raised follows the window picker.
+#   Cash / Raised: cash_on_hand and the window's Raised field from display_candidates.csv: <window>_raised_plus_a1_gifts
+#       for WINDOWS_PLUS_A1_GIFTS, else <window>_raised (user, 2026-11-15). The money chart uses the same field.
 #   Largest following: the single account with the largest Google follower floor (user: "just do the largest
 #       single account"; not a sum). Accounts with a hand flag (social_account_flags.csv) are skipped when
 #       SUMMARY_SKIP_FLAGGED_ACCOUNTS is True; accounts with no count are never picked.
@@ -288,15 +341,21 @@ CANDIDATE_COLUMNS = [
 #       Endorsements table (so it includes rows not checked yet and name matches not confirmed, per
 #       ENDORSEMENT_PAGE_REVIEW_STATUSES / ENDORSEMENT_PAGE_MATCH_STATUSES).
 #   SUMMARY_TABLE_ORDER "raised" (by Raised in the window, like the money chart) or "cash" or "ballot".
-#   Total row: cash = cash_on_hand_total (below); raised = <window>_raised_total, both over the same people.
+#   Total row: cash = cash_on_hand_total (below); raised = <window>_summary_raised_total, both over the same people.
 SUMMARY_WEBSITE_LINK_KINDS = ["campaign", "office"]
 SUMMARY_SKIP_FLAGGED_ACCOUNTS = True
 SUMMARY_TABLE_ORDER = "raised"
 
 # Per-race figures over candidates in the race, second filings by one person left out
 # (duplicate_filing_of non-blank). "with_committee" = committees_added > 0.
-# Plus <window>_raised_total for each window (summary table total row; added 2026-11-14).
-RACE_STATS = ["candidates", "with_committee", "cash_on_hand_total"] + [f"{key}_raised_total" for key, _ in WINDOWS]
+# Plus <window>_summary_raised_total for each window (summary table total row; added 2026-11-14; A-1 gifts
+# added for WINDOWS_PLUS_A1_GIFTS 2026-11-15).
+RACE_STATS = ["candidates", "with_committee", "cash_on_hand_total"] + [f"{key}_summary_raised_total" for key, _ in WINDOWS]
+
+
+def summary_raised_field(window_key):
+    """Raised field used by the Summary, the chart and the race total for one window."""
+    return f"{window_key}_raised_plus_a1_gifts" if window_key in WINDOWS_PLUS_A1_GIFTS else f"{window_key}_raised"
 
 # ---------------------------------------------------------------------------
 
@@ -474,13 +533,20 @@ def write_embed_build(template, data):
 def main():
     candidates = pd.read_csv(CANDIDATES_PATH, dtype=str, keep_default_na=False)
     committees = pd.read_csv(COMMITTEES_PATH, dtype=str, keep_default_na=False)
+    if not SHOW_SECOND_FILINGS:
+        second_filings = candidates[candidates["duplicate_filing_of"] != ""]
+        print(f"second filings left off the page (SHOW_SECOND_FILINGS = False): "
+              f"{second_filings[['candidate_id', 'duplicate_filing_of']].values.tolist()}")
+        candidates = candidates[candidates["duplicate_filing_of"] == ""]
+        committees = committees[committees["candidate_id"].isin(set(candidates["candidate_id"]))]
 
     people = candidates[candidates["duplicate_filing_of"] == ""]
     race_stats = people.groupby("race_key").agg(
         candidates=("candidate_id", "size"),
         with_committee=("committees_added", lambda values: int((values.astype(int) > 0).sum())),
         cash_on_hand_total=("cash_on_hand", lambda values: pd.to_numeric(values, errors="coerce").fillna(0).sum()),
-        **{f"{key}_raised_total": (f"{key}_raised", lambda values: pd.to_numeric(values, errors="coerce").fillna(0).sum())
+        **{f"{key}_summary_raised_total": (summary_raised_field(key),
+                                           lambda values: pd.to_numeric(values, errors="coerce").fillna(0).sum())
            for key, _ in WINDOWS},
     ).reset_index()
     races = candidates.drop_duplicates("race_key")[["race_key", "race_label", "race_order"]]
@@ -522,6 +588,9 @@ def main():
 
     data = {
         "reports_through": REPORTS_THROUGH_LABEL,
+        "reports_through_short": REPORTS_THROUGH_SHORT,
+        "candidate_list_checked": candidate_list_checked_label(),
+        "candidate_list_status_note": CANDIDATE_LIST_STATUS_NOTE,
         "isbe_download": isbe_download_label(),
         "feedback": {"form_url": FEEDBACK_FORM_URL, "form_prefill_url": FEEDBACK_FORM_PREFILL_URL,
                      "github_issues_url": GITHUB_ISSUES_URL, "contact_email": CONTACT_EMAIL},
@@ -530,7 +599,8 @@ def main():
         "data_sources": [{"name": name, "url": url, "use": use} for name, url, use in DATA_SOURCES],
         "sunshine_style_cutoff": SUNSHINE_STYLE_SHOWN_IF_FIRST_REPORT_ON_OR_AFTER,
         "default_race": DEFAULT_RACE_KEY,
-        "windows": [{"key": key, "label": label} for key, label in WINDOWS],
+        "windows": [{"key": key, "label": label, "summary_raised_field": summary_raised_field(key),
+                     "adds_a1_gifts": key in WINDOWS_PLUS_A1_GIFTS} for key, label in WINDOWS],
         "candidate_columns": [{"column": column, "header": header, "description": description, "format": fmt}
                               for column, header, description, fmt in CANDIDATE_COLUMNS],
         "incumbent_as_of": INCUMBENT_AS_OF_LABEL,
