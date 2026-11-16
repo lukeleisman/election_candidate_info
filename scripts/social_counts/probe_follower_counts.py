@@ -50,6 +50,15 @@ OUTPUT_ROOT = REPO_ROOT / "data" / "raw" / "social_counts_probe"
 ACCOUNTS_WITH_GOOGLE_COUNT = 2
 ACCOUNTS_WITHOUT_GOOGLE_COUNT = 1
 SAMPLE_SEED = 20261115
+# Per-platform override: (with Google count, without). Run 1 (2026-11-15) found Google showed no counts for
+# Bluesky and YouTube and one for Threads, so those got only 1-2 test accounts; run 2 takes more "added" ones.
+ACCOUNTS_PER_PLATFORM_OVERRIDE = {"Bluesky": (0, 4), "YouTube": (0, 4), "Threads": (1, 3)}
+# Which platforms this run tests (None = all). Run 2 (user, 2026-11-15): only the platforms with fixes or
+# too few accounts in run 1; TikTok, Instagram and LinkedIn were clear in run 1 and are not repeated.
+PLATFORMS_TO_RUN = ["X", "Facebook", "Bluesky", "YouTube", "Threads"]
+# Accounts always tested, on top of the random sample (run 2: the twitter.com/#!/ link that run 1 sent with
+# an empty handle). Listed by candidate_id and url as they appear in RECORDED_LINKS_PATH.
+EXTRA_ACCOUNTS = [("ALD-08-002", "http://twitter.com/#!/Aldermanharris")]
 # Facebook share links (facebook.com/share/...) are left out of the sample: they are redirects, not
 # a profile address, so they would test the redirect rather than the count.
 SKIP_URL_PATTERNS = [r"facebook\.com/share/"]
@@ -100,12 +109,14 @@ METHODS = [
      "note": "profile page as a logged-out visitor"},
     {"platform": "Facebook", "method": "facebook_page_plugin", "kind": "public_page",
      "note": "Facebook's embeddable Page Plugin (plugins/page.php), meant for websites"},
-    {"platform": "X", "method": "x_syndication_followbutton", "kind": "unofficial",
+    # Run 1 (2026-11-15): the follow-button feed returned empty bodies (dead); fxtwitter worked but the user
+    # chose the x.com page (first-party, no third party). Both kept here, switched off ("enabled": False).
+    {"platform": "X", "method": "x_syndication_followbutton", "kind": "unofficial", "enabled": False,
      "note": "old follow-button feed cdn.syndication.twimg.com; undocumented, may be shut down"},
-    {"platform": "X", "method": "x_fxtwitter_api", "kind": "unofficial",
+    {"platform": "X", "method": "x_fxtwitter_api", "kind": "unofficial", "enabled": False,
      "note": "api.fxtwitter.com, a third-party service (sends the handle to them)"},
     {"platform": "X", "method": "x_page", "kind": "public_page",
-     "note": "x.com profile page; expected to be drawn by script (no count in the HTML)"},
+     "note": "x.com profile page; exact count in the page data (\"followers\":N), user's choice for X"},
     {"platform": "LinkedIn", "method": "linkedin_page", "kind": "public_page",
      "note": "profile or company page as a logged-out visitor"},
 ]
@@ -119,7 +130,13 @@ def handle_from_url(url):
     """The account part of a profile URL, case kept (account_key in the review file is lowercased).
     Examples: instagram.com/billfor1st/ -> billfor1st; tiktok.com/@x -> x; bsky.app/profile/a.b -> a.b;
     youtube.com/@x -> @x; youtube.com/channel/UC... -> channel/UC...; linkedin.com/in/x -> in/x."""
-    path_parts = [part for part in urlparse(url).path.split("/") if part]
+    parsed = urlparse(url)
+    path = parsed.path
+    # Old Twitter addresses keep the handle after "#!/" (twitter.com/#!/Aldermanharris); run 1 sent an
+    # empty handle for these.
+    if parsed.fragment.startswith("!/"):
+        path = parsed.fragment[1:]
+    path_parts = [part for part in path.split("/") if part]
     if not path_parts:
         return ""
     if path_parts[0] in ("profile",) and len(path_parts) > 1:  # Bluesky
@@ -250,6 +267,26 @@ def read_count(method, body):
             return str(user["followers"]), f"followers={user['followers']} screen_name={user.get('screen_name')}"
         except (ValueError, KeyError, TypeError):
             return None, None
+    if method == "facebook_page_plugin":
+        # Run 1: the plugin page holds "followerCountFormatted":"9.5K" (rounded). Every follower/like
+        # count field found is listed in the excerpt, so an exact one would show up too.
+        fields = re.findall(r'"((?:follower|fan|like)\w*count\w*)":\s*("?[^",}]*"?)', body, re.IGNORECASE)
+        found = dict(fields)
+        excerpt = "; ".join(f"{key}={value}" for key, value in found.items())
+        for key, value in found.items():
+            if key.lower() == "followercountformatted":
+                return value.strip('"'), excerpt
+        return None, excerpt or None
+    if method == "x_page":
+        # Run 1: the page data holds "followers":61760 (exact); the visible text holds "61.7K Followers".
+        # Use the first "followers":N; list every distinct value found so a mismatch shows.
+        # OPEN QUESTION: run 1's Dannic44 page held three values (61760, 35704, 367); the first matched
+        # fxtwitter, the others are probably other accounts shown on the page. A production reader should
+        # take the value next to the account's own screen_name instead of the first one.
+        values = re.findall(r'(?:\\?"followers\\?"|\bfollowers):\s*(\d+)', body)
+        if values:
+            return values[0], "followers values found: " + ", ".join(dict.fromkeys(values))
+        return None, None
     # Public pages: the meta description first (short, made for previews), then the whole HTML.
     count_text, excerpt = find_count_in_text(meta_description(body))
     if count_text:
@@ -270,15 +307,20 @@ def pick_accounts():
     for pattern in SKIP_URL_PATTERNS:
         links = links[~links["url"].str.contains(pattern, regex=True)]
     platforms = sorted({entry["platform"] for entry in METHODS})
+    if PLATFORMS_TO_RUN is not None:
+        platforms = [platform for platform in platforms if platform in PLATFORMS_TO_RUN]
     random_generator = random.Random(SAMPLE_SEED)
     chosen = []
     for platform in platforms:
-        for decision, how_many in (("already in table", ACCOUNTS_WITH_GOOGLE_COUNT),
-                                   ("added", ACCOUNTS_WITHOUT_GOOGLE_COUNT)):
+        with_count, without_count = ACCOUNTS_PER_PLATFORM_OVERRIDE.get(
+            platform, (ACCOUNTS_WITH_GOOGLE_COUNT, ACCOUNTS_WITHOUT_GOOGLE_COUNT))
+        for decision, how_many in (("already in table", with_count), ("added", without_count)):
             pool = links[(links["platform"] == platform) & (links["decision"] == decision)]
             rows = pool.to_dict("records")
             random_generator.shuffle(rows)
             chosen.extend(rows[:how_many])
+    for candidate_id, url in EXTRA_ACCOUNTS:
+        chosen.extend(links[(links["candidate_id"] == candidate_id) & (links["url"] == url)].to_dict("records"))
     return chosen
 
 
@@ -304,7 +346,7 @@ def main():
     for account in accounts:
         handle = handle_from_url(account["url"])
         for entry in METHODS:
-            if entry["platform"] == account["platform"]:
+            if entry["platform"] == account["platform"] and entry.get("enabled", True):
                 jobs.append({"account": account, "handle": handle, **entry})
     # Take one job from each platform in turn, so the same-host wait overlaps with other
     # platforms' requests (order only; changes no result).

@@ -5,7 +5,7 @@ PYTHON ?= conda run --no-capture-output -n election-candidate-info python
 # Newest CBOE filing report on disk (file names carry a timestamp, so sort = newest last).
 FILING_REPORT = $(shell ls data/raw/cboe/documents/*/"Candidate Filing Report_"*.pdf 2>/dev/null | sort | tail -1)
 
-.PHONY: all candidates fetch-cboe parse-candidates compare-lists ballot-status fetch-isbe committee-proposals isbe-review isbe-rule candidate-committee finance donor-mix display-tables fetch-ward-offices incumbents candidate-links social-accounts fetch-endorsements endorsements dashboard
+.PHONY: all candidates fetch-cboe parse-candidates compare-lists ballot-status fetch-isbe committee-proposals isbe-review isbe-rule candidate-committee finance donor-mix display-tables fetch-ward-offices incumbents candidate-links social-accounts follower-counts fetch-endorsements endorsements dashboard
 
 all: candidates fetch-isbe committee-proposals isbe-review isbe-rule candidate-committee finance donor-mix display-tables incumbents candidate-links dashboard
 
@@ -75,6 +75,11 @@ candidate-links:
 # Run after each Google-pass chunk, then `make dashboard`.
 social-accounts:
 	$(PYTHON) scripts/extract_social_from_google.py
+
+# Follower counts for recorded social links (Bluesky API; TikTok, X, Facebook plugin, YouTube pages), one polite
+# request at a time (~1.5 h, mostly Facebook). Not in `all`. Needs data/tables/social_recorded_links_added.csv (make dashboard).
+follower-counts:
+	$(PYTHON) scripts/social_counts/fetch_follower_counts.py
 
 dashboard: display-tables incumbents candidate-links
 	$(PYTHON) scripts/build_dashboard.py

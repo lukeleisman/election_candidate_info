@@ -310,6 +310,20 @@ SOCIAL_TABLE_ORDER = "largest"  # user, 2026-11-13: order by following
 #   Left out and printed: platforms not in SOCIAL_PLATFORM_ORDER (e.g. Meetup), and URLs that are not a profile page
 #       (a post, a 'share' link, LinkedIn /posts/...), by the extractor's ADDRESS_LINE_RULES (social_url_account_key).
 SOCIAL_ADD_RECORDED_LINKS = True
+
+# Fetched follower counts (scripts/social_counts/fetch_follower_counts.py, `make follower-counts`; user 2026-11-15:
+# show BOTH Google's count and the fetched one).
+#   FOLLOWER_COUNTS_HISTORY_PATH  every fetch run's rows; the latest "ok" row per candidate + platform + account key
+#       (social_url_account_key of the URL) is attached to the account with the same key. Accounts with no URL
+#       (Google showed only a display name) get no fetched count.
+#   SOCIAL_SIZE_COUNT  which number decides "largest" (Summary's largest single account, social table order, order
+#       within a cell). User picked larger_of_both (2026-11-15). Options
+#         "fetched_else_google"  the fetched count when there is one (newer, mostly exact), else Google's floor
+#         "google_else_fetched"  Google's floor when there is one, else the fetched count
+#         "larger_of_both"       the larger of the two
+SOCIAL_SHOW_FETCHED_COUNTS = True
+FOLLOWER_COUNTS_HISTORY_PATH = REPO_ROOT / "data" / "social_counts" / "follower_counts_history.csv"
+SOCIAL_SIZE_COUNT = "larger_of_both"  # user, 2026-11-15
 SOCIAL_RECORDED_LINKS_REVIEW_PATH = TABLES_DIR / "social_recorded_links_added.csv"
 
 # Money chart (user, 2026-11-13: Raised and Cash on the same plot, ordered by Raised). One shared
@@ -367,8 +381,8 @@ CANDIDATE_COLUMNS = [
 #       labeled as an office site. (user: campaign, else office)
 #   Cash / Raised: cash_on_hand and the window's Raised field from display_candidates.csv: <window>_raised_plus_a1_gifts
 #       for WINDOWS_PLUS_A1_GIFTS, else <window>_raised (user, 2026-11-15). The money chart uses the same field.
-#   Largest following: the single account with the largest Google follower floor (user: "just do the largest
-#       single account"; not a sum). Accounts with a hand flag (social_account_flags.csv) are skipped when
+#   Largest following: the single account with the largest size_count (SOCIAL_SIZE_COUNT: since 2026-11-15 the
+#       larger of the fetched count and Google's floor) (user: "just do the largest single account"; not a sum). Accounts with a hand flag (social_account_flags.csv) are skipped when
 #       SUMMARY_SKIP_FLAGGED_ACCOUNTS is True; accounts with no count are never picked.
 #   Endorsements: number of rows with endorsement_kind "endorsement" shown on the page; the same count as the
 #       Endorsements table (so it includes rows not checked yet and name matches not confirmed, per
@@ -569,8 +583,43 @@ def social_accounts(links):
                                   for _, row in social.iterrows() for handle in (row["account_label"], row["title_handle"])}
     print(f"social: flags {len(flag_text)}, matched {(social['flag'] != '').sum()}"
           + (f"; NOT matched: {sorted(unmatched)}" if unmatched else ""))
+    social = attach_fetched_counts(social)
     return social[["candidate_id", "found_as", "platform", "account_label", "count_shown", "count_floor", "count_unit",
-                   "handle_in_recorded_links", "url", "url_basis", "flag", "retrieved"]]
+                   "handle_in_recorded_links", "url", "url_basis", "flag", "retrieved",
+                   "fetched_count_text", "fetched_count_value", "fetched_precision", "fetched_on", "fetched_method", "size_count"]]
+
+
+def attach_fetched_counts(social):
+    """Add the latest fetched count per account (FOLLOWER_COUNTS_HISTORY_PATH) and size_count (SOCIAL_SIZE_COUNT)."""
+    fetched_columns = ["fetched_count_text", "fetched_count_value", "fetched_precision", "fetched_on", "fetched_method"]
+    social = social.assign(**{column: "" for column in fetched_columns})
+    if SOCIAL_SHOW_FETCHED_COUNTS and FOLLOWER_COUNTS_HISTORY_PATH.exists():
+        history = pd.read_csv(FOLLOWER_COUNTS_HISTORY_PATH, dtype=str, keep_default_na=False)
+        history = history[history["status"] == "ok"].sort_values("fetched_at")
+        latest = {}
+        for row in history.itertuples():  # later runs overwrite earlier ones
+            key = social_url_account_key(row.url, row.platform)[0]
+            if key:
+                latest[(row.candidate_id, row.platform, key)] = row
+        def fetched_for(row):
+            key = social_url_account_key(row["url"], row["platform"])[0] if row["url"] else ""
+            hit = latest.get((row["candidate_id"], row["platform"], key)) if key else None
+            if hit is None:
+                return pd.Series({column: "" for column in fetched_columns})
+            return pd.Series({"fetched_count_text": hit.count_text, "fetched_count_value": hit.count_value,
+                              "fetched_precision": hit.count_precision, "fetched_on": hit.fetched_at[:10],
+                              "fetched_method": hit.method})
+        social[fetched_columns] = social.apply(fetched_for, axis=1)
+        print(f"social: fetched counts attached to {(social['fetched_count_value'] != '').sum()} of {len(social)} accounts "
+              f"({len(latest)} accounts with an ok fetch in {FOLLOWER_COUNTS_HISTORY_PATH.relative_to(REPO_ROOT)})")
+    google = pd.to_numeric(social["count_floor"], errors="coerce")
+    fetched = pd.to_numeric(social["fetched_count_value"], errors="coerce")
+    size_rules = {
+        "fetched_else_google": fetched.fillna(google),
+        "google_else_fetched": google.fillna(fetched),
+        "larger_of_both": pd.concat([google, fetched], axis=1).max(axis=1),
+    }
+    return social.assign(size_count=size_rules[SOCIAL_SIZE_COUNT])
 
 
 def between_markers(text, markers):

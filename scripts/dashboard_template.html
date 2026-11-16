@@ -185,9 +185,8 @@
         receipts. Loans and in-kind gifts are not counted. For the "since" periods it includes $1,000+ gifts reported
         after <span class="reports-through"></span>; smaller gifts after that date won't be reported until the next
         quarterly report. See <a class="section-link" href="#section-money-table">Money</a>.</li>
-      <li><b>Largest following</b>: the candidate's single largest social media account in Google's results, with
-        Google's rounded follower count on the date searched. Not checked by hand; accounts we flagged as possibly
-        someone else are skipped.</li>
+      <li><b>Largest following</b>: the candidate's single largest social media account, with its rounded follower
+        count. Not checked by hand; accounts we flagged as possibly someone else are skipped.</li>
       <li><b>Endorsements</b>: endorsements listed in the <a class="section-link" href="#section-endorsements">Endorsements</a>
         section, including ones not yet checked by hand. Public support that isn't an endorsement is not counted.
         Endorsements are added by automated web search and by hand and will keep being updated, but this is likely
@@ -249,18 +248,18 @@
 
   <section id="section-social">
     <h2>Social media: follower estimates</h2>
-    <!-- Text approved by the user 2026-11-15 (revised for recorded links the same day). -->
+    <!-- Text approved by the user 2026-11-15 (revised for recorded links the same day; counts sentence revised for
+         fetched counts later that day, no source named: user). -->
     <p class="sub">Social media accounts from Google's results and from links we recorded (candidate websites,
-      readers). Follower counts are Google's rounded figures ("2.2K+" = at least 2,200) on the date searched; "no count"
-      means Google showed none. Most accounts are not checked by hand: one may be a campaign, office or personal account,
+      readers). Follower counts are rounded ("2.2K+" = at least 2,200); "no count" means we found none. Most accounts are not checked by hand: one may be a campaign, office or personal account,
       or someone else with the same name. Rows are ordered by each candidate's largest account. Hover a link to see where
       it came from.
       <span id="social-progress"></span></p>
     <details class="columns">
       <summary>What the columns mean</summary>
       <ul>
-      <li><b>Platform columns</b> (Facebook, Instagram, ...): each account, with Google's rounded follower count on the
-        date searched, or "no count". An account can
+      <li><b>Platform columns</b> (Facebook, Instagram, ...): each account, with its rounded follower count, or
+        "no count". An account can
         appear twice if Google showed two different counts. Tags: "posts in results; checked by hand" = found posting in
         the results and confirmed by hand; any other tag is a note from our review (e.g. "May not be this candidate").</li>
       <li><b>Searched</b>: date of the latest Google search for this candidate (some were searched twice). "Not searched
@@ -690,12 +689,12 @@ function summaryWebsite(row) {
   }
   return ["—"];
 }
-// Largest following: the one account with the largest count floor (no adding across accounts).
+// Largest following: the one account with the largest size_count (SOCIAL_SIZE_COUNT in build_dashboard.py; no adding across accounts).
 function summaryLargestAccount(row) {
-  const counted = socialAccounts(row.candidate_id).filter((a) => toNumber(a.count_floor) !== null
+  const counted = socialAccounts(row.candidate_id).filter((a) => toNumber(a.size_count) !== null
     && !(DATA.summary.skip_flagged_accounts && a.flag));
   if (!counted.length) return [element("span", { className: "muted", text: DATA.social_searched[row.candidate_id] ? "None shown" : "Not searched yet" })];
-  const largest = counted.reduce((best, a) => (Number(a.count_floor) > Number(best.count_floor) ? a : best));
+  const largest = counted.reduce((best, a) => (Number(a.size_count) > Number(best.size_count) ? a : best));
   return [accountLine(largest, true)];
 }
 function drawSummaryTable() {
@@ -768,6 +767,29 @@ function drawMoneyChart() {
 function socialAccounts(candidateId) {
   return DATA.social.filter((account) => account.candidate_id === candidateId);
 }
+// Follower count for one account (user, 2026-11-15): ONE number, no source shown, no small print.
+//   The number is size_count (SOCIAL_SIZE_COUNT in build_dashboard.py; "larger_of_both": the larger of the fetched
+//   count and Google's floor), rounded by roundedCount(). A "+" is added when that number is Google's floor (a lower
+//   bound: Google showed "2.2K+"). Neither count: "no count".
+// Rounding (user, 2026-11-15: 2 or 3 significant figures, as before):
+//   below 1,000 as is (47); below 10,000 one decimal in K (5,822 -> 5.8K; 1,000 -> 1K); below 1,000,000 whole K
+//   (37,743 -> 38K; 125,321 -> 125K); millions the same way in M (1.2M, 12M).
+function roundedCount(value) {
+  const trim = (number) => number.toFixed(1).replace(/\.0$/, "");
+  if (value < 1000) return String(Math.round(value));
+  if (value < 9950) return trim(value / 1000) + "K";
+  if (value < 999500) return Math.round(value / 1000) + "K";
+  if (value < 9950000) return trim(value / 1e6) + "M";
+  return Math.round(value / 1e6) + "M";
+}
+function accountCounts(account) {
+  const shown = toNumber(account.size_count);
+  if (shown === null) return [element("span", { className: "count muted-count", text: "no count" })];
+  const googleFloor = toNumber(account.count_floor);
+  const fetched = toNumber(account.fetched_count_value);
+  const isGoogleFloor = googleFloor !== null && (fetched === null || googleFloor >= fetched);
+  return [element("span", { className: "count", text: roundedCount(shown) + (isGoogleFloor ? "+" : "") })];
+}
 // One account: "2.2K+ followers  handle", the handle linked when build_dashboard.py matched a URL.
 function accountLine(account, withPlatform) {
   const label = account.url
@@ -778,13 +800,13 @@ function accountLine(account, withPlatform) {
     : account.account_label;
   // Address-line accounts have no follower count ("no count" shown instead).
   // Post-author rows (hand-checked) have no retrieval date: the hover uses the candidate's Searched date instead.
-  // Recorded links (SOCIAL_ADD_RECORDED_LINKS) were not in Google's account boxes, so they have no count yet.
-  const accountHover = account.found_as === "recorded_link" ? "A link we recorded; no follower count yet"
-    : account.retrieved ? "Shown by Google " + account.retrieved.slice(0, 10)
+  // Recorded links (SOCIAL_ADD_RECORDED_LINKS) were not in Google's account boxes; their count, if any, is fetched.
+  // Hover says where the ACCOUNT was found, not where the count came from (user, 2026-11-15).
+  const accountHover = account.found_as === "recorded_link" ? "A link we recorded"
+    : account.retrieved ? "Account shown by Google " + account.retrieved.slice(0, 10)
     : "Found in Google's results searched " + (DATA.social_searched[account.candidate_id] || "(date unknown)");
   return element("span", { className: "account", title: accountHover }, [
-    account.count_shown ? element("span", { className: "count", text: account.count_shown })
-      : element("span", { className: "count muted-count", text: "no count" }),
+    ...accountCounts(account),
     ...(withPlatform ? [account.platform + ": "] : []), label,
     // Hand flag (data/endorsements/social_account_flags.csv), e.g. "May not be this candidate".
     ...(account.flag ? [" ", element("span", { className: "flag warn", text: account.flag })] : []),
@@ -798,7 +820,7 @@ function socialStatusText(candidateId) {
 // Race table: a row per candidate, a column per platform that appears in this race.
 function drawSocialTable() {
   const rows = raceCandidates().filter((row) => !row.duplicate_filing_of);
-  const largestAccount = (row) => Math.max(-1, ...socialAccounts(row.candidate_id).map((a) => Number(a.count_floor)));
+  const largestAccount = (row) => Math.max(-1, ...socialAccounts(row.candidate_id).map((a) => toNumber(a.size_count) ?? -1));
   rows.sort(DATA.social_table_order === "largest"
     ? (a, b) => largestAccount(b) - largestAccount(a) : (a, b) => a.candidate_id.localeCompare(b.candidate_id));
   const present = new Set(rows.flatMap((row) => socialAccounts(row.candidate_id).map((a) => a.platform)));
@@ -818,7 +840,7 @@ function drawSocialTable() {
     }
     return element("tr", {}, [nameCell,
       ...platforms.map((platform) => {
-        const cell = accounts.filter((a) => a.platform === platform).sort((a, b) => (Number(b.count_floor) || -1) - (Number(a.count_floor) || -1));
+        const cell = accounts.filter((a) => a.platform === platform).sort((a, b) => (toNumber(b.size_count) ?? -1) - (toNumber(a.size_count) ?? -1));
         return element("td", { className: "left" }, cell.length ? cell.map((a) => accountLine(a, false)) : ["—"]);
       }),
       element("td", { className: "left date", text: searched || "—" })]);
@@ -884,12 +906,12 @@ function endorsementBlock(row) {
 
 // Candidate section block: every account for this candidate, largest first.
 function socialBlock(row) {
-  const accounts = socialAccounts(row.candidate_id).sort((a, b) => (Number(b.count_floor) || -1) - (Number(a.count_floor) || -1));
+  const accounts = socialAccounts(row.candidate_id).sort((a, b) => (toNumber(b.size_count) ?? -1) - (toNumber(a.size_count) ?? -1));
   if (!accounts.length) return [element("p", { className: "empty", text: socialStatusText(row.candidate_id) })];
   // Accounts with no address (Google showed only a name) send the name shown instead of a link.
   return [element("ul", {}, accounts.map((a) => element("li", {}, [accountLine(a, true),
       ...(ITEM_REPORT_PLACES.social ? itemReportLinks(row, a.platform + " account" + (a.url ? "" : ' "' + a.account_label + '"'), a.url) : [])]))),
-    element("p", { className: "link-meta", text: "Google's rounded counts on the date searched; most not checked by hand." })];
+    element("p", { className: "link-meta", text: "Rounded follower counts; most accounts not checked by hand." })];
 }
 
 function candidateColumns() {
