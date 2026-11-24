@@ -1,0 +1,254 @@
+office,ballot_name,status,ballot_position
+Mayor,JOHN KELLY,Challenged,1
+Mayor,ALEXI GIANNOULIAS,Challenged,2
+Mayor,MATT BREWER,Candidate,3
+Mayor,WILLIE L. WILSON,Candidate,4
+Mayor,MIKE QUIGLEY,Challenged,5
+Mayor,BRANDON JOHNSON,Challenged,6
+Mayor,SUSANA A. MENDOZA,Challenged,7
+Mayor,LISA NEE,Challenged,8
+Mayor,WILLIAM J. QUINLAN,Challenged,9
+Mayor,JOHN KITOVER,Challenged,10
+Mayor,MARIA PAPPAS,Challenged,11
+Mayor,JOE HOLBERG,Candidate,12
+Mayor,ZOE X. MA,Challenged,13
+Mayor,DANIELLE CARTER-WALTERS,Challenged,14
+Mayor,GEORGE A. CARDENAS,Candidate,15
+Mayor,"JESSICA ""JESSE"" MARONTO",Challenged,16
+Clerk,ANNA M. VALENCIA,Candidate,1
+Treasurer,MELISSA CONYEARS-ERVIN,Candidate,1
+Treasurer,BRUCE LEON,Candidate,2
+"Alderperson, 1st Ward",DANIEL LA SPATA,Candidate,1
+"Alderperson, 1st Ward",LAURA YEPEZ,Candidate,2
+"Alderperson, 1st Ward",BILL THANOUKOS,Candidate,3
+"Alderperson, 2nd Ward",BRIAN HOPKINS,Challenged,1
+"Alderperson, 2nd Ward",RICHARD OMONIYI-SHOYOOLA,Challenged,2
+"Alderperson, 3rd Ward",PAT DOWELL,Candidate,1
+"Alderperson, 3rd Ward",RAHEEM UQDAH,Candidate,2
+"Alderperson, 3rd Ward",QUSHONA HARRIS,Challenged,3
+"Alderperson, 4th Ward",LAMONT J. ROBINSON,Candidate,1
+"Alderperson, 5th Ward",DESMON C. YANCY,Challenged,1
+"Alderperson, 5th Ward",RYAN GREENLAW,Challenged,2
+"Alderperson, 6th Ward",ALLYSON RENEE SCRUTCHENS,Candidate,1
+"Alderperson, 6th Ward",CURTISS. S. LLONG BEY,Challenged,2
+"Alderperson, 6th Ward",WILLIAM E. HALL,Challenged,3
+"Alderperson, 7th Ward",GREGORY I. MITCHELL,Challenged,1
+"Alderperson, 7th Ward",NATHANIEL A. PENDLETON,Challenged,2
+"Alderperson, 7th Ward",SHEILA GUNN-WARD,Challenged,3
+"Alderperson, 7th Ward",RADYN FRANC,Challenged,4
+"Alderperson, 7th Ward",SAMUEL C. SPARKS,Challenged,5
+"Alderperson, 7th Ward",CHER PHILLIPS,Challenged,6
+"Alderperson, 8th Ward",MICHELLE A. HARRIS,Candidate,1
+"Alderperson, 8th Ward",YOLONDA MACK,Challenged,2
+"Alderperson, 8th Ward",JIMMY DARNELL JONES AKA JAYE JONES,Challenged,3
+"Alderperson, 8th Ward",RUTHIE MOORE,Candidate,4
+"Alderperson, 8th Ward",BRITTNEY BEE GAULT,Candidate,5
+"Alderperson, 9th Ward",ANTHONY A. BEALE,Challenged,1
+"Alderperson, 9th Ward",KENNY WILLIAMS,Candidate,2
+"Alderperson, 9th Ward",CECELIA Z. HARRISON,Challenged,3
+"Alderperson, 10th Ward",PETER CHICO,Candidate,1
+"Alderperson, 11th Ward",NICOLE LEE,Candidate,1
+"Alderperson, 12th Ward",JULIA M. RAMIREZ,Candidate,1
+"Alderperson, 12th Ward",CLAUDIA L. ZUNO,Candidate,2
+"Alderperson, 12th Ward",CARLOS SANCHEZ,Challenged,3
+"Alderperson, 13th Ward",SKYLER CEPEK,Challenged,1
+"Alderperson, 13th Ward",AL CACCIOTTOLO,Candidate,2
+"Alderperson, 13th Ward",KEITH M. JUDGE,Challenged,3
+"Alderperson, 14th Ward",JEYLU B. GUTIERREZ,Candidate,1
+"Alderperson, 14th Ward",RAUL REYES,Candidate,2
+"Alderperson, 15th Ward",RAYMOND A. LOPEZ,Candidate,1
+"Alderperson, 16th Ward",SHENINA FLETCHER,Challenged,1
+"Alderperson, 16th Ward",STEPHANIE D. COLEMAN,Candidate,2
+"Alderperson, 16th Ward",CHERYL BLACKMOND,Challenged,3
+"Alderperson, 16th Ward",EDDIE JOHNSON III,Challenged,4
+"Alderperson, 17th Ward",DAVID H. MOORE,Candidate,1
+"Alderperson, 17th Ward","TIMOTHY ""TIM"" THOMAS, JR.",Challenged,2
+"Alderperson, 17th Ward",RAYNETTA GREENLEAF,Challenged,3
+"Alderperson, 17th Ward",THEODORE FULTON THOMPSON,Challenged,4
+"Alderperson, 17th Ward",JAMES 'BALDIE' STEWARD,Challenged,5
+"Alderperson, 18th Ward",DERRICK G. CURTIS,Candidate,1
+"Alderperson, 18th Ward",JOSHUA BARKSDALE,Challenged,2
+"Alderperson, 18th Ward","M. ARTEMIZA ""TAMMY"" CHAVEZ",Challenged,3
+"Alderperson, 18th Ward",GLENFORD FLOWERS JR.,Challenged,4
+"Alderperson, 18th Ward",NICOLE ALLISON,Challenged,5
+"Alderperson, 18th Ward",TONI C. GALLOWAY,Challenged,6
+"Alderperson, 19th Ward",ERIN HEALY ROSS,Candidate,1
+"Alderperson, 19th Ward",JILLIAN ROBINSON,Challenged,2
+"Alderperson, 19th Ward",BOB MURPHY,Candidate,3
+"Alderperson, 20th Ward",JEANETTE B TAYLOR,Candidate,1
+"Alderperson, 20th Ward",TSHEY GEBRE,Challenged,2
+"Alderperson, 20th Ward",ANDRE SMITH,Challenged,3
+"Alderperson, 20th Ward",JENNIFER O. MADDOX,Challenged,4
+"Alderperson, 20th Ward",JARQUETTA EGESTON,Candidate,5
+"Alderperson, 21st Ward",RONNIE L. MOSLEY,Candidate,1
+"Alderperson, 22nd Ward","ELIANNE ""ELY"" BAHENA",Candidate,1
+"Alderperson, 23rd Ward",LEONARDO ROJAS-BANDA,Candidate,1
+"Alderperson, 23rd Ward",SILVANA TABARES,Candidate,2
+"Alderperson, 24th Ward",MONIQUE L. SCOTT,Challenged,1
+"Alderperson, 24th Ward",JAMESENNA ANDERSON,Challenged,2
+"Alderperson, 24th Ward",KIISHA SMITH,Challenged,3
+"Alderperson, 25th Ward","LEONARDO ""LEO"" QUINTERO",Candidate,1
+"Alderperson, 25th Ward",AIDA FLORES,Candidate,2
+"Alderperson, 25th Ward",IAN WATKINS,Challenged,3
+"Alderperson, 25th Ward",CHULA C. ORTIZ,Challenged,4
+"Alderperson, 25th Ward",MIGUEL CHACON,Candidate,5
+"Alderperson, 25th Ward",BYRON SIGCHO-LOPEZ,Candidate,6
+"Alderperson, 25th Ward",NUBIA BATISTA WILLMAN,Candidate,7
+"Alderperson, 26th Ward","JESSICA ""JESSIE"" FUENTES",Candidate,1
+"Alderperson, 26th Ward",ANGEE GONZALEZ RODRIGUEZ,Challenged,2
+"Alderperson, 27th Ward","WALTER ""RED"" BURNETT",Candidate,1
+"Alderperson, 27th Ward",MARY EASON,Challenged,2
+"Alderperson, 27th Ward",NATE CORNELL,Challenged,3
+"Alderperson, 27th Ward",TYHESHA C. HAYNES,Challenged,4
+"Alderperson, 27th Ward",DAN OLAS,Challenged,5
+"Alderperson, 28th Ward",JASON C. ERVIN,Candidate,1
+"Alderperson, 28th Ward",PRECIOUS JOY FRASIER,Challenged,2
+"Alderperson, 29th Ward",CHRIS TALIAFERRO,Candidate,1
+"Alderperson, 29th Ward",JAMES MORGAN,Challenged,2
+"Alderperson, 29th Ward",YVETTE L. MCKINNIE,Challenged,3
+"Alderperson, 30th Ward",RUTH CRUZ,Candidate,1
+"Alderperson, 30th Ward","JURITZY ""JUDY"" VELEZ",Candidate,2
+"Alderperson, 31st Ward",FELIX CARDONA JR.,Candidate,1
+"Alderperson, 31st Ward",ALONSO ZARAGOZA,Challenged,2
+"Alderperson, 31st Ward",RAMONA T. BONILLA-ANAIEL,Challenged,3
+"Alderperson, 32nd Ward",SCOTT WAGUESPACK,Candidate,1
+"Alderperson, 32nd Ward",PATRICK GILSENAN,Candidate,2
+"Alderperson, 32nd Ward",JONATHAN STEVANOVICH,Challenged,3
+"Alderperson, 32nd Ward",DON RILEY,Challenged,4
+"Alderperson, 33rd Ward",ROSSANA RODRÍGUEZ SÁNCHEZ,Candidate,1
+"Alderperson, 33rd Ward",MARIA GORDILS,Candidate,2
+"Alderperson, 33rd Ward",MICHAEL MOGAN,Challenged,3
+"Alderperson, 34th Ward",BILL CONWAY,Candidate,1
+"Alderperson, 34th Ward",NATHAN BEAN,Challenged,2
+"Alderperson, 35th Ward",DANIEL TOBON,Candidate,1
+"Alderperson, 35th Ward",ANTHONY JOEL QUEZADA,Candidate,2
+"Alderperson, 35th Ward",OMARI BEKTEMBA,Candidate,3
+"Alderperson, 36th Ward","GILBERT ""GIL"" VILLEGAS",Candidate,1
+"Alderperson, 36th Ward",LUIS M. GOMEZ JR,Challenged,2
+"Alderperson, 37th Ward",EMMA M. MITTS,Challenged,1
+"Alderperson, 37th Ward",CARMELITA P. EARLS,Challenged,2
+"Alderperson, 37th Ward",MICHAEL PATRICK MURPHY,Challenged,3
+"Alderperson, 37th Ward",KOBEY LOFTON,Challenged,4
+"Alderperson, 37th Ward",HOWARD RAY,Challenged,5
+"Alderperson, 38th Ward",AGNIESZKA KOZIELSKA,Candidate,1
+"Alderperson, 38th Ward",NICHOLAS SPOSATO,Candidate,2
+"Alderperson, 39th Ward","SAMANTHA ""SAM"" NUGENT",Candidate,1
+"Alderperson, 40th Ward",ANDRE VASQUEZ,Candidate,1
+"Alderperson, 41st Ward",ANTHONY V. NAPOLITANO,Candidate,1
+"Alderperson, 42nd Ward",BRENDAN REILLY,Candidate,1
+"Alderperson, 42nd Ward",DEBORAH LANE,Challenged,2
+"Alderperson, 43rd Ward",TIMMY KNUDSEN,Candidate,1
+"Alderperson, 43rd Ward",MICHAEL KEATING,Challenged,2
+"Alderperson, 44th Ward",BENNETT R. LAWSON,Candidate,1
+"Alderperson, 44th Ward","DENNIS ""DJ"" DORAN",Candidate,2
+"Alderperson, 44th Ward",KALEN LUCIANO,Candidate,3
+"Alderperson, 45th Ward","JAMES ""JIM"" GARDINER",Candidate,1
+"Alderperson, 45th Ward",S GRONKIEWICZ-DORAN,Candidate,2
+"Alderperson, 45th Ward",LEAH CUNNINGHAM POUW,Candidate,3
+"Alderperson, 46th Ward",ABDALLAH J. ALKODAH,Candidate,1
+"Alderperson, 46th Ward",ANGELA CLAY,Challenged,2
+"Alderperson, 46th Ward",ONITA PATRICIAS ANN MACK,Candidate,3
+"Alderperson, 46th Ward",NICOLE A. EDELMAN,Candidate,4
+"Alderperson, 47th Ward",MATT MARTIN,Candidate,1
+"Alderperson, 48th Ward",LENI MANAA-HOPPENWORTH,Candidate,1
+"Alderperson, 48th Ward",TROY MCMILLAN,Candidate,2
+"Alderperson, 48th Ward",JUSTIN CARMIEN,Candidate,3
+"Alderperson, 49th Ward",MARIA HADDEN,Candidate,1
+"Alderperson, 49th Ward","WILLIAM ""BILL"" MORTON",Candidate,2
+"Alderperson, 49th Ward",PETER NORMAND,Candidate,3
+"Alderperson, 49th Ward",DONGBO MARK SU,Candidate,4
+"Alderperson, 50th Ward",DEBRA SILVERSTEIN,Candidate,1
+"Council Member, Chicago Police Department 1st District",ADRIENNE JOHNSON,Candidate,1
+"Council Member, Chicago Police Department 1st District",SARAH KAMMERER,Candidate,2
+"Council Member, Chicago Police Department 1st District",PAUL JACOBS,Candidate,3
+"Council Member, Chicago Police Department 1st District",LESLEY SKOUSEN,Candidate,4
+"Council Member, Chicago Police Department 2nd District",EPHRAIM LEE,Candidate,1
+"Council Member, Chicago Police Department 2nd District",DARTAVOUS DORSEY,Candidate,2
+"Council Member, Chicago Police Department 2nd District",ALEXANDER PEREZ,Candidate,3
+"Council Member, Chicago Police Department 2nd District",COSTON PLUMMER,Candidate,4
+"Council Member, Chicago Police Department 2nd District",SANDIE A. NORMAN,Candidate,5
+"Council Member, Chicago Police Department 3rd District",KENISHA PLUMMER,Challenged,1
+"Council Member, Chicago Police Department 3rd District",KENYA FRANKLIN,Candidate,2
+"Council Member, Chicago Police Department 3rd District",ANTHONY MICHAEL WILLIAMS,Candidate,3
+"Council Member, Chicago Police Department 3rd District",CRAIG T. CARRINGTON,Candidate,4
+"Council Member, Chicago Police Department 4th District",BRENDA D. WATERS,Candidate,1
+"Council Member, Chicago Police Department 4th District",GLORIA JENKINS,Candidate,2
+"Council Member, Chicago Police Department 4th District",LOVIE BERNARD,Candidate,3
+"Council Member, Chicago Police Department 5th District",PAULINE W. SYLVAIN,Candidate,1
+"Council Member, Chicago Police Department 5th District",PONCHITA MOORE,Candidate,2
+"Council Member, Chicago Police Department 6th District",BRIAN K. METCALF,Candidate,1
+"Council Member, Chicago Police Department 6th District",AISHA HUMPHRIES,Challenged,2
+"Council Member, Chicago Police Department 6th District",ROBERT E. PINCHAM JR.,Candidate,3
+"Council Member, Chicago Police Department 6th District",DAVID BOYKIN,Challenged,4
+"Council Member, Chicago Police Department 6th District",CIERA WHITAKER,Candidate,5
+"Council Member, Chicago Police Department 7th District",TERESA R. CHANDLER,Candidate,1
+"Council Member, Chicago Police Department 7th District",JOSEPH G. WILLIAMS,Candidate,2
+"Council Member, Chicago Police Department 7th District",DION MCGILL,Candidate,3
+"Council Member, Chicago Police Department 7th District",ROBERT WALKER,Candidate,4
+"Council Member, Chicago Police Department 7th District",PATRICIA WILLIAMS,Candidate,5
+"Council Member, Chicago Police Department 8th District",MARK HAMBERLIN,Candidate,1
+"Council Member, Chicago Police Department 8th District",JASON HUFF,Candidate,2
+"Council Member, Chicago Police Department 8th District","ROSAURA ""RO"" BOCANEGRA",Candidate,3
+"Council Member, Chicago Police Department 9th District",MAXIMILIAN ESTERHAMMER-FIC,Candidate,1
+"Council Member, Chicago Police Department 9th District",EVELYN AGUAYO,Candidate,2
+"Council Member, Chicago Police Department 9th District",JENNIFER ALVARES,Candidate,3
+"Council Member, Chicago Police Department 10th District",ROBBIE JOHNSON,Candidate,1
+"Council Member, Chicago Police Department 10th District",ALEXIA LUNA,Candidate,2
+"Council Member, Chicago Police Department 10th District",KEN ALVARADO,Candidate,3
+"Council Member, Chicago Police Department 10th District",CRYSTAL REDDITT,Candidate,4
+"Council Member, Chicago Police Department 10th District",MANUEL ANDRÉS BELTRÁN,Candidate,5
+"Council Member, Chicago Police Department 10th District",KIISHA SMITH,Candidate,6
+"Council Member, Chicago Police Department 11th District",JOCELYN A. WOODARDS,Candidate,1
+"Council Member, Chicago Police Department 11th District","BRYAN J. RAMSON, JR.",Candidate,2
+"Council Member, Chicago Police Department 11th District",ALEES EDWARDS,Candidate,3
+"Council Member, Chicago Police Department 11th District",EDWARD WARD,Challenged,4
+"Council Member, Chicago Police Department 12th District","GUADALUPE ""LUPE"" PUGA",Candidate,1
+"Council Member, Chicago Police Department 12th District",ROLANDO CABRERA,Candidate,2
+"Council Member, Chicago Police Department 12th District",ANDRES GUZMAN,Candidate,3
+"Council Member, Chicago Police Department 14th District",CHRISTOPHER M. LAURENT,Candidate,1
+"Council Member, Chicago Police Department 14th District",STEVE JENSEN,Candidate,2
+"Council Member, Chicago Police Department 14th District",HECTOR VILLAFUERTE,Candidate,3
+"Council Member, Chicago Police Department 14th District",NIA-BLESSING S. ARMSTRONG,Candidate,4
+"Council Member, Chicago Police Department 14th District",DAVID CANARIO,Candidate,5
+"Council Member, Chicago Police Department 14th District",SIOBHAN PETERSON-QUINN,Candidate,6
+"Council Member, Chicago Police Department 15th District",REBECCA COOK,Candidate,1
+"Council Member, Chicago Police Department 15th District",AREWA NAJM EKUA,Candidate,2
+"Council Member, Chicago Police Department 15th District",DEONDRE' RUTUES (DR. DRE'),Candidate,3
+"Council Member, Chicago Police Department 15th District","ODDIS ""OJ"" JOHNSON",Candidate,4
+"Council Member, Chicago Police Department 16th District",COLLEEN MURPHY,Candidate,1
+"Council Member, Chicago Police Department 16th District",GORAN DAVIDOVAC,Candidate,2
+"Council Member, Chicago Police Department 16th District",AMELIA KABAT,Candidate,3
+"Council Member, Chicago Police Department 16th District","WILLIAM ""BRIAN"" WARDMAN",Challenged,4
+"Council Member, Chicago Police Department 17th District","ELIZABETH ""BETH"" ROCHFORD",Candidate,1
+"Council Member, Chicago Police Department 17th District",LISA LEVY,Candidate,2
+"Council Member, Chicago Police Department 17th District","PATRICK ""PADDY"" LINDLEY",Candidate,3
+"Council Member, Chicago Police Department 17th District",LINDA ROGEL,Challenged,4
+"Council Member, Chicago Police Department 17th District",JOHN MURPHY,Candidate,5
+"Council Member, Chicago Police Department 17th District",CHRISTINA PILTO,Candidate,6
+"Council Member, Chicago Police Department 18th District",KAREN KANE,Candidate,1
+"Council Member, Chicago Police Department 18th District",BRAD KESSLER,Candidate,2
+"Council Member, Chicago Police Department 18th District",JOE VIETRI,Candidate,3
+"Council Member, Chicago Police Department 18th District",SANDRA BERCOVITZ,Challenged,4
+"Council Member, Chicago Police Department 18th District",SALESHEA M PETERSON,Candidate,5
+"Council Member, Chicago Police Department 19th District",SAM SCHOENBURG,Candidate,1
+"Council Member, Chicago Police Department 19th District",JENNIFER SCHAFFER,Candidate,2
+"Council Member, Chicago Police Department 19th District",RIDGE KNAPP,Candidate,3
+"Council Member, Chicago Police Department 20th District",NASSIR FAULKNER,Candidate,1
+"Council Member, Chicago Police Department 20th District",REBECCA KLING,Candidate,2
+"Council Member, Chicago Police Department 20th District",ERIC SMITH,Candidate,3
+"Council Member, Chicago Police Department 20th District",TIMOTHY KENNEDY,Candidate,4
+"Council Member, Chicago Police Department 22nd District",LEE BIELECKI,Candidate,1
+"Council Member, Chicago Police Department 22nd District",PAUL MULCHRONE,Candidate,2
+"Council Member, Chicago Police Department 22nd District",DOUGLAS CROWLEY,Candidate,3
+"Council Member, Chicago Police Department 22nd District",DONALD J MCAVOY III,Candidate,4
+"Council Member, Chicago Police Department 22nd District",AMERICIA HUCKABEE,Candidate,5
+"Council Member, Chicago Police Department 22nd District",ANDRE PATE,Candidate,6
+"Council Member, Chicago Police Department 24th District",MICHAEL J. HARRINGTON,Candidate,1
+"Council Member, Chicago Police Department 24th District",KEOLA JEAN-JOSEPH,Candidate,2
+"Council Member, Chicago Police Department 24th District",ISHMAEL RUFUS,Candidate,3
+"Council Member, Chicago Police Department 25th District","CARLOS J. VASQUEZ, JR.",Candidate,1
+"Council Member, Chicago Police Department 25th District","GUMERSINDO ""DAVID"" RIVERA",Candidate,2
+"Council Member, Chicago Police Department 25th District",ANGELICA GREEN,Candidate,3
+"Council Member, Chicago Police Department 25th District",GEARY YONKER,Candidate,4
+"Council Member, Chicago Police Department 25th District",ALLYSSA BUJDOSO,Candidate,5
+"Council Member, Chicago Police Department 25th District",PATRICK J. GIBBONS II,Candidate,6

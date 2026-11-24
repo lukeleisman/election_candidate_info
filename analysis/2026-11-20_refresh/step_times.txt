@@ -1,0 +1,10 @@
+committee-proposals exit=0 seconds=9
+isbe-review exit=0 seconds=2
+isbe-rule exit=0 seconds=2
+candidate-committee exit=0 seconds=2
+finance exit=0 seconds=14
+donor-mix exit=0 seconds=19
+display-tables exit=0 seconds=3
+incumbents exit=0 seconds=4
+candidate-links exit=0 seconds=2
+dashboard exit=0 seconds=8

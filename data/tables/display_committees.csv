@@ -1,8 +1,8 @@
 candidate_id,committee_id,committee_name,committee_type,committee_status,counts_toward,link_basis,cash_on_hand,cash_on_hand_report_end,a1_gifts_since_last_report,since_2026_01_01_raised,latest_quarter_raised,since_2023_07_01_raised,sunshine_style_total,sunshine_style_first_report_begin
 ALD-01-001,34616,Neighbors for Daniel La Spata,Candidate,A,candidate_sum,isbe_link,136709.07,2026-09-30,7500.0,93765.0,37783.0,250171.0,835642.6,2018-06-07
-ALD-01-002,41043,Neighbors for Bill,Candidate,A,candidate_sum,isbe_link,262596.34,2026-09-30,3500.0,315465.0,47587.0,315465.0,334865.0,2026-01-16
+ALD-01-002,41043,Neighbors for Bill,Candidate,A,candidate_sum,isbe_link,262596.34,2026-09-30,15500.0,315465.0,47587.0,315465.0,346865.0,2026-01-16
 ALD-01-003,39590,Friends of Laura Yepez,Candidate,A,candidate_sum,isbe_link,139045.75,2026-09-30,9750.0,51995.0,23155.0,102927.84,266750.02999999997,2023-10-15
-ALD-02-001,25653,Hopkins for Chicago,Candidate,A,candidate_sum,isbe_link,544319.7,2026-09-30,25600.0,146458.8,56890.8,802424.56,4164005.14,2013-11-08
+ALD-02-001,25653,Hopkins for Chicago,Candidate,A,candidate_sum,isbe_link,544319.7,2026-09-30,45100.0,146458.8,56890.8,802424.56,4183505.14,2013-11-08
 ALD-02-002,40933,Friends Of Richard Omoniyi-Shoyoola,Candidate,A,candidate_sum,isbe_link,18622.9,2026-09-30,0.0,42320.06,10397.12,51820.06,53413.06,2025-10-24
 ALD-03-001,16892,Citizens for Pat Dowell,Candidate,A,candidate_sum,isbe_link,44927.249,2026-09-30,10000.0,176855.0,57075.0,671287.13,3420265.9,2011-01-01
 ALD-03-001,37200,Chicago Aldermanic Black Caucus PAC,Political Action,A,slate_column,isbe_link,35823.37,2026-09-30,0.0,22750.0,0.0,91518.73,141018.73,2022-02-07
@@ -11,9 +11,9 @@ ALD-03-003,41249,We The People to Elect QuShona Molly Harris for Alderman,Candid
 ALD-04-001,38916,Lamont Robinson For Alderman,Candidate,A,candidate_sum,isbe_link,33092.64,2026-09-30,35000.0,151570.0,57300.0,424155.0,1274383.5,2022-10-30
 ALD-05-001,38925,Friends of Desmon Yancy,Candidate,A,candidate_sum,isbe_link,58195.68,2026-09-30,1000.0,75160.47,7400.0,265523.1,638951.4400000001,2022-11-10
 ALD-05-001,39321,JCUA Votes,Political Action,A,slate_column,isbe_link,0.0,2026-09-30,0.0,5492.83,0.0,21145.17,23541.59,2023-01-01
-ALD-06-001,41290,Friends of Allyson,Candidate,A,candidate_sum,isbe_link,7857.34,2026-09-30,3500.0,20035.0,20035.0,20035.0,26040.0,2026-07-21
+ALD-06-001,41290,Friends of Allyson,Candidate,A,candidate_sum,isbe_link,7857.34,2026-09-30,6000.0,20035.0,20035.0,20035.0,28540.0,2026-07-21
 ALD-06-003,38991,Friends of William Hall,Candidate,A,candidate_sum,isbe_link,921.52,2026-09-30,2500.0,7955.200000000001,1750.64,144517.01,450926.91000000003,2022-12-12
-ALD-07-001,22816,Friends of Greg Mitchell,Candidate,A,candidate_sum,isbe_link,178495.71,2026-09-30,23500.0,13800.0,500.0,87982.94,432254.81,2011-01-01
+ALD-07-001,22816,Friends of Greg Mitchell,Candidate,A,candidate_sum,isbe_link,178495.71,2026-09-30,27000.0,13800.0,500.0,87982.94,435754.81,2011-01-01
 ALD-07-001,32869,7th Ward New Democratic Organization,Political Party,F,candidate_sum,isbe_link,0.0,2018-08-02,0.0,,,,0.0,2017-04-01
 ALD-07-001,37200,Chicago Aldermanic Black Caucus PAC,Political Action,A,slate_column,isbe_link,35823.37,2026-09-30,0.0,22750.0,0.0,91518.73,141018.73,2022-02-07
 ALD-07-002,41236,Friends Of Nate Pendleton,Candidate,A,candidate_sum,isbe_link,569.47,2026-09-30,0.0,1775.0,1675.0,1775.0,1995.0,2026-04-01
@@ -27,7 +27,7 @@ ALD-08-002,37200,Chicago Aldermanic Black Caucus PAC,Political Action,A,slate_co
 ALD-08-003,41311,Friends of JD Jones,Candidate,A,candidate_sum,isbe_link,,,0.0,,,,0.0,
 ALD-08-004,41338,Friends of Ruthie Moore,Candidate,A,candidate_sum,isbe_link,610.74,2026-09-30,0.0,5193.02,5193.02,5193.02,6332.650000000001,2026-08-03
 ALD-08-005,41542,Grassroots for Brittney Gault,Candidate,A,candidate_sum,isbe_link,,,0.0,,,,0.0,
-ALD-09-001,14556,Citizens to Elect Anthony Beale,Candidate,A,candidate_sum,isbe_link,128271.1079,2026-09-30,5000.0,156180.71,27208.62,290473.17,1548635.54,2011-01-01
+ALD-09-001,14556,Citizens to Elect Anthony Beale,Candidate,A,candidate_sum,isbe_link,128271.1079,2026-09-30,7500.0,156180.71,27208.62,290473.17,1551135.54,2011-01-01
 ALD-09-001,24366,9th Ward Democratic Organization,Political Action,F,candidate_sum,isbe_link,0.0,2015-01-15,0.0,,,,426.27,2012-05-08
 ALD-09-001,37200,Chicago Aldermanic Black Caucus PAC,Political Action,A,slate_column,isbe_link,35823.37,2026-09-30,0.0,22750.0,0.0,91518.73,141018.73,2022-02-07
 ALD-09-002,41329,Friends of Cecelia Harrison,Candidate,A,candidate_sum,isbe_link,1446.67,2026-09-30,0.0,2235.0,2235.0,2235.0,2235.0,2026-07-23
@@ -35,21 +35,21 @@ ALD-09-003,41021,People 4 Kenny,Candidate,A,candidate_sum,isbe_link,0.0,2026-04-
 ALD-10-001,38819,Friends of Peter Chico for Alderman,Candidate,A,candidate_sum,isbe_link,469409.401,2026-09-30,26000.0,253278.02,102950.22,821499.0,1100973.8900000001,2022-10-03
 ALD-10-001,41057,10th Ward Democrats,Political Party,A,candidate_sum,isbe_link,1362.74,2026-09-30,11500.0,1500.28,0.17,1500.28,13000.28,2026-01-26
 ALD-11-001,37399,Friends of Nicole Lee,Candidate,A,candidate_sum,isbe_link,311789.45,2026-09-30,8000.0,272765.24,83125.0,830250.37,1460357.71,2022-04-12
-ALD-12-001,38809,Ramirez for 12,Candidate,A,candidate_sum,isbe_link,76648.87,2026-09-30,0.0,127688.26000000001,57122.26,234180.46,371192.81,2022-09-28
+ALD-12-001,38809,Ramirez for 12,Candidate,A,candidate_sum,isbe_link,76648.87,2026-09-30,2500.0,127688.26000000001,57122.26,234180.46,373692.81,2022-09-28
 ALD-12-001,39740,12th Ward Democrats United,Political Action,A,candidate_sum,isbe_link,4451.31,2026-09-30,10000.0,51500.0,0.0,82610.0,93278.78,2024-02-14
-ALD-12-002,41126,Friends of Claudia Zuno,Candidate,A,candidate_sum,isbe_link,11125.37,2026-09-30,3000.0,26280.0,22530.0,26280.0,35279.11,2026-02-21
-ALD-13-001,41309,Citizens for Al Cacciottolo,Candidate,A,candidate_sum,isbe_link,14421.18,2026-09-30,49000.0,14501.18,14501.18,14501.18,87132.78,2026-07-27
+ALD-12-002,41126,Friends of Claudia Zuno,Candidate,A,candidate_sum,isbe_link,11125.37,2026-09-30,4000.0,26280.0,22530.0,26280.0,36279.11,2026-02-21
+ALD-13-001,41309,Citizens for Al Cacciottolo,Candidate,A,candidate_sum,isbe_link,14421.18,2026-09-30,50500.0,14501.18,14501.18,14501.18,88632.78,2026-07-27
 ALD-14-001,38729,Friends of Jeylu Gutierrez,Candidate,A,candidate_sum,isbe_link,168491.89,2026-09-30,24000.0,86570.0,14900.0,250399.0,434882.7,2022-09-06
 ALD-14-002,26000,Friends of Raul Reyes,Candidate,A,candidate_sum,isbe_link,422.2,2026-09-30,50000.0,0.0,0.0,0.0,193347.21,2014-07-30
 ALD-15-001,23079,Friends of Raymond A Lopez,Candidate,A,candidate_sum,isbe_link,169768.31,2026-09-30,1000.0,123923.20999999999,20211.429999999997,336023.06,1934009.52,2011-01-01
 ALD-15-001,39736,Raymond Lopez for Ward Committeeman,Candidate,A,candidate_sum,name_only,3835.16,2026-09-30,0.0,0.0,0.0,28935.0,29885.0,2024-02-09
 ALD-16-001,27370,Citizens for S Coleman,Political Action,F,candidate_sum,isbe_link,0.0,2018-01-16,0.0,,,,95465.0,2015-01-26
-ALD-16-001,34374,Friends of Stephanie Coleman,Candidate,A,candidate_sum,isbe_link,251323.02,2026-09-30,7000.0,146750.0,27000.0,494729.9,1211165.54,2018-01-01
+ALD-16-001,34374,Friends of Stephanie Coleman,Candidate,A,candidate_sum,isbe_link,251323.02,2026-09-30,21600.0,146750.0,27000.0,494729.9,1225765.54,2018-01-01
 ALD-16-001,37200,Chicago Aldermanic Black Caucus PAC,Political Action,A,slate_column,isbe_link,35823.37,2026-09-30,0.0,22750.0,0.0,91518.73,141018.73,2022-02-07
 ALD-16-002,41499,Friends for Fletcher,Candidate,A,candidate_sum,isbe_link,,,0.0,,,,0.0,
 ALD-16-004,31950,Friends of Eddie Johnson III,Candidate,A,candidate_sum,isbe_link,291.04,2026-09-30,0.0,0.0,0.0,0.0,10447.0,2016-01-01
 ALD-17-001,23127,Citizens to Elect David Moore,Candidate,A,candidate_sum,isbe_link,130101.25,2026-09-30,0.0,58971.0,19515.0,271505.0,954612.11,2011-01-01
-ALD-17-001,34422,Seventeenth Ward Democratic Organization,Political Party,A,candidate_sum,isbe_link,48960.84,2026-09-30,0.0,24900.0,11400.0,75884.0,144428.81,2018-01-30
+ALD-17-001,34422,Seventeenth Ward Democratic Organization,Political Party,A,candidate_sum,isbe_link,48960.84,2026-09-30,1400.0,24900.0,11400.0,75884.0,145828.81,2018-01-30
 ALD-17-001,37200,Chicago Aldermanic Black Caucus PAC,Political Action,A,slate_column,isbe_link,35823.37,2026-09-30,0.0,22750.0,0.0,91518.73,141018.73,2022-02-07
 ALD-17-002,35006,Raynetta Greenleaf For  Alderma 17th Ward,Candidate,A,candidate_sum,isbe_link,0.0,2019-08-30,0.0,,,,14186.28,2018-10-01
 ALD-17-003,41409,Theo For Change,Candidate,A,candidate_sum,isbe_link,,,0.0,,,,0.0,
@@ -96,18 +96,18 @@ ALD-29-003,41465,Friends and Families fo Yvette Mckinnie for the 29th Ward,Polit
 ALD-30-001,41241,Friends of Judy Velez,Candidate,A,candidate_sum,isbe_link,6013.0,2026-09-30,1000.0,8715.0,8715.0,8715.0,33040.0,2026-06-30
 ALD-30-002,38706,Friends of Ruth Cruz,Candidate,A,candidate_sum,isbe_link,120606.97,2026-09-30,16500.0,105484.0,72699.0,324399.57999999996,606567.05,2022-09-01
 ALD-30-002,39516,Ruth Cruz for Committeeperson,Candidate,A,candidate_sum,name_only,2006.73,2026-09-30,0.0,2250.0,0.0,26163.34,26583.84,2023-08-21
-ALD-31-001,34692,Citizens to Elect Felix Cardona Jr,Candidate,A,candidate_sum,isbe_link,69680.97,2026-09-30,0.0,112375.0,40875.0,316280.0,934986.26,2018-07-25
+ALD-31-001,34692,Citizens to Elect Felix Cardona Jr,Candidate,A,candidate_sum,isbe_link,69680.97,2026-09-30,5000.0,112375.0,40875.0,316280.0,939986.26,2018-07-25
 ALD-31-002,41304,Neighbors for Alonso Zaragoza,Candidate,A,candidate_sum,isbe_link,0.0,2026-09-30,0.0,990.0,990.0,990.0,1290.0,2026-07-24
 ALD-32-001,15805,Friends of Michael O'Connor PAC,Political Action,A,candidate_sum,isbe_link,108.76,2026-06-30,0.0,0.0,,0.0,3083.76,2011-01-01
 ALD-32-001,19898,Citizens for Waguespack,Candidate,A,candidate_sum,isbe_link,343332.44,2026-09-30,0.0,134505.0,57880.0,374758.86,1488898.59,2011-01-01
-ALD-32-002,41244,Friends of Patrick Gilsenan,Candidate,A,candidate_sum,isbe_link,51765.5,2026-09-30,0.0,67400.96,67400.96,67400.96,68059.08,2026-07-01
+ALD-32-002,41244,Friends of Patrick Gilsenan,Candidate,A,candidate_sum,isbe_link,51765.5,2026-09-30,1000.0,67400.96,67400.96,67400.96,69059.08,2026-07-01
 ALD-33-001,41291,Friends of Maria Gordils,Candidate,A,candidate_sum,isbe_link,4101.26,2026-09-30,0.0,5250.0,5250.0,5250.0,6255.0,2026-07-21
 ALD-33-002,34611,People for Rossana,Candidate,A,candidate_sum,isbe_link,102825.78,2026-09-30,2000.0,58203.81999999999,23439.839999999997,168020.41999999998,756788.5599999999,2018-05-30
 ALD-33-002,39544,Rossana for Committeeperson,Candidate,A,candidate_sum,isbe_link,15659.25,2026-09-30,0.0,0.0,0.0,61701.17,82701.33,2023-09-05
 ALD-33-003,41525,Friends of Michael Mogan,Candidate,A,candidate_sum,isbe_link,,,0.0,,,,0.0,
-ALD-34-001,38623,New Day Bill Conway,Candidate,A,candidate_sum,isbe_link,1091967.38,2026-09-30,12500.0,124047.94,15277.94,1132258.46,2530032.86,2022-08-09
+ALD-34-001,38623,New Day Bill Conway,Candidate,A,candidate_sum,isbe_link,1091967.38,2026-09-30,49000.0,124047.94,15277.94,1132258.46,2566532.86,2022-08-09
 ALD-34-002,38804,Friends of Nathan Bean,Candidate,A,candidate_sum,isbe_link,15050.0,2026-09-30,3000.0,15050.0,15050.0,15050.0,20600.0,2022-07-01
-ALD-35-001,40637,People for Daniel Tobon,Candidate,A,candidate_sum,isbe_link,38889.15,2026-09-30,1000.0,51375.0,44175.0,58967.5,61307.5,2025-04-17
+ALD-35-001,40637,People for Daniel Tobon,Candidate,A,candidate_sum,isbe_link,38889.15,2026-09-30,3500.0,51375.0,44175.0,58967.5,63807.5,2025-04-17
 ALD-35-002,37143,People for Anthony,Candidate,A,candidate_sum,isbe_link,38880.33,2026-09-30,2500.0,59833.0,41385.0,197149.12,375894.73,2022-01-21
 ALD-35-003,41254,Neighbors for Omari,Candidate,A,candidate_sum,isbe_link,23777.13,2026-09-30,0.0,24129.0,24129.0,24129.0,24129.0,2026-07-03
 ALD-36-001,26023,Friends of Gilbert Villegas for Alderman,Candidate,A,candidate_sum,isbe_link,267332.967,2026-09-30,107550.0,304849.0,170150.0,704652.71,3108722.68,2014-08-11
@@ -116,29 +116,30 @@ ALD-37-001,15622,Citizens to Elect Emma Mitts,Candidate,A,candidate_sum,isbe_lin
 ALD-37-001,28432,I.M.P.A.C.,Political Action,F,candidate_sum,isbe_link,0.0,2015-07-14,0.0,,,,70000.0,2015-02-11
 ALD-37-001,37200,Chicago Aldermanic Black Caucus PAC,Political Action,A,slate_column,isbe_link,35823.37,2026-09-30,0.0,22750.0,0.0,91518.73,141018.73,2022-02-07
 ALD-37-002,23100,Citizens to Elect Carmelita P Earls,Candidate,A,candidate_sum,isbe_link,638.25,2026-09-30,2000.0,606.25,606.25,606.25,67824.98999999999,2011-01-01
-ALD-37-003,40838,Friends of Michael Murphy,Candidate,A,candidate_sum,name_only,495.08,2026-09-30,0.0,574.0,20.0,574.0,574.0,2025-07-01
+ALD-37-003,40838,Friends of Michael Murphy,Candidate,A,candidate_sum,isbe_link,495.08,2026-09-30,0.0,574.0,20.0,574.0,574.0,2025-07-01
 ALD-37-004,41039,Friends of Kobey Lofton,Candidate,A,candidate_sum,isbe_link,77.19,2026-03-31,0.0,80.0,,80.0,80.0,2026-01-01
 ALD-37-005,38671,Howard Ray for 37th Ward,Candidate,A,candidate_sum,isbe_link,-1750.0,2026-09-30,0.0,0.0,0.0,0.0,25945.16,2022-07-01
-ALD-38-002,19830,Friends of Nicholas Sposato,Candidate,A,candidate_sum,isbe_link,85948.33,2026-09-30,0.0,34330.26,10300.0,195434.26,1617834.17,2011-01-01
+ALD-38-002,19830,Friends of Nicholas Sposato,Candidate,A,candidate_sum,isbe_link,85948.33,2026-09-30,21800.0,34330.26,10300.0,195434.26,1639634.17,2011-01-01
 ALD-39-001,34569,Friends of Samantha Nugent,Candidate,A,candidate_sum,isbe_link,335591.02,2026-09-30,18000.0,163970.96000000002,57300.0,575229.15,1542987.61,2018-05-02
 ALD-40-001,34524,Neighbors for Andre,Candidate,A,candidate_sum,isbe_link,187216.69,2026-09-30,8000.0,131677.33,41733.45,430114.3,1254013.15,2018-04-01
 ALD-41-001,26028,Friends of Anthony Napolitano,Candidate,A,candidate_sum,isbe_link,121391.475,2026-09-30,2500.0,94113.45999999999,52763.11,289221.14,1263010.82,2014-08-15
 ALD-42-001,19263,Citizens for Reilly,Candidate,A,candidate_sum,isbe_link,366996.93,2026-09-30,0.0,2346673.5500000003,124236.42,4447333.25,11361664.459999999,2011-01-01
-ALD-42-002,41411,Friends For Deborah Lane,Candidate,A,candidate_sum,isbe_link,4950.0,2026-09-30,0.0,2625.0,2625.0,2625.0,22125.0,2026-08-28
-ALD-43-001,38596,Friends of Timmy Knudsen,Candidate,A,candidate_sum,isbe_link,376339.956,2026-09-30,2500.0,190620.52000000002,103848.52,748894.48,1410329.21,2022-07-29
+ALD-42-002,41411,Friends For Deborah Lane,Candidate,A,candidate_sum,isbe_link,7725.0,2026-09-30,0.0,2625.0,2625.0,2625.0,22125.0,2026-08-28
+ALD-43-001,38596,Friends of Timmy Knudsen,Candidate,A,candidate_sum,isbe_link,376339.956,2026-09-30,6741.9400000000005,190620.52000000002,103848.52,748894.48,1414571.15,2022-07-29
 ALD-44-001,37259,DORAN FOR ILLINOIS,Candidate,F,candidate_sum,isbe_link,0.0,2023-10-12,0.0,,,0.0,10290.0,2022-03-01
 ALD-44-001,41191,Friends of DJ,Candidate,A,candidate_sum,isbe_link,472.04,2026-09-30,0.0,3595.0,3595.0,3595.0,15935.0,2026-05-21
 ALD-44-002,41257,Pals in for Kalen,Candidate,A,candidate_sum,isbe_link,10042.0,2026-09-30,2000.0,17708.0,17708.0,17708.0,23876.4,2026-07-02
-ALD-44-003,38699,Friends of Bennett Lawson,Candidate,A,candidate_sum,isbe_link,190008.42,2026-09-30,12000.0,168677.0,64702.0,527441.0,864428.21,2022-08-26
+ALD-44-003,38699,Friends of Bennett Lawson,Candidate,A,candidate_sum,isbe_link,190008.42,2026-09-30,17700.0,168677.0,64702.0,527441.0,870128.21,2022-08-26
 ALD-45-001,41149,Neighbors for Leah,Candidate,A,candidate_sum,isbe_link,53061.26,2026-09-30,3000.0,56943.38,14502.38,56943.38,103832.28,2026-04-16
 ALD-45-002,41157,SGD for 45,Candidate,A,candidate_sum,isbe_link,10054.45,2026-09-30,0.0,21263.0,9803.0,21263.0,21263.0,2026-04-10
 ALD-45-003,34894,Friends to Elect Jim Gardiner,Candidate,A,candidate_sum,isbe_link,93101.591,2026-09-30,0.0,243752.18099999998,63611.86,638007.871,1344225.911,2018-10-15
 ALD-46-001,41501,Neighbors for Abdallah,Candidate,A,candidate_sum,isbe_link,,,0.0,,,,0.0,
-ALD-46-002,35096,Neighbors for Angela Clay,Candidate,A,candidate_sum,isbe_link,1022.6,2026-09-30,9500.0,55083.77,16165.229999999998,134513.94,566363.1900000001,2019-01-14
+ALD-46-002,35096,Neighbors for Angela Clay,Candidate,A,candidate_sum,isbe_link,1022.6,2026-09-30,10500.0,55083.77,16165.229999999998,134513.94,567363.1900000001,2019-01-14
 ALD-46-002,39321,JCUA Votes,Political Action,A,slate_column,isbe_link,0.0,2026-09-30,0.0,5492.83,0.0,21145.17,23541.59,2023-01-01
-ALD-47-001,34345,Friends of Matt Martin,Candidate,A,candidate_sum,isbe_link,361597.32,2026-09-30,7331.65,152361.62,61549.21000000001,498848.36,1317771.48,2018-01-01
+ALD-46-003,41554,Onita Mack for 46th ward,Candidate,A,candidate_sum,isbe_link,,,0.0,,,,0.0,
+ALD-47-001,34345,Friends of Matt Martin,Candidate,A,candidate_sum,isbe_link,361597.32,2026-09-30,13366.9,152361.62,61549.21000000001,498848.36,1323806.73,2018-01-01
 ALD-47-001,37200,Chicago Aldermanic Black Caucus PAC,Political Action,A,slate_column,isbe_link,35823.37,2026-09-30,0.0,22750.0,0.0,91518.73,141018.73,2022-02-07
-ALD-48-001,38605,Friends of Leni Manaa-Hoppenworth,Candidate,A,candidate_sum,isbe_link,62433.41,2026-09-30,13000.0,98446.13,59265.0,242171.03,463340.97,2022-08-02
+ALD-48-001,38605,Friends of Leni Manaa-Hoppenworth,Candidate,A,candidate_sum,isbe_link,62433.41,2026-09-30,14000.0,98446.13,59265.0,242171.03,464340.97,2022-08-02
 ALD-48-002,41188,Friends of Troy,Candidate,A,candidate_sum,isbe_link,19509.18,2026-09-30,4000.0,19680.0,19555.0,19680.0,43129.76,2026-05-21
 ALD-48-003,41170,Justin Carmien for 48th Ward Alderman,Candidate,A,candidate_sum,isbe_link,217.31,2026-09-30,0.0,973.74,380.0,973.74,973.74,2026-05-01
 ALD-49-001,34862,Friends of Bill Morton,Candidate,A,candidate_sum,isbe_link,174288.678,2026-09-30,0.0,183933.38,84018.08,212567.0,302244.47000000003,2018-10-01
@@ -151,17 +152,17 @@ CLERK-00-001,32443,Friends for Anna Valencia,Candidate,A,candidate_sum,isbe_link
 CLERK-00-001,38788,Valencia for Chicago,Candidate,A,candidate_sum,isbe_link,272801.66,2026-09-30,1000.0,261335.0,70375.0,630388.21,773420.21,2022-10-01
 MAYOR-00-001,27245,Friends of Willie Wilson,Candidate,F,candidate_sum,isbe_link,0.0,2016-02-01,0.0,,,,2257089.67,2014-11-25
 MAYOR-00-001,34509,Willie Wilson for Mayor,Candidate,F,candidate_sum,isbe_link,0.0,2023-03-14,0.0,,,,7747835.66,2018-03-22
-MAYOR-00-001,41192,Willie Wilson for Mayor 2027,Candidate,A,candidate_sum,isbe_link,48453.92,2026-09-30,0.0,10969.0,4407.0,10969.0,660969.0,2026-05-19
-MAYOR-00-002,40942,Citizens for John Kelly,Candidate,A,candidate_sum,isbe_link,2522825.58,2026-09-30,123000.0,1858192.71,546430.0,2282640.6399999997,4024478.13,2025-10-27
-MAYOR-00-003,40800,Friends of Mike Quigley,Candidate,A,candidate_sum,isbe_link,343482.36,2026-09-30,104500.0,729667.39,332333.14,938767.39,1227033.6099999999,2025-08-07
+MAYOR-00-001,41192,Willie Wilson for Mayor 2027,Candidate,A,candidate_sum,isbe_link,48453.92,2026-09-30,0.0,10969.0,4407.0,10969.0,860969.0,2026-05-19
+MAYOR-00-002,40942,Citizens for John Kelly,Candidate,A,candidate_sum,isbe_link,2522825.58,2026-09-30,126500.0,1858192.71,546430.0,2282640.6399999997,4027978.13,2025-10-27
+MAYOR-00-003,40800,Friends of Mike Quigley,Candidate,A,candidate_sum,isbe_link,343482.36,2026-09-30,121500.0,729667.39,332333.14,938767.39,1244033.6099999999,2025-08-07
 MAYOR-00-004,41238,Brewer for Chicago,Candidate,A,candidate_sum,isbe_link,239290.34,2026-09-30,25184.25,501108.84,404571.84,501108.84,535843.0900000001,2026-06-25
 MAYOR-00-005,19323,Citizens for Giannoulias,Candidate,A,candidate_sum,isbe_link,19152632.6,2026-09-30,463200.0,18761251.490000002,3066673.64,24625420.25,35398718.260000005,2011-01-01
-MAYOR-00-006,34198,Friends of Brandon Johnson,Candidate,A,candidate_sum,isbe_link,379471.57,2026-09-30,408600.0,407638.4,122980.36,1831343.04,16709733.899999999,2017-10-31
+MAYOR-00-006,34198,Friends of Brandon Johnson,Candidate,A,candidate_sum,isbe_link,379471.57,2026-09-30,410600.0,407638.4,122980.36,1831343.04,16711733.899999999,2017-10-31
 MAYOR-00-006,39321,JCUA Votes,Political Action,A,slate_column,isbe_link,0.0,2026-09-30,0.0,5492.83,0.0,21145.17,23541.59,2023-01-01
-MAYOR-00-007,18308,Susana For Chicago,Candidate,A,candidate_sum,isbe_link,1728015.43,2026-09-30,175811.2,541688.43,276931.77,2284197.9,12964782.59,2011-01-01
+MAYOR-00-007,18308,Susana For Chicago,Candidate,A,candidate_sum,isbe_link,1728015.43,2026-09-30,215311.2,541688.43,276931.77,2284197.9,13004282.59,2011-01-01
 MAYOR-00-007,34953,Susana Mendoza For Mayor,Candidate,F,candidate_sum,isbe_link,0.0,2023-07-25,0.0,,,0.0,3288813.4899999998,2018-11-14
 MAYOR-00-008,41265,Lisa Nee for Chicago,Candidate,A,candidate_sum,isbe_link,50697.51,2026-09-30,0.0,89324.26,89324.26,89324.26,139324.26,2026-07-08
-MAYOR-00-009,41442,Quinlan for Chicago,Candidate,A,candidate_sum,isbe_link,204215.29,2026-09-30,13500.0,282431.0,282431.0,282431.0,295931.0,2026-07-01
+MAYOR-00-009,41442,Quinlan for Chicago,Candidate,A,candidate_sum,isbe_link,204215.29,2026-09-30,24500.0,282431.0,282431.0,282431.0,306931.0,2026-07-01
 MAYOR-00-011,41177,Friends For Danni C,Candidate,A,candidate_sum,isbe_link,2528.0,2026-06-30,0.0,3581.0,,3581.0,3581.0,2026-04-01
 MAYOR-00-012,6051,Committee to Elect Maria Pappas,Candidate,A,candidate_sum,isbe_link,226302.83,2026-09-30,65000.0,5000.0,0.0,165400.76,788447.29,2011-01-01
 MAYOR-00-013,17290,Friends of George A. Cardenas,Candidate,A,candidate_sum,name_only,101992.737,2026-09-30,9500.0,227775.19,65808.21,832200.4299999999,4198781.83,2011-01-01
@@ -171,5 +172,5 @@ MAYOR-00-015,41198,Friends of Zoe Ma for Mayor,Candidate,A,candidate_sum,isbe_li
 MAYOR-00-016,41339,Committee to Elect Jessica Maronto for Mayor,Candidate,A,candidate_sum,isbe_link,29314.92,2026-09-30,0.0,6375.0,6375.0,6375.0,43912.18,2026-08-01
 TREAS-00-001,39642,Bruce Leon for 50th Ward Democratic Committeeperson,Candidate,A,candidate_sum,name_only,7193.76,2026-09-30,0.0,0.0,0.0,17396.010000000002,17396.010000000002,2023-12-04
 TREAS-00-001,39903,Bruce Leon For Education Chicago,Candidate,A,candidate_sum,name_only,17959.37,2026-09-30,0.0,0.0,0.0,403.0,620403.0,2024-06-27
-TREAS-00-001,41550,Bruce Leon for Chicago City Treasurer,Candidate,A,candidate_sum,isbe_link,,,0.0,,,,0.0,
-TREAS-00-002,34975,Melissa For Chicago,Candidate,A,candidate_sum,isbe_link,2241.52,2026-09-30,0.0,293971.35,1000.63,582742.59,2436496.5,2018-11-20
+TREAS-00-001,41550,Bruce Leon for Chicago City Treasurer,Candidate,A,candidate_sum,isbe_link,,,0.0,,,,400000.0,
+TREAS-00-002,34975,Melissa For Chicago,Candidate,A,candidate_sum,isbe_link,2241.52,2026-09-30,1000.0,293971.35,1000.63,582742.59,2437496.5,2018-11-20
