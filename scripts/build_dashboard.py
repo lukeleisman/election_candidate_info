@@ -186,28 +186,31 @@ ISBE_MANIFEST_PATH = Path(__file__).resolve().parent.parent / "data" / "raw" / "
 ISBE_DOWNLOAD_DATE_FILE = "Receipts.txt"
 
 
-# Candidate list date (user, 2026-11-15: show when it was last checked, and keep it current). Read from the data:
-# the Board of Elections PDF named in candidates_cboe.csv (source_pdf) and that PDF's download time in the
-# fetch manifest (scripts/fetch_cboe.py). Re-fetching the list (make candidates) updates it.
-CBOE_CANDIDATES_PATH = REPO_ROOT / "data" / "candidates" / "candidates_cboe.csv"
-CBOE_MANIFEST_PATH = REPO_ROOT / "data" / "raw" / "cboe" / "manifest.json"
+# Candidate list date (user, 2026-11-15: show when it was last checked, and keep it current). Since 2026-11-24 the
+# candidate table is frozen and each refresh compares CBOE's newest Candidate List with it
+# (scripts/check_candidate_list.py, make candidate-list-check). "Last checked" = when fetch_cboe.py last looked at
+# the CBOE candidates page (cboe_page_checked_at in CANDIDATE_LIST_CHECKED_PATH).
+CANDIDATE_LIST_CHECKED_PATH = REPO_ROOT / "data" / "candidates" / "candidate_list_checked.json"
+CANDIDATE_LIST_CHECK_PATH = REPO_ROOT / "data" / "candidates" / "candidate_list_check.csv"
 # Text after the date in the Summary note. NOT a date, but it goes stale: UPDATE when the Electoral Board has
 # ruled on the petition objections (or when ballot_status.csv is on the page).
 CANDIDATE_LIST_STATUS_NOTE = ("Objections to nominating petitions are still being decided, so some candidates may "
                               "not make the ballot.")
 
+# Candidates no longer on CBOE's list (user, 2026-11-24): greyed out everywhere on the page, with a short tag;
+# hovering the tag shows removal_reason from candidate_list_check.csv. "Challenged" is NOT shown (user).
+# list_result values that grey a candidate out ("needs_review" = flagged for the user, page unchanged):
+OFF_LIST_RESULTS = ["not_on_list"]
+OFF_LIST_TAG_TEXT = "No longer on the ballot"   # wording chosen by the user 2026-11-24
+# OPEN QUESTION (user): should greyed-out candidates still count in the race totals (Summary "race total" row,
+# race stats)? True = counted, as before 2026-11-24. No one is off the list yet (11/9/2026 list), so no effect today.
+OFF_LIST_COUNT_IN_RACE_TOTALS = True
+
 
 def candidate_list_checked_label():
-    """'Oct 27, 2026': when the PDF the candidate table was parsed from was downloaded."""
-    source_pdfs = set(pd.read_csv(CBOE_CANDIDATES_PATH, dtype=str, keep_default_na=False)["source_pdf"])
-    if len(source_pdfs) != 1:
-        raise SystemExit(f"candidates_cboe.csv names {len(source_pdfs)} source PDFs (expected 1): {source_pdfs}")
-    pdf_name = source_pdfs.pop()
-    downloads = [row["retrieved_at"] for row in json.loads(CBOE_MANIFEST_PATH.read_text())
-                 if row.get("local_path", "").endswith("/" + pdf_name)]
-    if not downloads:
-        raise SystemExit(f"{pdf_name} is not in {CBOE_MANIFEST_PATH}")
-    return date_label(max(downloads))
+    """'Nov 20, 2026': when the CBOE candidates page was last checked (scripts/check_candidate_list.py output)."""
+    checked = json.loads(CANDIDATE_LIST_CHECKED_PATH.read_text())
+    return date_label(checked["cboe_page_checked_at"][:10])
 
 
 def isbe_download_label():
@@ -718,6 +721,12 @@ def write_embed_build(template, data):
 def main():
     candidates = pd.read_csv(CANDIDATES_PATH, dtype=str, keep_default_na=False)
     committees = pd.read_csv(COMMITTEES_PATH, dtype=str, keep_default_na=False)
+    # Ballot-list check (scripts/check_candidate_list.py): off_list = greyed out on the page.
+    list_check = pd.read_csv(CANDIDATE_LIST_CHECK_PATH, dtype=str, keep_default_na=False)
+    candidates = candidates.merge(list_check[["candidate_id", "list_result", "removal_reason"]], on="candidate_id",
+                                  how="left").fillna({"list_result": "", "removal_reason": ""})
+    candidates["off_list"] = candidates["list_result"].isin(OFF_LIST_RESULTS)
+    print(f"off the ballot list (greyed out): {candidates.loc[candidates['off_list'], 'candidate_id'].tolist()}")
     if not SHOW_SECOND_FILINGS:
         second_filings = candidates[candidates["duplicate_filing_of"] != ""]
         print(f"second filings left off the page (SHOW_SECOND_FILINGS = False): "
@@ -726,6 +735,8 @@ def main():
         committees = committees[committees["candidate_id"].isin(set(candidates["candidate_id"]))]
 
     people = candidates[candidates["duplicate_filing_of"] == ""]
+    if not OFF_LIST_COUNT_IN_RACE_TOTALS:
+        people = people[~people["off_list"]]
     race_stats = people.groupby("race_key").agg(
         candidates=("candidate_id", "size"),
         with_committee=("committees_added", lambda values: int((values.astype(int) > 0).sum())),
@@ -776,6 +787,7 @@ def main():
         "reports_through_short": REPORTS_THROUGH_SHORT,
         "candidate_list_checked": candidate_list_checked_label(),
         "candidate_list_status_note": CANDIDATE_LIST_STATUS_NOTE,
+        "off_list_tag_text": OFF_LIST_TAG_TEXT,
         "isbe_download": isbe_download_label(),
         "feedback": {"form_url": FEEDBACK_FORM_URL, "form_prefill_url": FEEDBACK_FORM_PREFILL_URL,
                      "form_item_prefill_url": FEEDBACK_FORM_ITEM_PREFILL_URL,

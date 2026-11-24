@@ -100,6 +100,11 @@
   #candidates-app .source-links { display: block; font-size: 11.5px; color: var(--muted); white-space: nowrap; }
   #candidates-app .source-links a { color: inherit; }
   #candidates-app .incumbent { font-weight: 400; color: var(--muted); margin-left: 4px; cursor: help; }
+  /* No longer on the ballot list (user 2026-11-24): grey out the whole row / chart row / card. */
+  #candidates-app .off-list { font-weight: 400; font-size: 0.85em; color: var(--muted); margin-left: 6px; cursor: help;
+    border: 1px solid var(--muted); border-radius: 3px; padding: 0 4px; white-space: nowrap; }
+  #candidates-app tr:has(.off-list), #candidates-app .card:has(.off-list),
+  #candidates-app .bar-name:has(.off-list), #candidates-app .bar-name:has(.off-list) + .bar-pair { opacity: 0.5; }
   #candidates-app a.name-link { color: inherit; text-decoration: none; border-bottom: 1px dotted var(--muted); }
   #candidates-app a.name-link:hover { color: var(--accent); }
   #candidates-app td a.number-link { color: inherit; }
@@ -532,11 +537,16 @@ function drawDataSources() {
 const INCUMBENTS = new Map(DATA.incumbents.map((row) => [row.candidate_id, row]));
 
 // Ballot name, plus "(i)" when the incumbents table names this candidate (scripts/check_incumbents.py).
+// Candidates no longer on CBOE's ballot list (row.off_list, scripts/check_candidate_list.py; user 2026-11-24):
+// a tag after the name (hover = reason). CSS greys out any table row / chart row / card holding the tag.
 function nameWithIncumbent(row) {
   const incumbent = INCUMBENTS.get(row.candidate_id);
-  if (!incumbent) return [row.ballot_name_raw];
-  return [row.ballot_name_raw, element("span", { className: "incumbent", text: "(i)",
-    title: "Holds this office now (" + DATA.incumbent_as_of + "): " + incumbent.officeholder_name })];
+  const parts = [row.ballot_name_raw];
+  if (incumbent) parts.push(element("span", { className: "incumbent", text: "(i)",
+    title: "Holds this office now (" + DATA.incumbent_as_of + "): " + incumbent.officeholder_name }));
+  if (row.off_list) parts.push(element("span", { className: "off-list", text: DATA.off_list_tag_text,
+    title: row.removal_reason || DATA.off_list_tag_text }));
+  return parts;
 }
 
 // Link that jumps to a candidate's section (#race/window/candidate_id).
@@ -711,7 +721,7 @@ function drawSummaryTable() {
     element("td", { className: "left" }, summaryLargestAccount(row)),
     element("td", { text: endorsementCount(row.candidate_id) || "—" }),
   ])), element("tr", { className: "total" }, [
-    element("td", { className: "left", text: "Race total (" + rows.length + " candidates)" }), element("td", {}),
+    element("td", { className: "left", text: "Race total (" + race.candidates + " candidates)" }), element("td", {}),
     element("td", { text: show(race.cash_on_hand_total, "money") }),
     element("td", { text: show(race[state.window + "_summary_raised_total"], "money") }),
     element("td", {}), element("td", {}),

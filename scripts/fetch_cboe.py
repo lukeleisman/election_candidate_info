@@ -7,7 +7,12 @@ Saves, verbatim, under data/raw/cboe/ (gitignored):
 Documents are never overwritten. CBOE puts a timestamp in the file name of
 each new filing report (e.g. "Candidate Filing Report_20261026174516936.pdf"),
 so later reports land next to earlier ones and can be compared. A document
-already on disk under the same name is skipped (re-run safe).
+already on disk under the same name is re-checked with a HEAD request
+(RECHECK_EXISTING_DOCUMENTS): if the server's Last-Modified differs from the
+newest saved copy, the new version is saved NEXT TO it as
+"<name>__<retrieved_at><extension>"; if not, an "unchanged" row is written to
+the manifest (so "checked on" dates are true). Added 2026-11-24 (user): CBOE
+could re-post an updated list under the same file name.
 
 Every download is recorded in data/raw/cboe/manifest.json: URL, link text,
 local path, retrieved_at (UTC), HTTP status, bytes, sha256, Last-Modified.
@@ -57,6 +62,10 @@ USER_AGENT = (
 SECONDS_BETWEEN_REQUESTS = 2
 
 REQUEST_TIMEOUT_SECONDS = 60
+
+# Re-check documents already on disk (one HEAD request each) and save a new copy when the server's
+# Last-Modified differs from the newest saved copy. False = skip any document already on disk (old behavior).
+RECHECK_EXISTING_DOCUMENTS = True
 
 OUTPUT_DIR = Path(__file__).resolve().parent.parent / "data" / "raw" / "cboe"
 DOCUMENTS_DIR = OUTPUT_DIR / "documents"
@@ -138,12 +147,38 @@ def main():
             wanted_links.append((link_text, quoted_url))
     print(f"{len(wanted_links)} matching document links")
 
-    # 3. Download each one not already on disk.
+    # 3. Download each new document; re-check ones already on disk (RECHECK_EXISTING_DOCUMENTS).
     for link_text, document_url in wanted_links:
         destination = local_path_for(document_url)
         if destination.exists():
-            print(f"  skip (already have): {destination.relative_to(OUTPUT_DIR)}")
-            continue
+            if not RECHECK_EXISTING_DOCUMENTS:
+                print(f"  skip (already have): {destination.relative_to(OUTPUT_DIR)}")
+                continue
+            # Newest saved copy of this URL (downloads only; "unchanged" rows carry the same Last-Modified).
+            saved = [row for row in manifest if row.get("url") == document_url and row.get("kind") == "document"]
+            saved_last_modified = saved[-1].get("last_modified") if saved else None
+            time.sleep(SECONDS_BETWEEN_REQUESTS)
+            checked_at = utc_now_text()
+            head = session.head(document_url, timeout=REQUEST_TIMEOUT_SECONDS, allow_redirects=True)
+            head.raise_for_status()
+            server_last_modified = head.headers.get("Last-Modified")
+            if server_last_modified is not None and server_last_modified == saved_last_modified:
+                manifest.append({
+                    "kind": "document_unchanged",
+                    "link_text": link_text,
+                    "url": document_url,
+                    "local_path": saved[-1]["local_path"],
+                    "retrieved_at": checked_at,
+                    "http_status": head.status_code,
+                    "last_modified": server_last_modified,
+                })
+                print(f"  unchanged (Last-Modified {server_last_modified}): {saved[-1]['local_path']}")
+                continue
+            # Changed (or no Last-Modified to compare): keep the old file, save the new one beside it.
+            destination = destination.with_name(
+                f"{destination.stem}__{checked_at.replace(':', '')}{destination.suffix}")
+            print(f"  CHANGED on server (saved {saved_last_modified}, now {server_last_modified}): "
+                  f"new copy -> {destination.relative_to(OUTPUT_DIR)}")
         time.sleep(SECONDS_BETWEEN_REQUESTS)
         retrieved_at = utc_now_text()
         response, content = download(session, document_url)

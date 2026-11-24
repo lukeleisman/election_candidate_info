@@ -5,12 +5,20 @@ PYTHON ?= conda run --no-capture-output -n election-candidate-info python
 # Newest CBOE filing report on disk (file names carry a timestamp, so sort = newest last).
 FILING_REPORT = $(shell ls data/raw/cboe/documents/*/"Candidate Filing Report_"*.pdf 2>/dev/null | sort | tail -1)
 
-.PHONY: all candidates fetch-cboe parse-candidates compare-lists ballot-status fetch-isbe committee-proposals isbe-review isbe-rule candidate-committee finance donor-mix display-tables fetch-ward-offices incumbents candidate-links social-accounts follower-counts fetch-endorsements endorsements dashboard
+.PHONY: all candidates fetch-cboe candidate-list-check parse-candidates compare-lists ballot-status fetch-isbe committee-proposals isbe-review isbe-rule candidate-committee finance donor-mix display-tables fetch-ward-offices incumbents candidate-links social-accounts follower-counts fetch-endorsements endorsements dashboard
 
 all: candidates fetch-isbe committee-proposals isbe-review isbe-rule candidate-committee finance donor-mix display-tables incumbents candidate-links dashboard
 
 ## Official candidate list (PLAN.md step 2)
-candidates: fetch-cboe parse-candidates compare-lists ballot-status
+# The candidate table (data/candidates/candidates_cboe.csv) is FROZEN since 2026-11-24 (user): IDs never change.
+# A refresh downloads CBOE's documents and compares the newest Candidate List with the frozen table;
+# candidates no longer listed are greyed out on the page, anything else is flagged
+# (data/candidates/candidate_list_flags.csv). parse-candidates / compare-lists are kept for reference only:
+# running parse-candidates would rebuild the table (and IDs) from the old Filing Report.
+candidates: fetch-cboe candidate-list-check ballot-status
+
+candidate-list-check:
+	$(PYTHON) scripts/check_candidate_list.py
 
 fetch-cboe:
 	$(PYTHON) scripts/fetch_cboe.py
