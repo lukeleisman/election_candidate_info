@@ -1,0 +1,26 @@
+[
+ {
+  "file": "Receipts.txt",
+  "identical": false,
+  "same_server_version": false,
+  "incremental_downloaded_bytes": 24298227,
+  "full_bytes": 1065443886,
+  "full_retrieved_at": "2026-11-20T22:18:12Z"
+ },
+ {
+  "file": "FiledDocs.txt",
+  "identical": true,
+  "same_server_version": true,
+  "incremental_downloaded_bytes": 4330122,
+  "full_bytes": 143022661,
+  "full_retrieved_at": "2026-11-24T18:43:16Z"
+ },
+ {
+  "file": "D2Totals.txt",
+  "identical": true,
+  "same_server_version": true,
+  "incremental_downloaded_bytes": 1372499,
+  "full_bytes": 59187159,
+  "full_retrieved_at": "2026-11-24T18:46:10Z"
+ }
+]

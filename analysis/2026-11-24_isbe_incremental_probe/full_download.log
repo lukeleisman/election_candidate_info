@@ -1,0 +1,89 @@
+conda run --no-capture-output -n election-candidate-info python scripts/fetch_isbe.py
+skip (unchanged since Fri, 17 Jan 2020 20:25:51 GMT): CampaignDisclosureDataDictionary.txt
+downloading Candidates.txt ...
+  3,457,061 bytes, 32670 data rows, Last-Modified Tue, 24 Nov 2026 14:10:02 GMT
+downloading CanElections.txt ...
+  2,943,483 bytes, 66920 data rows, Last-Modified Tue, 24 Nov 2026 14:10:03 GMT
+downloading CmteCandidateLinks.txt ...
+  671,169 bytes, 36939 data rows, Last-Modified Tue, 24 Nov 2026 14:10:04 GMT
+downloading Committees.txt ...
+  9,000,212 bytes, 34253 data rows, Last-Modified Tue, 24 Nov 2026 14:15:58 GMT
+downloading FiledDocs.txt ...
+  143,022,661 bytes, 966070 data rows, Last-Modified Tue, 24 Nov 2026 14:14:48 GMT
+downloading D2Totals.txt ...
+  59,187,159 bytes, 545990 data rows, Last-Modified Tue, 24 Nov 2026 14:10:12 GMT
+downloading Receipts.txt ...
+Traceback (most recent call last):
+  File "/opt/anaconda3/envs/election-candidate-info/lib/python3.11/site-packages/urllib3/connectionpool.py", line 540, in _make_request
+    response = conn.getresponse()
+               ^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/election-candidate-info/lib/python3.11/site-packages/urllib3/connection.py", line 638, in getresponse
+    httplib_response = super().getresponse()
+                       ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/election-candidate-info/lib/python3.11/http/client.py", line 1443, in getresponse
+    response.begin()
+  File "/opt/anaconda3/envs/election-candidate-info/lib/python3.11/http/client.py", line 337, in begin
+    version, status, reason = self._read_status()
+                              ^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/election-candidate-info/lib/python3.11/http/client.py", line 298, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/election-candidate-info/lib/python3.11/socket.py", line 718, in readinto
+    return self._sock.recv_into(b)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/election-candidate-info/lib/python3.11/ssl.py", line 1327, in recv_into
+    return self.read(nbytes, buffer)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/election-candidate-info/lib/python3.11/ssl.py", line 1179, in read
+    return self._sslobj.read(len, buffer)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TimeoutError: The read operation timed out
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/opt/anaconda3/envs/election-candidate-info/lib/python3.11/site-packages/requests/adapters.py", line 696, in send
+    resp = conn.urlopen(
+           ^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/election-candidate-info/lib/python3.11/site-packages/urllib3/connectionpool.py", line 847, in urlopen
+    retries = retries.increment(
+              ^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/election-candidate-info/lib/python3.11/site-packages/urllib3/util/retry.py", line 510, in increment
+    raise reraise(type(error), error, _stacktrace)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/election-candidate-info/lib/python3.11/site-packages/urllib3/util/util.py", line 39, in reraise
+    raise value
+  File "/opt/anaconda3/envs/election-candidate-info/lib/python3.11/site-packages/urllib3/connectionpool.py", line 793, in urlopen
+    response = self._make_request(
+               ^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/election-candidate-info/lib/python3.11/site-packages/urllib3/connectionpool.py", line 542, in _make_request
+    self._raise_timeout(err=e, url=url, timeout_value=read_timeout)
+  File "/opt/anaconda3/envs/election-candidate-info/lib/python3.11/site-packages/urllib3/connectionpool.py", line 373, in _raise_timeout
+    raise ReadTimeoutError(
+urllib3.exceptions.ReadTimeoutError: HTTPSConnectionPool(host='www.elections.il.gov', port=443): Read timed out. (read timeout=120)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/lleisman/Luke/github/chicagoindata/election_candidate_info/scripts/fetch_isbe.py", line 152, in <module>
+    main()
+  File "/Users/lleisman/Luke/github/chicagoindata/election_candidate_info/scripts/fetch_isbe.py", line 144, in main
+    record = download_file(session, file_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/lleisman/Luke/github/chicagoindata/election_candidate_info/scripts/fetch_isbe.py", line 97, in download_file
+    with session.get(url, stream=True, timeout=REQUEST_TIMEOUT_SECONDS) as response:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/election-candidate-info/lib/python3.11/site-packages/requests/sessions.py", line 671, in get
+    return self.request("GET", url, params=params, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/election-candidate-info/lib/python3.11/site-packages/requests/sessions.py", line 651, in request
+    resp = self.send(prep, **send_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/election-candidate-info/lib/python3.11/site-packages/requests/sessions.py", line 784, in send
+    r = adapter.send(request, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/election-candidate-info/lib/python3.11/site-packages/requests/adapters.py", line 742, in send
+    raise ReadTimeout(e, request=request)
+requests.exceptions.ReadTimeout: HTTPSConnectionPool(host='www.elections.il.gov', port=443): Read timed out. (read timeout=120)
+ERROR conda.cli.main_run:execute(125): `conda run python scripts/fetch_isbe.py` failed. (See above for error)
+make: *** [fetch-isbe] Error 1

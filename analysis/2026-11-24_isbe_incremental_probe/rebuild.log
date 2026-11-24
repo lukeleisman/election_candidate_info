@@ -1,0 +1,99 @@
+conda run --no-capture-output -n election-candidate-info python scripts/build_display_tables.py
+display_candidates: 161 filings in 53 races; 26 with no committee added; 2 duplicate filings
+display_committees: 175 rows
+wrote data/tables/display_candidates.csv
+wrote data/tables/display_committees.csv
+conda run --no-capture-output -n election-candidate-info python scripts/check_incumbents.py
+not on the ballot: ALD-13 Quinn, Marty (no ballot name contains the last name)
+not on the ballot: ALD-19 O'Shea, Matthew J. (no ballot name contains the last name)
+not on the ballot: ALD-22 Rodriguez, Michael D. (no ballot name contains the last name)
+53 races; 50 incumbents on the ballot; wrote data/tables/incumbents.csv
+conda run --no-capture-output -n election-candidate-info python scripts/build_candidate_links.py
+user: 28 links from data/endorsements/campaign_sites_user_provided.csv
+google: 464 links from data/endorsements/candidate_campaign_sites_google.csv
+google_social_rerun: 503 links from data/endorsements/candidate_campaign_sites_google_social_rerun.csv
+first_pass: 195 links from data/endorsements/candidate_campaign_sites.csv
+  kind differs by source: ALD-14-001 chicago14.com: [['google', 'office'], ['google_social_rerun', 'office'], ['first_pass', 'other']] (first source's kind used)
+  kind differs by source: ALD-25-001 aidafor25.com: [['google_social_rerun', 'campaign'], ['google_social_rerun', 'endorsements']] (first source's kind used)
+  kind differs by source: ALD-32-002 patrickfor32.com: [['google', 'campaign'], ['first_pass', 'campaign'], ['first_pass', 'endorsements']] (first source's kind used)
+text in URL cells that is not a URL (1; ignored):
+  first_pass ALD-21-001 other_site_urls: kept ['facebook.com/aldmosley21'], ignored text '(as '@aldmosley21')'
+873 links for 147 candidates (LINK_KIND_RULE=domain_first); by kind: {'social': 499, 'campaign': 129, 'fundraising': 85, 'other': 76, 'office': 72, 'endorsements': 12}
+found by more than one source: 273
+wrote data/tables/candidate_links.csv
+conda run --no-capture-output -n election-candidate-info python scripts/build_dashboard.py
+off the ballot list (greyed out): []
+second filings left off the page (SHOW_SECOND_FILINGS = False): [['ALD-24-003', 'ALD-24-001'], ['ALD-39-002', 'ALD-39-001']]
+social: post authors reviewed 45 of 121; shown (verdict 'candidate'): 18
+social: 95 exact repeat rows collapsed (461 -> 366)
+social: of 366 accounts (15 from address lines, no count): {'recorded link': 143, "address from Google's results": 102, 'not linked': 65, 'built from the handle': 56}
+social: not linked, by platform: {'LinkedIn': 39, 'Facebook': 23, 'YouTube': 2, 'TikTok': 1}
+social: recorded social links 499: {'added': 256, 'already in table': 223, "left out: not a profile URL (Instagram: 'p' is not an account)": 4, "left out: not a profile URL (Instagram: 'reel' is not an account)": 3, 'left out: not a profile URL (Facebook: a page under the account (e.g. a post), not the profile|votegreenleaf)': 2, 'left out: not a profile URL (LinkedIn: not a profile address)': 2, 'left out: platform not shown': 2, "left out: not a profile URL (Facebook: 'events' is not an account)": 1, 'left out: not a profile URL (Facebook: a page under the account (e.g. a post), not the profile|61596160144747)': 1, 'left out: not a profile URL (Facebook: a page under the account (e.g. a post), not the profile|61595782941282)': 1, 'left out: not a profile URL (Facebook: a page under the account (e.g. a post), not the profile|100063466899521)': 1, 'left out: not a profile URL (Facebook: a page under the account (e.g. a post), not the profile|61594720079780)': 1, 'left out: not a profile URL (Facebook: a page under the account (e.g. a post), not the profile|61593613763499)': 1, 'left out: not a profile URL (Facebook: a page under the account (e.g. a post), not the profile|100086099723887)': 1}; added as accounts (one per account) 256; possible repeats to check 44 (wrote data/tables/social_recorded_links_added.csv)
+social: left out: [['ALD-14-002', 'https://www.facebook.com/events/dolce-arte/a-night-in-support-of-raul-reyes-for-14th-ward-alderman/1463715965902702/', "left out: not a profile URL (Facebook: 'events' is not an account)"], ['ALD-14-002', 'https://www.facebook.com/61596160144747/posts/122108767407538671/', 'left out: not a profile URL (Facebook: a page under the account (e.g. a post), not the profile|61596160144747)'], ['ALD-16-002', 'https://www.facebook.com/61595782941282/posts/dear-residents-community-organizations-business-owners-and-stakeholders-of-the-1/122093451825526098/', 'left out: not a profile URL (Facebook: a page under the account (e.g. a post), not the profile|61595782941282)'], ['ALD-16-002', 'https://www.instagram.com/p/DescSO2DG2w/', "left out: not a profile URL (Instagram: 'p' is not an account)"], ['ALD-17-002', 'https://www.facebook.com/votegreenleaf/posts/if-youre-afraid-to-speak-up-or-stand-out-know-this-im-here-to-stand-with-youand-/1419196263717316/', 'left out: not a profile URL (Facebook: a page under the account (e.g. a post), not the profile|votegreenleaf)'], ['ALD-17-002', 'https://www.facebook.com/votegreenleaf/posts/the-17th-ward-deserves-growth-we-can-see-and-results-we-can-feel-im-ready-to-wor/1419326430370966/', 'left out: not a profile URL (Facebook: a page under the account (e.g. a post), not the profile|votegreenleaf)'], ['ALD-17-002', 'https://www.facebook.com/100063466899521/videos/its-going-to-take-our-community-coming-together-to-make-change-i-cant-do-this-al/1789380692084964/', 'left out: not a profile URL (Facebook: a page under the account (e.g. a post), not the profile|100063466899521)'], ['ALD-17-005', 'https://www.facebook.com/61594720079780/posts/the-time-is-near-%EF%B8%8F%EF%B8%8F%EF%B8%8F%EF%B8%8F-theres-only-a-couple-days-left-which-means-that-we-will-be/122115495159490669/', 'left out: not a profile URL (Facebook: a page under the account (e.g. a post), not the profile|61594720079780)'], ['ALD-18-006', 'https://www.instagram.com/p/DdWeqYwERoH/', "left out: not a profile URL (Instagram: 'p' is not an account)"], ['ALD-20-005', 'https://www.facebook.com/61593613763499/videos/her-experience-speaks-for-itselfjarquetta-has-been-in-leadership-helping-people-/1127649906386032/', 'left out: not a profile URL (Facebook: a page under the account (e.g. a post), not the profile|61593613763499)'], ['ALD-25-002', 'https://www.instagram.com/reel/Dbtpy6YRzf6/', "left out: not a profile URL (Instagram: 'reel' is not an account)"], ['ALD-25-002', 'https://www.facebook.com/100086099723887/videos/organizing-to-ordinance-investigations-on-cpd-federal-agencies-collaborationde-o/1953696728604269/', 'left out: not a profile URL (Facebook: a page under the account (e.g. a post), not the profile|100086099723887)'], ['ALD-25-003', 'https://www.instagram.com/p/DfXK4OsxDVY/', "left out: not a profile URL (Instagram: 'p' is not an account)"], ['ALD-25-007', 'https://www.linkedin.com/posts/nubiawillman_nubia-batista-willman-for-25th-ward-alderman-activity-7475669125936177152-VpzR', 'left out: not a profile URL (LinkedIn: not a profile address)'], ['ALD-27-003', 'https://www.linkedin.com/posts/nathanfcornell_nate-cornell-for-27th-ward-alderman-activity-7496406520348307456-PYp4', 'left out: not a profile URL (LinkedIn: not a profile address)'], ['ALD-32-004', 'https://www.instagram.com/reel/DdACFPHqbMR/', "left out: not a profile URL (Instagram: 'reel' is not an account)"], ['ALD-32-004', 'https://www.instagram.com/reel/DdRH6chxOtV/', "left out: not a profile URL (Instagram: 'reel' is not an account)"], ['ALD-32-004', 'https://www.instagram.com/p/DabS-djpWw1/', "left out: not a profile URL (Instagram: 'p' is not an account)"], ['ALD-37-003', 'https://www.meetup.com/michael-murphy-for-cook-county-board-president/', 'left out: platform not shown'], ['ALD-49-001', 'https://www.meetup.com/billmorton/', 'left out: platform not shown']]
+social: flags 1, matched 1
+social: fetched counts attached to 269 of 622 accounts (255 accounts with an ok fetch in data/social_counts/follower_counts_history.csv)
+endorsements shown: local page 207 rows (review_status ['reviewed', 'unreviewed']); published page 207 rows (['reviewed', 'unreviewed'])
+NOTE: links rows for candidates not on the page (left out): ['ALD-24-003', 'ALD-39-002']
+NOTE: social rows for candidates not on the page (left out): ['ALD-24-003', 'ALD-39-002']
+NOTE: endorsements rows for candidates not on the page (left out): ['PDC-17-001', 'PDC-17-002', 'PDC-17-003', 'PDC-19-001', 'PDC-19-002', 'PDC-19-003', 'PDC-20-002', 'PDC-20-003', 'PDC-20-004', 'PDC-24-001', 'PDC-24-002', 'PDC-24-003']
+app.js: dark mode left out (EMBED_DARK_MODE = False)
+wrote docs/dashboard/app.js (71,264 bytes)
+wrote docs/data/dashboard.json (1,788,184 bytes)
+wrote docs/index.html (495 bytes)
+53 races, 159 candidate rows, 175 committee rows
+per-race figures (check against display_candidates.csv):
+    race_label  candidates  with_committee  cash_on_hand_total  since_2026_01_01_summary_raised_total  latest_quarter_summary_raised_total  since_2023_07_01_summary_raised_total
+         Mayor          16              15        2.619818e+07                           25242909.140                           5361545.20                           35771347.270
+    City Clerk           1               1        2.728017e+05                             263605.960                             70375.00                             653909.170
+City Treasurer           2               2        2.739465e+04                             294971.350                              1000.63                             601541.600
+        Ward 1           3               3        5.383512e+05                             493975.000                            108525.00                             701313.840
+        Ward 2           2               2        5.629426e+05                             236378.860                             67287.92                             901844.620
+        Ward 3           3               3        4.829715e+04                             212510.000                             64730.00                             706942.130
+        Ward 4           1               1        3.309264e+04                             186570.000                             57300.00                             459155.000
+        Ward 5           2               1        5.819568e+04                              76160.470                              7400.00                             266523.100
+        Ward 6           3               2        8.778860e+03                              38490.200                             21785.64                             175052.010
+        Ward 7           6               5        1.802472e+05                              44670.900                              3630.00                             118853.840
+        Ward 8           5               5        3.659280e+05                              87598.020                             81098.02                             275698.020
+        Ward 9           3               3        1.297178e+05                             169471.780                             29443.62                             303764.240
+       Ward 10           1               1        4.707721e+05                             292278.300                            102950.39                             860499.280
+       Ward 11           1               1        3.117895e+05                             286265.240                             83125.00                             843750.370
+       Ward 12           3               2        9.222555e+04                             224968.260                             79652.26                             362570.460
+       Ward 13           3               1        1.442118e+04                              65001.180                             14501.18                              65001.180
+       Ward 14           2               2        1.689141e+05                             160570.000                             14900.00                             324399.000
+       Ward 15           1               1        1.736035e+05                             125923.210                             20211.43                             366958.060
+       Ward 16           4               3        2.516141e+05                             168350.000                             27000.00                             516329.900
+       Ward 17           5               4        1.791362e+05                              85371.000                             31015.00                             348889.000
+       Ward 18           6               1        3.850576e+04                              20500.000                              3500.00                              73100.000
+       Ward 19           3               2        1.639774e+05                             183555.000                            165555.00                             183555.000
+       Ward 20           5               5        7.783504e+04                              61626.460                             34760.27                             168632.820
+       Ward 21           1               1        6.573005e+04                             107594.730                             52331.73                             202584.140
+       Ward 22           1               1        4.791218e+04                              63035.000                             51035.00                              63035.000
+       Ward 23           2               2        2.280194e+05                              70133.000                             57750.00                             237675.580
+       Ward 24           3               2        1.595541e+05                              94406.280                             31944.23                             252785.870
+       Ward 25           7               6        1.176856e+05                             234594.470                            152563.17                             504986.730
+       Ward 26           2               2        1.317045e+05                             206066.300                             68622.00                             447156.550
+       Ward 27           5               4        4.955120e+04                             377506.760                            139324.76                             563856.760
+       Ward 28           2               1        3.269419e+05                             658026.000                            319060.62                            1062203.020
+       Ward 29           3               3        4.557428e+04                              66110.000                             16400.00                             225992.040
+       Ward 30           2               2        1.286267e+05                             133949.000                             81414.00                             376777.920
+       Ward 31           3               2        6.968097e+04                             118365.000                             41865.00                             322270.000
+       Ward 32           4               2        3.952067e+05                             202905.960                            125280.96                             443159.820
+       Ward 33           3               3        1.225863e+05                              65453.820                             28689.84                             236971.590
+       Ward 34           2               2        1.107017e+06                             220597.940                             30327.94                            1228808.460
+       Ward 35           3               3        1.015466e+05                             141337.000                            109689.00                             286245.620
+       Ward 36           2               1        2.706250e+05                             412399.000                            170150.00                             813202.710
+       Ward 37           5               5        5.791911e+04                             116430.250                             53386.25                             183155.250
+       Ward 38           2               1        8.594833e+04                              56130.260                             10300.00                             217234.260
+       Ward 39           1               1        3.355910e+05                             181970.960                             57300.00                             593229.150
+       Ward 40           1               1        1.872167e+05                             139677.330                             41733.45                             438114.300
+       Ward 41           1               1        1.213915e+05                              96613.460                             52763.11                             291721.140
+       Ward 42           2               2        3.747219e+05                            2355956.800                            126861.42                            4456616.500
+       Ward 43           2               1        3.763400e+05                             197362.460                            103848.52                             755636.420
+       Ward 44           3               3        2.005225e+05                             209680.000                             86005.00                             568444.000
+       Ward 45           3               3        1.562173e+05                             324958.561                             87917.24                             719214.251
+       Ward 46           4               3        1.022600e+03                              65583.770                             16165.23                             145013.940
+       Ward 47           1               1        3.615973e+05                             165728.520                             61549.21                             512215.260
+       Ward 48           3               3        8.215990e+04                             139599.870                             79200.00                             283324.770
+       Ward 49           4               4        1.894482e+05                             261013.560                             99952.60                             394679.200
+       Ward 50           1               1        6.191063e+05                             153134.000                             26034.00                             671846.880
+wrote dashboard/index.html — open it in a browser

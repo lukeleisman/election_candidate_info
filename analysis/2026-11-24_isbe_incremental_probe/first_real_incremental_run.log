@@ -1,0 +1,10 @@
+skip (unchanged since Fri, 17 Jan 2020 20:25:51 GMT): CampaignDisclosureDataDictionary.txt
+skip (unchanged since Tue, 24 Nov 2026 14:10:02 GMT): Candidates.txt
+skip (unchanged since Tue, 24 Nov 2026 14:10:03 GMT): CanElections.txt
+skip (unchanged since Tue, 24 Nov 2026 14:10:04 GMT): CmteCandidateLinks.txt
+skip (unchanged since Tue, 24 Nov 2026 14:15:58 GMT): Committees.txt
+skip (unchanged since Tue, 24 Nov 2026 14:14:48 GMT): FiledDocs.txt
+skip (unchanged since Tue, 24 Nov 2026 14:10:12 GMT): D2Totals.txt
+downloading Receipts.txt ...
+  incremental: 24,298,227 of 1,065,520,269 bytes downloaded, 6590745 data rows, Last-Modified Tue, 24 Nov 2026 14:15:56 GMT
+seconds: 173

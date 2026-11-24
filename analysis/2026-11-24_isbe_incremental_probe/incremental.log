@@ -1,0 +1,80 @@
+{
+ "file": "Receipts.txt",
+ "previous_size": 1065443886,
+ "server_size": 1065520269,
+ "output_size": 1065520269,
+ "kept_from_previous_bytes": 1041222042,
+ "downloaded_bytes": 24298227,
+ "requests_made": 28,
+ "sample_results": {
+  "0": true,
+  "118382432": true,
+  "236764864": true,
+  "355147295": true,
+  "473529727": true,
+  "591912159": true,
+  "710294591": true,
+  "828677022": true,
+  "947059454": true,
+  "1065441886": false
+ },
+ "samples_matching_after_first_mismatch": [],
+ "last_modified_at_start": "Tue, 24 Nov 2026 14:15:56 GMT",
+ "last_modified_at_end": "Tue, 24 Nov 2026 14:15:56 GMT",
+ "server_changed_during_build": false,
+ "output_sha256": "3b6d48ccbf74adbe9d9b223ed98c8d8f96fa0b9158c070f4758f7096a3b5a42b"
+}
+{
+ "file": "FiledDocs.txt",
+ "previous_size": 142996317,
+ "server_size": 143022661,
+ "output_size": 143022661,
+ "kept_from_previous_bytes": 138692539,
+ "downloaded_bytes": 4330122,
+ "requests_made": 25,
+ "sample_results": {
+  "0": true,
+  "15888257": true,
+  "31776515": true,
+  "47664772": true,
+  "63553030": true,
+  "79441287": true,
+  "95329545": true,
+  "111217802": true,
+  "127106060": true,
+  "142994317": false
+ },
+ "samples_matching_after_first_mismatch": [],
+ "last_modified_at_start": "Tue, 24 Nov 2026 14:14:48 GMT",
+ "last_modified_at_end": "Tue, 24 Nov 2026 14:14:48 GMT",
+ "server_changed_during_build": false,
+ "output_sha256": "7587f9923df716bd6aa6f78e5c0449fb2850dcba4442575d700d83ba99dcaf85"
+}
+{
+ "file": "D2Totals.txt",
+ "previous_size": 59186130,
+ "server_size": 59187159,
+ "output_size": 59187159,
+ "kept_from_previous_bytes": 57814660,
+ "downloaded_bytes": 1372499,
+ "requests_made": 24,
+ "sample_results": {
+  "0": true,
+  "6576014": true,
+  "13152029": true,
+  "19728043": true,
+  "26304058": true,
+  "32880072": true,
+  "39456087": true,
+  "46032101": true,
+  "52608116": true,
+  "59184130": false
+ },
+ "samples_matching_after_first_mismatch": [],
+ "last_modified_at_start": "Tue, 24 Nov 2026 14:10:12 GMT",
+ "last_modified_at_end": "Tue, 24 Nov 2026 14:10:12 GMT",
+ "server_changed_during_build": false,
+ "output_sha256": "ff5bbd32bb467ecc09e90547fe11b23de2f0ba833b549e599a4de228654dd906"
+}
+results -> /Users/lleisman/Luke/github/chicagoindata/election_candidate_info/analysis/2026-11-24_isbe_incremental_probe/incremental_result.json
+incremental built 2026-11-24T18:42:37Z

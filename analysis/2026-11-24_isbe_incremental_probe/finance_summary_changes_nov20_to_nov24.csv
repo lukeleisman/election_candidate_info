@@ -1,0 +1,20 @@
+candidate_id,name,column,before,after,change
+ALD-02-001,BRIAN HOPKINS,a1_gifts_since_last_report,45100.0,46600.0,1500.0
+ALD-02-002,RICHARD OMONIYI-SHOYOOLA,a1_gifts_since_last_report,0.0,1000.0,1000.0
+ALD-03-001,PAT DOWELL,a1_gifts_since_last_report,10000.0,28000.0,18000.0
+ALD-06-001,ALLYSON RENEE SCRUTCHENS,a1_gifts_since_last_report,6000.0,8000.0,2000.0
+ALD-11-001,NICOLE LEE,a1_gifts_since_last_report,8000.0,13500.0,5500.0
+ALD-12-001,JULIA M. RAMIREZ,a1_gifts_since_last_report,12500.0,15500.0,3000.0
+ALD-15-001,RAYMOND A. LOPEZ,a1_gifts_since_last_report,1000.0,2000.0,1000.0
+ALD-25-001,AIDA FLORES,a1_gifts_since_last_report,0.0,5500.0,5500.0
+ALD-25-005,BYRON SIGCHO-LOPEZ,a1_gifts_since_last_report,15500.0,17500.0,2000.0
+ALD-27-001,"WALTER ""RED"" BURNETT",a1_gifts_since_last_report,94000.0,104000.0,10000.0
+ALD-28-001,JASON C. ERVIN,a1_gifts_since_last_report,6500.0,27000.0,20500.0
+ALD-34-001,BILL CONWAY,a1_gifts_since_last_report,49000.0,78500.0,29500.0
+ALD-42-001,BRENDAN REILLY,a1_gifts_since_last_report,0.0,6658.25,6658.25
+ALD-48-001,LENI MANAA-HOPPENWORTH,a1_gifts_since_last_report,14000.0,16500.0,2500.0
+ALD-49-002,MARIA HADDEN,a1_gifts_since_last_report,1000.0,2500.0,1500.0
+CLERK-00-001,ANNA M. VALENCIA,a1_gifts_since_last_report,1000.0,2000.0,1000.0
+MAYOR-00-003,MIKE QUIGLEY,a1_gifts_since_last_report,121500.0,131000.0,9500.0
+MAYOR-00-004,MATT BREWER,a1_gifts_since_last_report,25184.25,30684.25,5500.0
+MAYOR-00-006,BRANDON JOHNSON,a1_gifts_since_last_report,410600.0,418100.0,7500.0
