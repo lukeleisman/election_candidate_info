@@ -1,0 +1,7 @@
+conda run --no-capture-output -n election-candidate-info python scripts/match_endorsements.py
+rows: 207; match status: {'accepted': 203, 'judgment_call': 4}
+counted in table (filters {'review_status': ['reviewed'], 'cycle': ['2027'], 'match_status': ['accepted'], 'endorsement_kind': ['endorsement']}): 0 rows, 0 candidates
+  judgment_call dsa2027-002: 'Rossana Rodriguez-Sanchez' ALD-33 -> ALD-33-002 name 'Rossana Rodriguez-Sanchez' vs ballot 'ROSSANA RODRÍGUEZ SÁNCHEZ'
+  judgment_call dsa2027-003: 'Anthony Quezada' ALD-35 -> ALD-35-002 name 'Anthony Quezada' vs ballot 'ANTHONY JOEL QUEZADA'
+  judgment_call opc2027-009: 'Jenny Schaffer' PDC-19 -> PDC-19-002 name 'Jenny Schaffer' vs ballot 'JENNIFER SCHAFFER'
+  judgment_call opc2027-014: 'Erik Smith' PDC-20 -> PDC-20-004 name 'Erik Smith' vs ballot 'ERIC SMITH'
